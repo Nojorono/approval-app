@@ -2,10 +2,10 @@ import React, { useMemo } from "react";
 import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
 import { ColumnDef } from "@tanstack/react-table";
 import TableComponent from "../../../components/tables/MasterDataTable/TableComponent";
+import Badge from "../../../components/ui/badge/Badge";
 import { usePagePermissions } from "../../../utils/UserPermission/UserPagePermissions";
 import Checkbox from "../../../components/form/input/Checkbox";
 import Button from "../../../components/ui/button/Button";
-import Badge from "../../../components/ui/badge/Badge";
 
 type Inbound = {
   id: number;
