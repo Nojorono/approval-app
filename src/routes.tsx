@@ -33,6 +33,7 @@ import MasterRegion from "./pages/Master/MasterRegion";
 import MasterSalesman from "./pages/Master/MasterSalesman";
 import dummyRoutes from "./helper/dummyRoutes";
 import Inbound from "./pages/Inbound";
+import CreateInbound from "./pages/Inbound/Table/CreateInbound";
 
 const DefaultPage: React.FC = () => {
   return (
@@ -76,6 +77,8 @@ export function AppRoutes() {
       { path: "create", element: <CreateRole /> },
       { path: "update", element: <UpdateRole /> },
     ],
+
+    "/inbound_planning": [{ path: "create", element: <CreateInbound /> }],
 
     "/management_territory": [
       { path: "select_territory", element: <SelectTerritory /> },
@@ -140,7 +143,7 @@ export function AppRoutes() {
       "/master_salesman": <MasterSalesman />,
       "/select_territory": <SelectTerritory />,
 
-      "/inbound_planning": <Inbound/>,
+      "/inbound_planning": <Inbound />,
     };
 
     return map[path] || <DefaultPage />;
@@ -148,7 +151,6 @@ export function AppRoutes() {
 
   // const userRoutes = buildRoutes(userMenus);
   const userRoutes = buildRoutes(dummyRoutes);
-
 
   return (
     <>

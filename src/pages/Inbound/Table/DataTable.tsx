@@ -115,7 +115,11 @@ const TableMasterMenu = () => {
                 <FaFileImport className="mr-2" /> Unggah Data
               </Button> */}
 
-              <Button variant="primary" size="sm">
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => navigate("/inbound_planning/create")}
+              >
                 <FaPlus className="mr-2" /> Add Inbound Planning
               </Button>
             </div>
