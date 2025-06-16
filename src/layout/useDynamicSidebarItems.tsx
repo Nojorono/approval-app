@@ -46,7 +46,6 @@ const buildMenuHierarchy = (menuItems: MenuItem[]): MenuItem[] => {
 };
 
 export const useDynamicSidebarItems = (): NavItem[] => {
-
   const localMenus: MenuItem[] = useMemo(() => {
     const storedMenus = localStorage.getItem("local_menus");
     try {
@@ -67,17 +66,20 @@ export const useDynamicSidebarItems = (): NavItem[] => {
   })();
 
   const navItems = useMemo(() => {
-    const effectiveMenus =
-      user_login_menu && user_login_menu.length > 0
-        ? user_login_menu
-        : localMenus;
+    // const effectiveMenus =
+    //   user_login_menu && user_login_menu.length > 0
+    //     ? user_login_menu
+    //     : localMenus;
+
+    const effectiveMenus = (localMenus.length > 0 ? localMenus : dummyRoutes).map((menu) => ({
+      ...menu,
+      parent_id: menu.parent_id !== null ? String(menu.parent_id) : null,
+    }));
 
     if (!effectiveMenus || effectiveMenus.length === 0) return [];
 
     // Bangun hierarki menu
     const menuHierarchy = buildMenuHierarchy(effectiveMenus);
-    // const menuHierarchy = buildMenuHierarchy(dummyRoutes as MenuItem[]);
-
 
     // Proses hierarki menu menjadi NavItem
     const processedNavItems = menuHierarchy.map((parent: MenuItem): NavItem => {
@@ -116,6 +118,8 @@ export const useDynamicSidebarItems = (): NavItem[] => {
       return aHasChildren === bHasChildren ? 0 : aHasChildren ? -1 : 1;
     });
   }, [localMenus]);
+
+  console.log("Dummy Routes:", dummyRoutes);
 
   return navItems;
 };

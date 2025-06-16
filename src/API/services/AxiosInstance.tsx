@@ -28,12 +28,14 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     if (error.response && error.response.status === 401) {
-      // Clear token, refresh the page, and redirect to login if unauthorized
-      localStorage.clear();
-      window.location.reload();
-      setTimeout(() => {
-        window.location.href = "/signin";
-      }, 100);
+      // localStorage.clear();
+      // window.location.reload();
+      // setTimeout(() => {
+      //   window.location.href = "/signin";
+      // }, 100);
+
+      console.log("Unauthorized access - redirecting to sign-in page");
+      
     }
     return Promise.reject(error);
   }

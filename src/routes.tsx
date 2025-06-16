@@ -3,9 +3,9 @@ import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
 import AppLayout from "./layout/AppLayout";
 import SignIn from "./pages/AuthPages/SignIn";
-import { useAuthStore } from "./API/store/AuthStore/authStore";
 import { signOut } from "./utils/SignOut";
 import { ScrollToTop } from "./components/common/ScrollToTop";
+import { useAuthStore } from "./API/store/AuthStore/authStore";
 import { ProtectedRoute } from "./utils/ProtectedRoute";
 
 // ✅ Pages
@@ -18,7 +18,6 @@ import {
   Parameters,
   ChannelTypes,
   PaymentTypes,
-  RouteManagement,
   VisitTypes,
   MasterCustomer,
   SuratTugas,
@@ -32,12 +31,21 @@ import ManagementTerritory from "./pages/Master/ManagementTerritory";
 import MasterBranch from "./pages/Master/MasterBranch";
 import MasterRegion from "./pages/Master/MasterRegion";
 import MasterSalesman from "./pages/Master/MasterSalesman";
+import dummyRoutes from "./helper/dummyRoutes";
+import Inbound from "./pages/Inbound";
+
+const DefaultPage: React.FC = () => {
+  return (
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
+      <h1>Halaman ini masih dalam proses development</h1>
+    </div>
+  );
+};
 
 export function AppRoutes() {
   const navigate = useNavigate();
-  const token =
-    useAuthStore((state) => state.accessToken) ||
-    localStorage.getItem("accessToken");
+  // const token = useAuthStore((state) => state.accessToken) || localStorage.getItem("accessToken");
+  const token = "abcdefghijklmnopqrstuvwxyz"; // Simulasi token, ganti dengan logika autentikasi yang sesuai
 
   const isAuthenticated = () => {
     if (token) {
@@ -131,11 +139,16 @@ export function AppRoutes() {
       "/master_region": <MasterRegion />,
       "/master_salesman": <MasterSalesman />,
       "/select_territory": <SelectTerritory />,
+
+      "/inbound_planning": <Inbound/>,
     };
-    return map[path] || null;
+
+    return map[path] || <DefaultPage />;
   };
 
-  const userRoutes = buildRoutes(userMenus);
+  // const userRoutes = buildRoutes(userMenus);
+  const userRoutes = buildRoutes(dummyRoutes);
+
 
   return (
     <>
@@ -144,9 +157,9 @@ export function AppRoutes() {
         {isAuthenticated() ? (
           <Route
             element={
-              <ProtectedRoute>
-                <AppLayout />
-              </ProtectedRoute>
+              // <ProtectedRoute>
+              <AppLayout />
+              // </ProtectedRoute>
             }
           >
             <Route path="/" element={<SignIn />} />
@@ -155,7 +168,8 @@ export function AppRoutes() {
               <Route
                 key={route.id}
                 path={route.path}
-                element={<ProtectedRoute>{route.element}</ProtectedRoute>}
+                element={route.element}
+                // element={<ProtectedRoute>{route.element}</ProtectedRoute>}
               />
             ))}
           </Route>

@@ -53,29 +53,33 @@ export default function SignInForm() {
     setError(null);
 
     try {
-      await authLogin({
-        ...data,
-        ip_address: ipAddress,
-        device_info: navigator.userAgent,
-        platform: "web",
-      });
+      // await authLogin({
+      //   ...data,
+      //   ip_address: ipAddress,
+      //   device_info: navigator.userAgent,
+      //   platform: "web",
+      // });
 
-      const { accessToken, refreshToken, user, menus, permissions } =
-        useAuthStore.getState();
+      // const { accessToken, refreshToken, user, menus, permissions } =
+      //   useAuthStore.getState();
 
-      if (!accessToken) {
-        throw new Error("Login failed!");
-      }
+      // if (!accessToken) {
+      //   throw new Error("Login failed!");
+      // }
 
-      fetchMenus();
-      localStorage.setItem(
-        "user_login_data",
-        JSON.stringify({ accessToken, refreshToken, user, menus, permissions })
-      );
-      localStorage.setItem("token", accessToken);
-      localStorage.setItem("role_id", user?.role_id.toString() || "");
+      // fetchMenus();
+      // localStorage.setItem(
+      //   "user_login_data",
+      //   JSON.stringify({ accessToken, refreshToken, user, menus, permissions })
+      // );
+      // localStorage.setItem("token", accessToken);
+      
+      localStorage.setItem("token", "abcdefghijklmnopqrstuvwxyz");
+      localStorage.setItem("role_id", "1");
 
-      showSuccessToast("Login successful!");
+      // localStorage.setItem("role_id", user?.role_id.toString() || "");
+
+      // showSuccessToast("Login successful!");
 
       setTimeout(() => {
         navigate("/master_menu");
@@ -155,7 +159,12 @@ export default function SignInForm() {
             {error && (
               <p className="text-sm text-red-500 dark:text-red-400">{error}</p>
             )}
-            <Button className="w-full" size="sm" disabled={isLoading} type="submit">
+            <Button
+              className="w-full"
+              size="sm"
+              disabled={isLoading}
+              type="submit"
+            >
               {isLoading ? (
                 <div className="flex items-center justify-center">
                   <svg

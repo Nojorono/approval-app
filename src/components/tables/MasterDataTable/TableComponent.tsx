@@ -13,9 +13,9 @@ import PaginationControls from "./Pagination";
 interface TableComponentProps<T> {
   data: T[];
   columns: ColumnDef<T>[];
-  globalFilter: string;
-  setGlobalFilter: (value: string) => void;
-  onDetail: (id: number) => void;
+  globalFilter?: string;
+  setGlobalFilter?: (value: string) => void;
+  onDetail?: (id: number) => void;
   enableSelection?: boolean;
 }
 
