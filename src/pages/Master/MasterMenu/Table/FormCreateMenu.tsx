@@ -120,10 +120,11 @@ const MenuFormSection = ({ onRefresh }: { onRefresh: () => void }) => {
   return (
     <>
       {/* {canManage && canCreate && ( */}
+      {/* )} */}
+      
       <Button variant="primary" size="sm" onClick={() => setIsModalOpen(true)}>
         <FaPlus className="mr-2" /> Tambah Menu
       </Button>
-      {/* )} */}
 
       <ReusableFormModal
         isOpen={isModalOpen}
