@@ -20,31 +20,31 @@ const assert200 = (status: number, msg = "Request failed") => {
 /* ---------- queries ---------- */
 export const getAllMenus = async (): Promise<Menu[]> => {
   const { data } = await axiosInstance.get("/menu");
-  assert200(data.statusCode ?? 200, data.message);
+  assert200(data.success ? 200 : 500, data.message);
   return data.data;
 };
 
 export const fetchParentMenus = async (): Promise<Menu[]> => {
   const { data } = await axiosInstance.get("/menu/parent");
-  assert200(data.statusCode ?? 200, data.message);
+  assert200(data.success ? 200 : 500, data.message);
   return data.data;
 };
 
 /* ---------- commands ---------- */
 export const createMenu = async (payload: MenuPayload) => {
   const { data } = await axiosInstance.post("/menu", payload);
-  assert200(data.statusCode, data.message);
+  assert200(data.success ? 200 : 500, data.message);
   return data.data; // ← data menu baru
 };
 
 export const updateMenu = async (id: number, payload: Partial<MenuPayload>) => {
   const { data } = await axiosInstance.put(`/menu/${id}`, payload);
-  assert200(data.statusCode, data.message);
+  assert200(data.success ? 200 : 500, data.message);
   return data.data; // ← data menu hasil update
 };
 
 export const deleteMenu = async (id: number) => {
   const { data } = await axiosInstance.delete(`/menu/${id}`);
-  assert200(data.statusCode, data.message);
+  assert200(data.success ? 200 : 500, data.message);
   return data.data; // ← data menu terhapus (opsional)
 };
