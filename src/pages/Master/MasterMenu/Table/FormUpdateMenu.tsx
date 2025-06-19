@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import ReusableFormModal from "../../../../components/modal/ReusableFormModal";
-import { useMenuStore } from "../../../../API/store/MasterStore/masterMenuStore";
+import { useMenuStore } from "../../../../API/store/MasterStore/MasterMenuStore";
 import {
   FaRegFileAlt,
   FaDollarSign,
@@ -88,12 +88,13 @@ const UpdateModal = ({
 
   const handleSubmit = async (data: any) => {
     const payload = {
-      ...data,
+      name: data.name.value || data.name,
+      path: data.path.value || data.path,
+      icon: data.icon?.value || data.icon,
       parentId: data.parentId?.value
         ? Number(data.parentId.value)
         : Number(data.parentId),
       order: Number(data.order),
-      icon: data.icon?.value || data.icon,
     };
 
     const res = await updateMenu(existingData.id, payload);

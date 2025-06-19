@@ -11,15 +11,17 @@ import { ProtectedRoute } from "./utils/ProtectedRoute";
 // ✅ Pages
 import {
   MasterMenu,
+  MasterPallet,
+  MasterUser,
   MasterRole,
   CreateRole,
   UpdateRole,
-  MasterUser,
+  Inbound,
+  CreateInbound,
+  MasterUOM,
 } from "./utils/PagesComponent";
+
 import dummyRoutes from "./helper/dummyRoutes";
-import Inbound from "./pages/Inbound";
-import CreateInbound from "./pages/Inbound/Table/CreateInbound";
-import MasterPallet from "./pages/Master/MasterPallet";
 
 const DefaultPage: React.FC = () => {
   return (
@@ -111,8 +113,9 @@ export function AppRoutes() {
       "/master_role": <MasterRole />,
       "/master_pallet": <MasterPallet />,
 
+      "/inbound_planning": <Inbound />,
 
-      "/inbound_planning": <Inbound />
+      "/master_uom": <MasterUOM />,
     };
 
     return map[path] || <DefaultPage />;

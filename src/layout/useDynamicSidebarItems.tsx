@@ -79,10 +79,7 @@ export const useDynamicSidebarItems = (): NavItem[] => {
     if (!effectiveMenus || effectiveMenus.length === 0) return [];
 
     // Bangun hierarki menu
-    const menuHierarchy = buildMenuHierarchy(effectiveMenus);
-
-    console.log("Menu Hierarchy:", effectiveMenus);
-    
+    const menuHierarchy = buildMenuHierarchy(effectiveMenus);    
 
     // Proses hierarki menu menjadi NavItem
     const processedNavItems = menuHierarchy.map((parent: MenuItem): NavItem => {

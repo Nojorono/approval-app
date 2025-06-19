@@ -15,7 +15,8 @@ type FormField = {
     | "number"
     | "file"
     | "date"
-    | "checkbox";
+    | "checkbox"
+    | "radio";
   options?: { value: string | boolean; label: string }[];
   validation?: {
     required?: boolean | string;

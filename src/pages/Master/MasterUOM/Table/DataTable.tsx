@@ -4,7 +4,7 @@ import Input from "../../../../components/form/input/InputField";
 import AdjustTable from "./AdjustTable";
 import Label from "../../../../components/form/Label";
 import { useDebounce } from "../../../../helper/useDebounce";
-import ModalCreateForm from "./CreatePallet.tsx";
+import ModalCreateForm from "../../MasterUOM/Table/CreateUOM";
 
 interface Option {
   value: string;

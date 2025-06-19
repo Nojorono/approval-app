@@ -6,7 +6,7 @@ import Label from "../form/Label";
 import SignInInput from "../form/input/SignInInput";
 import Button from "../ui/button/Button";
 import CustomToast, { showSuccessToast } from "../../components/toast";
-import { useMenuStore } from "../../API/store/MasterStore/masterMenuStore";
+import { useMenuStore } from "../../API/store/MasterStore";
 import { useAuthStore } from "../../API/store/AuthStore/authStore";
 
 interface SignInFormValues {
@@ -64,22 +64,21 @@ export default function SignInForm() {
       // const { accessToken, refreshToken, user, menus, permissions } =
       //   useAuthStore.getState();
 
-      const { accessToken } = useAuthStore.getState();
-
-      if (!accessToken) {
-        throw new Error("Login failed!");
-      }
-
       // fetchMenus();
       // localStorage.setItem(
       //   "user_login_data",
       //   JSON.stringify({ accessToken, refreshToken, user, menus, permissions })
       // );
       // localStorage.setItem("role_id", user?.role_id.toString() || "");
-      
+
+      const { accessToken } = useAuthStore.getState();
+
+      if (!accessToken) {
+        throw new Error("Login failed!");
+      }
+
       localStorage.setItem("token", accessToken);
       showSuccessToast("Login successful!");
-
       setTimeout(() => {
         navigate("/master_menu");
       }, 800);

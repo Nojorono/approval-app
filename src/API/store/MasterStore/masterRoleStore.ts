@@ -7,7 +7,7 @@ import {
     deleteRole as deleteRoleSvc,
     Role,
     RolePayload,
-} from "../../services/MasterServices/RoleService";
+} from "../../services/MasterServices/MasterRoleService";
 
 type Result = { ok: true } | { ok: false; message: string };
 
@@ -34,7 +34,6 @@ export const useRoleStore = create<RoleStore>((set) => ({
         set({ loading: true, error: null });
         try {
             const roles = await fetchAllRole();
-            console.log("Fetched roles:", roles); // Debugging log
 
             set({ roles, loading: false });
         } catch (e: any) {
@@ -45,7 +44,7 @@ export const useRoleStore = create<RoleStore>((set) => ({
     fetchRoleById: async (id) => {
         set({ loading: true, error: null });
         try {
-            const role = await getRoleById(id);
+            const role = await getRoleById(id);            
             set({ loading: false });
             return role;
         } catch (e: any) {
@@ -67,7 +66,7 @@ export const useRoleStore = create<RoleStore>((set) => ({
         }
     },
 
-    updateRole: async (id, payload) => {
+    updateRole: async (id, payload) => {        
         set({ loading: true, error: null });
         try {
             await updateRoleSvc(id, payload);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import Select from "react-select";
 import DatePicker from "../../../../components/form/date-picker";
-import { useUserStore } from "../../../../API/store/MasterStore/masterUserStore";
+import { useUserStore } from "../../../../API/store/MasterStore/MasterUserStore";
 import { showErrorToast, showSuccessToast } from "../../../../components/toast";
 import { usePagePermissions } from "../../../../utils/UserPermission/UserPagePermissions";
 

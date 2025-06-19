@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import ReusableFormModal from "../../../../components/modal/ReusableFormModal.tsx";
-import { useMenuStore } from "../../../../API/store/MasterStore/masterMenuStore.ts";
+import { useMenuStore } from "../../../../API/store/MasterStore/MasterMenuStore.ts";
 import {
   FaRegFileAlt,
   FaDollarSign,
@@ -15,9 +15,9 @@ import {
 } from "react-icons/fa";
 import Button from "../../../../components/ui/button/Button.tsx";
 // import { usePagePermissions } from "../../../../utils/UserPermission/UserPagePermissions";
-import { showErrorToast, showSuccessToast } from "../../../../components/toast";
+import { showErrorToast, showSuccessToast } from "../../../../components/toast/index.tsx";
 
-const MenuFormSection = ({ onRefresh }: { onRefresh: () => void }) => {
+const CreateForm = ({ onRefresh }: { onRefresh: () => void }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const formFields = [
     {
@@ -162,4 +162,4 @@ const MenuFormSection = ({ onRefresh }: { onRefresh: () => void }) => {
   );
 };
 
-export default MenuFormSection;
+export default CreateForm;

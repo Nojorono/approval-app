@@ -12,7 +12,7 @@ export interface Role {
 export interface RolePayload {
   name: string;
   description: string;
-  permissions: { menu_id: number; permission_type: string }[];
+  permissions: { menu_id: number; action: string }[];
   menus?: { menu_id: number; permission_type: string }[];
 }
 
@@ -38,7 +38,7 @@ export const fetchAllRole = async (): Promise<Role[]> => {
 
 export const getRoleById = async (id: number): Promise<Role> => {
   const { data } = await axiosInstance.get(`/roles/${id}`);
-  assert200(data.statusCode, data.message);
+  assert200(data.success === true ? 200 : 500, data.message);
 
   return {
     id: data.data.id,
@@ -49,25 +49,29 @@ export const getRoleById = async (id: number): Promise<Role> => {
         menu_id: p.menu_id,
         permission_type: p.permission_type,
       })) ?? [],
-    menus: [],
+    menus:
+      data.data.menus?.map((m: any) => ({
+        menu_id: m.id,
+        permission_type: m.actions ?? [], // simpan semua actions sebagai array
+      })) ?? [],
   };
 };
 
 /* ---------- commands ---------- */
 export const createRole = async (payload: RolePayload) => {
   const { data } = await axiosInstance.post("/roles", payload);
-  assert200(data.statusCode, data.message);
+  assert200(data.success === true ? 200 : 500, data.message);
   return data; // ⇦ biarkan store/UI yang mem-toast
 };
 
 export const updateRole = async (id: number, payload: RolePayload) => {
   const { data } = await axiosInstance.put(`/roles/${id}`, payload);
-  assert200(data.statusCode, data.message);
+  assert200(data.success === true ? 200 : 500, data.message);
   return data;
 };
 
 export const deleteRole = async (id: number) => {
   const { data } = await axiosInstance.delete(`/roles/${id}`);
-  assert200(data.statusCode, data.message);
+  assert200(data.success === true ? 200 : 500, data.message);
   return data;
 };

@@ -69,6 +69,16 @@ const dummyRoutes = [
     created_at: "2025-05-06T01:03:15.036Z",
     updated_at: "2025-05-06T01:14:04.189Z",
   },
+    {
+    id: 9,
+    name: "Master UOM",
+    path: "/master_uom",
+    icon: "FaRegFileAlt",
+    parentId: 2,
+    order: 5,
+    created_at: "2025-05-06T01:03:15.036Z",
+    updated_at: "2025-05-06T01:14:04.189Z",
+  },
 ];
 
 export default dummyRoutes;

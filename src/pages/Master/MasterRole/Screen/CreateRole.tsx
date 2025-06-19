@@ -4,8 +4,8 @@ import DynamicForm, {
   FieldConfig,
 } from "../../../../components/form-input/DynamicForm";
 import TableMenuPermission from "../Table/CreatePermission";
-import { useRoleStore } from "../../../../API/store/MasterStore/masterRoleStore";
-import { useMenuStore } from "../../../../API/store/MasterStore/masterMenuStore";
+import { useRoleStore } from "../../../../API/store/MasterStore/MasterRoleStore";
+import { useMenuStore } from "../../../../API/store/MasterStore/MasterMenuStore";
 import { useNavigate } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from "../../../../components/toast";
 

@@ -1,57 +1,30 @@
 // PAGE MASTER
-import SalesRoute from "../pages/SalesDistribution/SalesRoute";
 import MasterUser from "../pages/Master/MasterUser";
 import MasterMenu from "../pages/Master/MasterMenu";
-import Callplan from "../pages/Callplan";
 
 // MASTER ROLES PAGE
 import MasterRole from "../pages/Master/MasterRole";
 import CreateRole from "../pages/Master/MasterRole/Screen/CreateRole";
 import UpdateRole from "../pages/Master/MasterRole/Screen/UpdateRole";
 
-// PARAMETERS
-import Parameters from "../pages/Parameters";
-import ChannelTypes from "../pages/Parameters/ParameterList/ChannelTypes";
-import PaymentTypes from "../pages/Parameters/ParameterList/PaymentTypes";
-import RouteManagement from "../pages/Parameters/ParameterList/SalesRouteManagement";
-import VisitTypes from "../pages/Parameters/ParameterList/VisitTypes";
-
-// MASTER CUSTOMER
-import MasterCustomer from "../pages/Master/MasterCustomer";
-import DetailCustomer from "../pages/Master/MasterCustomer/DetailPage/DetailCustomerPage";
-
-// MASTER EMPLOYEE
-import MasterEmployee from "../pages/Master/MasterEmployee";
-
-//  SALES & DISTRIBUTION
-import SuratTugas from "../pages/SalesDistribution/SuratTugas";
+import Inbound from "../pages/Inbound";
+import CreateInbound from "../pages/Inbound/Table/CreateInbound";
+import MasterPallet from "../pages/Master/MasterPallet";
+import MasterUOM from "../pages/Master/MasterUOM";
 
 export {
   // PAGE MASTER
-  SalesRoute,
   MasterUser,
   MasterMenu,
-  Callplan,
+  MasterPallet,
+  MasterUOM,
 
   // MASTER ROLES PAGE
   MasterRole,
   CreateRole,
   UpdateRole,
 
-  // PARAMETERS
-  Parameters,
-  ChannelTypes,
-  PaymentTypes,
-  RouteManagement,
-  VisitTypes,
-
-  // MASTER CUSTOMER
-  MasterCustomer,
-  DetailCustomer,
-
-  // MASTER EMPLOYEE
-  MasterEmployee,
-
-  // SALES & DISTRIBUTION
-  SuratTugas,
+  // INBOUND PLANNING
+  Inbound,
+  CreateInbound,
 };

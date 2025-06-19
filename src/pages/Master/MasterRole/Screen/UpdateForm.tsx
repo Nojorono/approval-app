@@ -4,18 +4,16 @@ import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import Checkbox from "../../../../components/form/input/Checkbox";
 
-import { useMenuStore } from "../../../../API/store/MasterStore/masterMenuStore";
-import { useRoleStore } from "../../../../API/store/MasterStore/masterRoleStore";
+import { useMenuStore, useRoleStore } from "../../../../API/store/MasterStore";
 import { showErrorToast, showSuccessToast } from "../../../../components/toast";
 import Button from "../../../../components/ui/button/Button";
 import { signOut } from "../../../../utils/SignOut";
-// import Swal from "sweetalert2";
 
 // Constants for options
 const STATUS_OPTIONS = [
   { value: "", label: "-- Pilih Status --" },
-  { value: "active", label: "Active" },
-  { value: "inactive", label: "Inactive" },
+  { value: true, label: "Active" },
+  { value: false, label: "Inactive" },
 ];
 
 const ACCESS_OPTIONS = [
@@ -77,7 +75,17 @@ export default function UpdateFormWithTable(paramRole: any) {
   const { fetchMenus, menus } = useMenuStore();
   const { updateRole } = useRoleStore();
 
-  const { control, register, getValues } = useForm({
+  type StatusOption = { value: boolean | ""; label: string } | null;
+
+  interface FormValues {
+    nama: string;
+    deskripsi: string;
+    status: StatusOption;
+    aksesMobile?: any;
+    aksesDashboard?: any;
+  }
+
+  const { control, register, getValues } = useForm<FormValues>({
     defaultValues: {
       nama: paramRole.paramRole.name || "",
       deskripsi: paramRole.paramRole.description || "",
@@ -109,17 +117,30 @@ export default function UpdateFormWithTable(paramRole: any) {
   }, []);
 
   useEffect(() => {
-    if (paramRole.paramRole.permissions) {
+    // Use permissions if available, otherwise fallback to menus
+    const sourcePermissions =
+      paramRole.paramRole.permissions &&
+      paramRole.paramRole.permissions.length > 0
+        ? paramRole.paramRole.permissions
+        : paramRole.paramRole.menus || [];
+
+    if (sourcePermissions.length > 0) {
       const permissionsMap: any = {};
-      paramRole.paramRole.permissions.forEach((permission: any) => {
-        if (!permissionsMap[permission.menu_id]) {
-          permissionsMap[permission.menu_id] = {};
+      sourcePermissions.forEach((permission: any) => {
+        const menuId = permission.menu_id;
+        const permTypes = Array.isArray(permission.permission_type)
+          ? permission.permission_type
+          : [permission.permission_type];
+        if (!permissionsMap[menuId]) {
+          permissionsMap[menuId] = {};
         }
-        permissionsMap[permission.menu_id][permission.permission_type] = true;
+        permTypes.forEach((permType: string) => {
+          permissionsMap[menuId][permType] = true;
+        });
       });
       setSelectedPermissions(permissionsMap);
     }
-  }, [paramRole.paramRole.permissions]);
+  }, [paramRole.paramRole.permissions, paramRole.paramRole.menus]);
 
   const handleCheckboxChange = (menuId: number, permissionType: string) => {
     setSelectedPermissions((prev: any) => {
@@ -143,7 +164,7 @@ export default function UpdateFormWithTable(paramRole: any) {
           .filter(([_, isChecked]) => isChecked)
           .map(([permissionType]) => ({
             menu_id: Number(menuId),
-            permission_type: permissionType,
+            action: permissionType,
           }))
     );
 
@@ -161,6 +182,7 @@ export default function UpdateFormWithTable(paramRole: any) {
     const finalPayload = {
       name: formData.nama,
       description: formData.deskripsi,
+      // isActive: formData.status?.value ?? formData.status,
       permissions: tableData,
     };
 
@@ -168,6 +190,8 @@ export default function UpdateFormWithTable(paramRole: any) {
       console.error("Error: Name and description cannot be empty.");
       return;
     }
+
+    console.log("Final Payload:", finalPayload);
 
     const res = await updateRole(updateId, finalPayload);
     if (!res.ok) {
@@ -181,28 +205,6 @@ export default function UpdateFormWithTable(paramRole: any) {
     setTimeout(() => {
       signOut(navigate);
     }, 800);
-
-    // Swal.fire({
-    //   title: "Update Role",
-    //   text: "Jika berhasil update role, Anda akan keluar untuk update state. Dan silahkan sign in kembali. Lanjutkan?",
-    //   icon: "warning",
-    //   showCancelButton: true,
-    //   confirmButtonText: "Yes",
-    //   cancelButtonText: "No",
-    // }).then(async (result) => {
-    //   if (result.isConfirmed) {
-    //     const res = await updateRole(updateId, finalPayload);
-    //     if (!res.ok) {
-    //       showErrorToast(res.message);
-    //       return;
-    //     }
-
-    //     showSuccessToast("Role berhasil diupdate");
-    //     setTimeout(() => {
-    //       signOut(navigate);
-    //     }, 800);
-    //   }
-    // });
   };
 
   return (
@@ -243,7 +245,7 @@ export default function UpdateFormWithTable(paramRole: any) {
             placeholder="-- Pilih Status --"
           />
 
-          <SelectField
+          {/* <SelectField
             label="Akses Mobile"
             name="aksesMobile"
             control={control}
@@ -257,7 +259,7 @@ export default function UpdateFormWithTable(paramRole: any) {
             control={control}
             options={ACCESS_OPTIONS}
             placeholder="-- Pilih Opsi --"
-          />
+          /> */}
         </form>
       </div>
 

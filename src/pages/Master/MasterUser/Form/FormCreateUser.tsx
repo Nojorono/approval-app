@@ -7,7 +7,7 @@ import Checkbox from "../../../../components/form/input/Checkbox";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { showErrorToast } from "../../../../components/toast";
 import { useDebounce } from "../../../../helper/useDebounce";
-import { useEmployeeStore } from "../../../../API/store/MasterStore/masterEmployeeStore";
+import { useEmployeeStore } from "../../../../API/store/MasterStore/MasterEmployeeStore";
 
 /* -------------------------------------------------------------------------- */
 /*                                   Types                                    */

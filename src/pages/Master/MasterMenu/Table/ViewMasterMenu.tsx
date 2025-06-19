@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Input from "../../../../components/form/input/InputField";
-import { useMenuStore } from "../../../../API/store/MasterStore/masterMenuStore";
+import { useMenuStore } from "../../../../API/store/MasterStore";
 import AdjustTableMenu from "./AdjustTableMenu";
 import MenuFormSection from "./FormCreateMenu";
 import UpdateModal from "./FormUpdateMenu";

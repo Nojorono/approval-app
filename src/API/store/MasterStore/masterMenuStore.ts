@@ -7,7 +7,7 @@ import {
   updateMenu as updateMenuSvc,
   Menu,
   MenuPayload,
-} from "../../services/MasterServices/MenuService";
+} from "../../services/MasterServices/MasterMenuService";
 import { showErrorToast } from "../../../components/toast";
 
 
