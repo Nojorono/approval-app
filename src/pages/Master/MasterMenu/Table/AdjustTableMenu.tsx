@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
 import { ColumnDef } from "@tanstack/react-table";
 import TableComponent from "../../../../components/tables/MasterDataTable/TableComponent";
-import { usePagePermissions } from "../../../../utils/UserPermission/UserPagePermissions";
+// import { usePagePermissions } from "../../../../utils/UserPermission/UserPagePermissions";
 import Checkbox from "../../../../components/form/input/Checkbox";
 
 type Menu = {
@@ -31,7 +31,7 @@ const MenuTable = ({
   onDelete,
   onEdit,
 }: MenuTableProps) => {
-  const { canUpdate, canDelete } = usePagePermissions();
+  // const { canUpdate, canDelete } = usePagePermissions();
 
   const columns: ColumnDef<Menu>[] = useMemo(
     () => [
@@ -82,27 +82,27 @@ const MenuTable = ({
         header: "Actions",
         cell: ({ row }) => (
           <div className="space-x-4">
-            {canUpdate && (
-              <button
-                className="text-blue-600"
-                onClick={() => onEdit?.(row.original)}
-              >
-                <FaEdit />
-              </button>
-            )}
-            {canDelete && (
-              <button
-                className="text-red-600"
-                onClick={() => onDelete(row.original.id)}
-              >
-                <FaTrash />
-              </button>
-            )}
+            {/* {canUpdate && (
+            )} */}
+            <button
+              className="text-blue-600"
+              onClick={() => onEdit?.(row.original)}
+            >
+              <FaEdit />
+            </button>
+            {/* {canDelete && (
+            )} */}
+            <button
+              className="text-red-600"
+              onClick={() => onDelete(row.original.id)}
+            >
+              <FaTrash />
+            </button>
           </div>
         ),
       },
     ],
-    [onDelete, onDetail, canUpdate, canDelete, onEdit]
+    [onDelete, onDetail, onEdit]
   );
 
   return (

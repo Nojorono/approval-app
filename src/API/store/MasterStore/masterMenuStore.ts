@@ -40,7 +40,7 @@ export const useMenuStore = create<MenuState>((set) => ({
     set({ loading: true, error: null });
     try {
       const data = await getAllMenus();
-      
+
       localStorage.setItem("local_menus", JSON.stringify(data));
       set({ menus: data, loading: false });
     } catch (e: any) {
@@ -53,6 +53,7 @@ export const useMenuStore = create<MenuState>((set) => ({
     set({ loading: true, error: null });
     try {
       const data = await fetchParentMenus();
+
       set({ parentMenus: data, loading: false });
     } catch (e: any) {
       showErrorToast(e.message);

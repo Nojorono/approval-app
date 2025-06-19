@@ -14,13 +14,13 @@ import {
   FaFlag,
 } from "react-icons/fa";
 import Button from "../../../../components/ui/button/Button";
-import { usePagePermissions } from "../../../../utils/UserPermission/UserPagePermissions";
+// import { usePagePermissions } from "../../../../utils/UserPermission/UserPagePermissions";
 import { showErrorToast, showSuccessToast } from "../../../../components/toast";
 
 const MenuFormSection = ({ onRefresh }: { onRefresh: () => void }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { parentMenus, createMenu } = useMenuStore();
-  const { canCreate, canManage } = usePagePermissions();
+  // const { canCreate, canManage } = usePagePermissions();
 
   const parentMenuOpt = useMemo(
     () => parentMenus.map((menu) => ({ value: menu.id, label: menu.name })),
@@ -91,14 +91,22 @@ const MenuFormSection = ({ onRefresh }: { onRefresh: () => void }) => {
   const handleSubmit = async (data: any) => {
     const payload = {
       ...data,
-      parent_id: data.parent_id?.value
-        ? Number(data.parent_id.value)
-        : Number(data.parent_id),
       order: Number(data.order),
       icon: data.icon?.value || data.icon,
     };
 
+    // Only add parent_id if it's not 0, null, or undefined
+    const parentId =
+      data.parent_id?.value !== undefined
+        ? Number(data.parent_id.value)
+        : Number(data.parent_id);
+
+    if (parentId) {
+      payload.parent_id = parentId;
+    }
+
     const res = await createMenu(payload);
+
     if (!res.ok) {
       return;
     }
@@ -111,15 +119,11 @@ const MenuFormSection = ({ onRefresh }: { onRefresh: () => void }) => {
 
   return (
     <>
-      {canManage && canCreate && (
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={() => setIsModalOpen(true)}
-        >
-          <FaPlus className="mr-2" /> Tambah Menu
-        </Button>
-      )}
+      {/* {canManage && canCreate && ( */}
+      <Button variant="primary" size="sm" onClick={() => setIsModalOpen(true)}>
+        <FaPlus className="mr-2" /> Tambah Menu
+      </Button>
+      {/* )} */}
 
       <ReusableFormModal
         isOpen={isModalOpen}

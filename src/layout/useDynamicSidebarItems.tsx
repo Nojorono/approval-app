@@ -81,6 +81,9 @@ export const useDynamicSidebarItems = (): NavItem[] => {
     // Bangun hierarki menu
     const menuHierarchy = buildMenuHierarchy(effectiveMenus);
 
+    console.log("Menu Hierarchy:", effectiveMenus);
+    
+
     // Proses hierarki menu menjadi NavItem
     const processedNavItems = menuHierarchy.map((parent: MenuItem): NavItem => {
       const resolveIcon = (iconName: string): React.ReactNode => {
