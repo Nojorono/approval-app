@@ -16,7 +16,10 @@ type Props = {
 // ForwardRef untuk expose fungsi getSelectedPermissions
 const TableMenuPermission = forwardRef(
   (
-    { menus, permissionsList = ["Create", "View", "Update", "Delete", "Manage"] }: Props,
+    {
+      menus,
+      permissionsList = ["Create", "View", "Update", "Delete", "Manage"],
+    }: Props,
     ref
   ) => {
     const [checkedItems, setCheckedItems] = useState<
@@ -38,15 +41,14 @@ const TableMenuPermission = forwardRef(
 
     useImperativeHandle(ref, () => ({
       getSelectedPermissions: () => {
-        const result: { menu_id: number; permission_type: PermissionType }[] =
-          [];
+        const result: { menu_id: number; action: PermissionType }[] = [];
 
         Object.entries(checkedItems).forEach(([menuId, perms]) => {
           Object.entries(perms).forEach(([permType, isChecked]) => {
             if (isChecked) {
               result.push({
                 menu_id: parseInt(menuId, 10),
-                permission_type: permType as PermissionType,
+                action: permType as PermissionType,
               });
             }
           });
@@ -77,7 +79,6 @@ const TableMenuPermission = forwardRef(
                   key={perm}
                   className="border border-gray-300 p-2 text-center"
                 >
-
                   <Checkbox
                     checked={!!checkedItems[menu.id]?.[perm]}
                     onChange={() => handleCheckboxChange(menu.id, perm)}

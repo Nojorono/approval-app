@@ -6,12 +6,14 @@ export interface Role {
   name: string;
   description: string;
   permissions: { menu_id: number; permission_type: string }[];
+  menus?: { menu_id: number; permission_type: string }[];
 }
 
 export interface RolePayload {
   name: string;
   description: string;
   permissions: { menu_id: number; permission_type: string }[];
+  menus?: { menu_id: number; permission_type: string }[];
 }
 
 /* ---------- helpers ---------- */
@@ -22,13 +24,15 @@ const assert200 = (statusCode: number, message = "Request failed") => {
 /* ---------- queries ---------- */
 export const fetchAllRole = async (): Promise<Role[]> => {
   const { data } = await axiosInstance.get("/roles");
-  assert200(data.statusCode, data.message);
-  // map hanya field yang dibutuhkan
+
+  assert200(data.success === true ? 200 : 500, data.message);
+
   return data.data.map((r: any) => ({
     id: r.id,
     name: r.name,
     description: r.description,
-    permissions: r.permissions ?? [],
+    menus: r.menus ?? [],
+    permissions: [], // API tidak mengembalikan permissions, set empty array
   }));
 };
 
@@ -45,6 +49,7 @@ export const getRoleById = async (id: number): Promise<Role> => {
         menu_id: p.menu_id,
         permission_type: p.permission_type,
       })) ?? [],
+    menus: [],
   };
 };
 

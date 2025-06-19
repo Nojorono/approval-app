@@ -65,9 +65,6 @@ export const useDynamicSidebarItems = (): NavItem[] => {
       : null;
   })();
 
-  console.log("Local Menus:", localMenus);
-  console.log("Local dummyRoutes:", dummyRoutes);
-
   const navItems = useMemo(() => {
     // const effectiveMenus =
     //   user_login_menu && user_login_menu.length > 0

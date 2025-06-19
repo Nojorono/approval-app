@@ -6,15 +6,16 @@ import { useRoleStore } from "../../../../API/store/MasterStore/masterRoleStore"
 import Input from "../../../../components/form/input/InputField";
 import Button from "../../../../components/ui/button/Button";
 import AdjustTableRole from "./AdjustTableRole";
-import { usePagePermissions } from "../../../../utils/UserPermission/UserPagePermissions";
+// import { usePagePermissions } from "../../../../utils/UserPermission/UserPagePermissions";
 
 const TableMasterRole = () => {
   const navigate = useNavigate();
 
   const { fetchRoles, roles, deleteRole } = useRoleStore();
+
   const [globalFilter, setGlobalFilter] = useState<string>("");
 
-  const { canCreate, canManage } = usePagePermissions();
+  // const { canCreate, canManage } = usePagePermissions();
 
   useEffect(() => {
     fetchRoles();

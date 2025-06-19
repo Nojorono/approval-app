@@ -34,6 +34,8 @@ export const useRoleStore = create<RoleStore>((set) => ({
         set({ loading: true, error: null });
         try {
             const roles = await fetchAllRole();
+            console.log("Fetched roles:", roles); // Debugging log
+
             set({ roles, loading: false });
         } catch (e: any) {
             set({ error: e.message, loading: false });
