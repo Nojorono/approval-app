@@ -58,14 +58,29 @@ function CreateRole() {
     const payload = {
       name: formData.name.toUpperCase(),
       description: formData.description,
-      permissions: selectedPermissions,
+      permissions: selectedPermissions
+        .map((perm: any) => ({
+          ...perm,
+          action: perm.permission_type, // copy value
+        }))
+        .map(
+          ({
+            permission_type,
+            ...rest
+          }: {
+            permission_type: string;
+            [key: string]: any;
+          }) => rest
+        ), // remove permission_type
     };
 
+    // Validasi jika tidak ada permission yang dipilih
     const res = await createRole(payload);
     if (!res.ok) {
       showErrorToast(res.message);
       return;
     }
+    
     showSuccessToast("Role berhasil ditambahkan");
     setTimeout(() => {
       navigate("/master_role");

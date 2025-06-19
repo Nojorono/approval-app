@@ -65,13 +65,16 @@ export const useDynamicSidebarItems = (): NavItem[] => {
       : null;
   })();
 
+  console.log("Local Menus:", localMenus);
+  console.log("Local dummyRoutes:", dummyRoutes);
+
   const navItems = useMemo(() => {
     // const effectiveMenus =
     //   user_login_menu && user_login_menu.length > 0
     //     ? user_login_menu
     //     : localMenus;
 
-    const effectiveMenus = (localMenus.length > 0 ? localMenus : dummyRoutes).map((menu) => ({
+    const effectiveMenus = dummyRoutes.map((menu) => ({
       ...menu,
       parent_id: menu.parent_id !== null ? String(menu.parent_id) : null,
     }));
@@ -119,7 +122,7 @@ export const useDynamicSidebarItems = (): NavItem[] => {
     });
   }, [localMenus]);
 
-  console.log("Dummy Routes:", dummyRoutes);
+  // console.log("Dummy Routes:", dummyRoutes);
 
   return navItems;
 };

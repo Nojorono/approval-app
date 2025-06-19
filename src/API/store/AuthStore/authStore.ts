@@ -14,11 +14,12 @@ interface AuthState {
 }
 
 interface LoginPayload {
-  employee_id: string;
-  password: string;
-  ip_address: string;
-  device_info: string;
-  platform: string;
+  username?: string;
+  password?: string;
+  employee_id?: string;
+  ip_address?: string;
+  device_info?: string;
+  platform?: string;
 }
 
 interface User {
@@ -64,18 +65,15 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await loginService(data);
-      const { accessToken, refreshToken, user, menus } = response.data;
 
-      // Ekstrak permissions dari menus
-      const permissions = menus.flatMap((menu: Menu) => menu.permissions);
-
-      // Simpan data hasil login ke state
+      // Simpan token dari response.data.token ke state
       set({
-        accessToken,
-        refreshToken,
-        user,
-        menus,
-        permissions,
+        accessToken: response.data.token,
+        // refreshToken, user, menus, permissions belum tersedia di response
+        // refreshToken: null,
+        // user: null,
+        // menus: null,
+        // permissions: null,
       });
     } catch (err: any) {
       set({ error: err.message });

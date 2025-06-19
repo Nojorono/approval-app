@@ -1,7 +1,7 @@
 import React from "react";
 import GridShape from "../../components/common/GridShape";
 import { Link } from "react-router";
-import { LogoNNA } from '../../../public/images/logo';
+import { LogoNNA } from "../../../public/images/logo";
 
 export default function AuthLayout({
   children,
@@ -18,13 +18,10 @@ export default function AuthLayout({
             <GridShape />
             <div className="flex flex-col items-center max-w-xs">
               <Link to="/" className="block mb-4">
-                <img
-                  src={LogoNNA}
-                  alt="Logo"
-                />
+                <img src={LogoNNA} alt="Logo" />
               </Link>
               <p className="text-center text-gray-400 dark:text-white/60">
-                Distribution Management System
+                Warehouse Management System
               </p>
             </div>
           </div>

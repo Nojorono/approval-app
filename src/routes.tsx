@@ -45,8 +45,9 @@ const DefaultPage: React.FC = () => {
 
 export function AppRoutes() {
   const navigate = useNavigate();
-  // const token = useAuthStore((state) => state.accessToken) || localStorage.getItem("accessToken");
-  const token = "abcdefghijklmnopqrstuvwxyz"; // Simulasi token, ganti dengan logika autentikasi yang sesuai
+  const token =
+    useAuthStore((state) => state.accessToken) ||
+    localStorage.getItem("accessToken");
 
   const isAuthenticated = () => {
     if (token) {

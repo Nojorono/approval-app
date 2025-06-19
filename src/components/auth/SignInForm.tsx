@@ -10,6 +10,7 @@ import { useMenuStore } from "../../API/store/MasterStore/masterMenuStore";
 import { useAuthStore } from "../../API/store/AuthStore/authStore";
 
 interface SignInFormValues {
+  username: string;
   employee_id: string;
   password: string;
   ip_address: string;
@@ -53,33 +54,31 @@ export default function SignInForm() {
     setError(null);
 
     try {
-      // await authLogin({
-      //   ...data,
-      //   ip_address: ipAddress,
-      //   device_info: navigator.userAgent,
-      //   platform: "web",
-      // });
+      await authLogin({
+        ...data,
+        // ip_address: ipAddress,
+        // device_info: navigator.userAgent,
+        // platform: "web",
+      });
 
       // const { accessToken, refreshToken, user, menus, permissions } =
       //   useAuthStore.getState();
 
-      // if (!accessToken) {
-      //   throw new Error("Login failed!");
-      // }
+      const { accessToken } = useAuthStore.getState();
+
+      if (!accessToken) {
+        throw new Error("Login failed!");
+      }
 
       // fetchMenus();
       // localStorage.setItem(
       //   "user_login_data",
       //   JSON.stringify({ accessToken, refreshToken, user, menus, permissions })
       // );
-      // localStorage.setItem("token", accessToken);
-      
-      localStorage.setItem("token", "abcdefghijklmnopqrstuvwxyz");
-      localStorage.setItem("role_id", "1");
-
       // localStorage.setItem("role_id", user?.role_id.toString() || "");
-
-      // showSuccessToast("Login successful!");
+      
+      localStorage.setItem("token", accessToken);
+      showSuccessToast("Login successful!");
 
       setTimeout(() => {
         navigate("/master_menu");
@@ -102,21 +101,21 @@ export default function SignInForm() {
               Sign In
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Enter your employee id and password to sign in!
+              Enter your username and password to sign in!
             </p>
           </header>
           <form onSubmit={handleSubmit(handleLogin)} className="space-y-6">
             <div>
               <Label>
-                Employee Id <span className="text-error-500">*</span>
+                Username <span className="text-error-500">*</span>
               </Label>
               <SignInInput
-                placeholder="Employee id"
-                register={register("employee_id", {
-                  required: "Employee Id is required",
+                placeholder="Username"
+                register={register("username", {
+                  required: "Username is required",
                 })}
-                error={!!errors.employee_id}
-                hint={errors.employee_id?.message}
+                error={!!errors.username}
+                hint={errors.username?.message}
               />
             </div>
             <div>

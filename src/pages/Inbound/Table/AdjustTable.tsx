@@ -36,6 +36,8 @@ const AdjustTable = ({
   onDelete,
   onEdit,
 }: MenuTableProps) => {
+
+  
   const columns: ColumnDef<Inbound>[] = useMemo(
     () => [
       {

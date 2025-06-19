@@ -10,6 +10,7 @@ import { usePagePermissions } from "../../../../utils/UserPermission/UserPagePer
 
 const TableMasterRole = () => {
   const navigate = useNavigate();
+
   const { fetchRoles, roles, deleteRole } = useRoleStore();
   const [globalFilter, setGlobalFilter] = useState<string>("");
 
@@ -45,13 +46,13 @@ const TableMasterRole = () => {
           />
 
           {/* {canCreate && canManage && ( */}
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => navigate("/master_role/create")}
-            >
-              <FaPlus className="mr-2" /> Tambah Role
-            </Button>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => navigate("/master_role/create")}
+          >
+            <FaPlus className="mr-2" /> Tambah Role
+          </Button>
           {/* )} */}
         </div>
       </div>

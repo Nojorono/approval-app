@@ -41,16 +41,6 @@ const dummyRoutes = [
   },
   {
     id: 6,
-    name: "Master Customer",
-    path: "/master_customer",
-    icon: "FaRegFileAlt",
-    parent_id: 2,
-    order: 4,
-    created_at: "2025-05-06T01:17:11.026Z",
-    updated_at: "2025-05-06T01:17:11.026Z",
-  },
-  {
-    id: 7,
     name: "Inbound",
     path: "/inbound",
     icon: "FaRegFileAlt",
@@ -60,7 +50,7 @@ const dummyRoutes = [
     updated_at: "2025-05-06T01:14:04.189Z",
   },
   {
-    id: 8,
+    id: 7,
     name: "Inbound Planning",
     path: "/inbound_planning",
     icon: "FaRegFileAlt",
@@ -70,7 +60,7 @@ const dummyRoutes = [
     updated_at: "2025-05-06T01:14:04.189Z",
   },
   {
-    id: 9,
+    id: 8,
     name: "Goods Receipt",
     path: "/goods_receipt",
     icon: "FaRegFileAlt",
