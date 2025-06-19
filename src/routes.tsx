@@ -10,27 +10,12 @@ import { ProtectedRoute } from "./utils/ProtectedRoute";
 
 // ✅ Pages
 import {
-  Callplan,
   MasterMenu,
   MasterRole,
   CreateRole,
   UpdateRole,
-  Parameters,
-  ChannelTypes,
-  PaymentTypes,
-  VisitTypes,
-  MasterCustomer,
-  SuratTugas,
-  DetailCustomer,
   MasterUser,
-  SalesRoute,
-  MasterEmployee,
 } from "./utils/PagesComponent";
-import SelectTerritory from "./pages/Master/ManagementTerritory/selectTerritory";
-import ManagementTerritory from "./pages/Master/ManagementTerritory";
-import MasterBranch from "./pages/Master/MasterBranch";
-import MasterRegion from "./pages/Master/MasterRegion";
-import MasterSalesman from "./pages/Master/MasterSalesman";
 import dummyRoutes from "./helper/dummyRoutes";
 import Inbound from "./pages/Inbound";
 import CreateInbound from "./pages/Inbound/Table/CreateInbound";
@@ -80,10 +65,6 @@ export function AppRoutes() {
     ],
 
     "/inbound_planning": [{ path: "create", element: <CreateInbound /> }],
-
-    "/management_territory": [
-      { path: "select_territory", element: <SelectTerritory /> },
-    ],
   };
 
   // Gabungkan user menu + manual child
@@ -124,25 +105,9 @@ export function AppRoutes() {
 
   const getElementByPath = (path: string): JSX.Element | null => {
     const map: Record<string, JSX.Element> = {
-      "/sales_route": <SalesRoute />,
       "/master_user": <MasterUser />,
       "/master_menu": <MasterMenu />,
-      "/callplan": <Callplan />,
       "/master_role": <MasterRole />,
-      "/management_territory": <ManagementTerritory />,
-
-      "/parameters": <Parameters />,
-      "/master_customer": <MasterCustomer />,
-      "/master_employee": <MasterEmployee />,
-      "/channel_types": <ChannelTypes />,
-      "/payment_types": <PaymentTypes />,
-      "/visit_types": <VisitTypes />,
-      "/surat_tugas": <SuratTugas />,
-      "/detail_customer": <DetailCustomer />,
-      "/master_branch": <MasterBranch />,
-      "/master_region": <MasterRegion />,
-      "/master_salesman": <MasterSalesman />,
-      "/select_territory": <SelectTerritory />,
 
       "/inbound_planning": <Inbound />,
     };
