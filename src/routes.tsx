@@ -19,6 +19,7 @@ import {
 import dummyRoutes from "./helper/dummyRoutes";
 import Inbound from "./pages/Inbound";
 import CreateInbound from "./pages/Inbound/Table/CreateInbound";
+import MasterPallet from "./pages/Master/MasterPallet";
 
 const DefaultPage: React.FC = () => {
   return (
@@ -108,6 +109,8 @@ export function AppRoutes() {
       "/master_user": <MasterUser />,
       "/master_menu": <MasterMenu />,
       "/master_role": <MasterRole />,
+      "/master_pallet": <MasterPallet />,
+
 
       "/inbound_planning": <Inbound />
     };
