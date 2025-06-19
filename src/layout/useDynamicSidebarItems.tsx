@@ -15,11 +15,11 @@ export type MenuItem = {
   name: string;
   path?: string;
   order: number;
-  parent_id: string | null;
+  parentId: string | null;
   children?: MenuItem[];
 };
 
-// Fungsi untuk membangun hierarki menu berdasarkan id dan parent_id
+// Fungsi untuk membangun hierarki menu berdasarkan id dan parentId
 const buildMenuHierarchy = (menuItems: MenuItem[]): MenuItem[] => {
   const menuMap: { [key: string]: MenuItem } = {};
 
@@ -32,13 +32,13 @@ const buildMenuHierarchy = (menuItems: MenuItem[]): MenuItem[] => {
 
   // Hubungkan parent dan children
   menuItems.forEach((menu) => {
-    if (menu.parent_id) {
-      const parent = menuMap[menu.parent_id];
+    if (menu.parentId) {
+      const parent = menuMap[menu.parentId];
       if (parent) {
         parent.children?.push(menuMap[menu.id]);
       }
     } else {
-      rootMenus.push(menuMap[menu.id]); // Menu tanpa parent_id menjadi root
+      rootMenus.push(menuMap[menu.id]); // Menu tanpa parentId menjadi root
     }
   });
 
@@ -73,7 +73,7 @@ export const useDynamicSidebarItems = (): NavItem[] => {
 
     const effectiveMenus = dummyRoutes.map((menu) => ({
       ...menu,
-      parent_id: menu.parent_id !== null ? String(menu.parent_id) : null,
+      parentId: menu.parentId !== null ? String(menu.parentId) : null,
     }));
 
     if (!effectiveMenus || effectiveMenus.length === 0) return [];

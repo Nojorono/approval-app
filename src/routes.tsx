@@ -109,7 +109,7 @@ export function AppRoutes() {
       "/master_menu": <MasterMenu />,
       "/master_role": <MasterRole />,
 
-      "/inbound_planning": <Inbound />,
+      "/inbound_planning": <Inbound />
     };
 
     return map[path] || <DefaultPage />;

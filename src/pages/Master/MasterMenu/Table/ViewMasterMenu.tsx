@@ -39,12 +39,13 @@ const TableMasterMenu = () => {
     ): any[] =>
       menus.reduce((acc, menu) => {
         const { children, ...rest } = menu;
-        acc.push({ ...rest, parent_id: parentId });
+        acc.push({ ...rest, parentId: parentId });
         if (children?.length) acc.push(...flattenMenus(children, menu.id));
         return acc;
       }, []);
     return flattenMenus(menus);
   }, [menus]);
+  
 
   return (
     <>

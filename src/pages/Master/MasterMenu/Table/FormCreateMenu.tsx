@@ -74,7 +74,7 @@ const MenuFormSection = ({ onRefresh }: { onRefresh: () => void }) => {
       },
     },
     {
-      name: "parent_id",
+      name: "parentId",
       label: "Parent",
       type: "select",
       options: [{ value: 0, label: "Tidak Ada" }, ...parentMenuOpt],
@@ -95,14 +95,14 @@ const MenuFormSection = ({ onRefresh }: { onRefresh: () => void }) => {
       icon: data.icon?.value || data.icon,
     };
 
-    // Only add parent_id if it's not 0, null, or undefined
+    // Only add parentId if it's not 0, null, or undefined
     const parentId =
-      data.parent_id?.value !== undefined
-        ? Number(data.parent_id.value)
-        : Number(data.parent_id);
+      data.parentId?.value !== undefined
+        ? Number(data.parentId.value)
+        : Number(data.parentId);
 
     if (parentId) {
-      payload.parent_id = parentId;
+      payload.parentId = parentId;
     }
 
     const res = await createMenu(payload);

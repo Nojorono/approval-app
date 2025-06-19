@@ -72,7 +72,7 @@ const UpdateModal = ({
       })),
     },
     {
-      name: "parent_id",
+      name: "parentId",
       label: "Parent",
       type: "select",
       options: [{ value: 0, label: "Tidak Ada" }, ...parentMenuOpt],
@@ -89,9 +89,9 @@ const UpdateModal = ({
   const handleSubmit = async (data: any) => {
     const payload = {
       ...data,
-      parent_id: data.parent_id?.value
-        ? Number(data.parent_id.value)
-        : Number(data.parent_id),
+      parentId: data.parentId?.value
+        ? Number(data.parentId.value)
+        : Number(data.parentId),
       order: Number(data.order),
       icon: data.icon?.value || data.icon,
     };
@@ -109,9 +109,9 @@ const UpdateModal = ({
   // Siapkan default values dari data lama
   const defaultValues = {
     ...existingData,
-    parent_id: {
-      value: existingData.parent_id || 0,
-      label: "Loading...", // Fallback jika parent_id masih null
+    parentId: {
+      value: existingData.parentId || 0,
+      label: "Loading...", // Fallback jika parentId masih null
     },
     icon: {
       value: existingData.icon || "",
@@ -119,11 +119,11 @@ const UpdateModal = ({
     },
   };
 
-  // Isi label dari parent_id dan icon berdasarkan options
+  // Isi label dari parentId dan icon berdasarkan options
   const parentMatch = parentMenuOpt.find(
-    (opt) => opt.value === existingData.parent_id
+    (opt) => opt.value === existingData.parentId
   );
-  if (parentMatch) defaultValues.parent_id.label = parentMatch.label;
+  if (parentMatch) defaultValues.parentId.label = parentMatch.label;
 
   const iconMatch = iconOptions.find((opt) => opt.value === existingData.icon);
   if (iconMatch) defaultValues.icon.label = iconMatch.label;

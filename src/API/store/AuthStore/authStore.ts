@@ -36,7 +36,7 @@ interface Menu {
   name: string;
   path: string;
   icon: string | null;
-  parent_id: number | null;
+  parentId: number | null;
   order: number;
   created_at: string;
   updated_at: string;

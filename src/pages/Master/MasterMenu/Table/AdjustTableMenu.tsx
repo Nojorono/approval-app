@@ -10,7 +10,7 @@ type Menu = {
   name: string;
   path: string;
   icon: string;
-  parent_id: number | null;
+  parentId: number | null;
   order: number;
 };
 
@@ -68,7 +68,7 @@ const MenuTable = ({
         cell: (info) => String(info.getValue()),
       },
       {
-        accessorKey: "parent_id",
+        accessorKey: "parentId",
         header: "Parent Id",
         cell: (info) => String(info.getValue()),
       },
