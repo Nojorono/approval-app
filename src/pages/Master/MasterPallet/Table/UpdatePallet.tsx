@@ -1,78 +1,74 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import ReusableFormModal from "../../../../components/modal/ReusableFormModal.tsx";
-import { FaPlus } from "react-icons/fa";
 import Button from "../../../../components/ui/button/Button.tsx";
-import { showSuccessToast } from "../../../../components/toast/index.tsx";
+import {showSuccessToast} from "../../../../components/toast/index.tsx";
 import {createPallet, updatePallet} from "../../../../API/services/MasterServices/MasterPalletService.tsx";
-import {usePalletStore} from "../../../../API/store/MasterStore/masterPalletStore.ts";
 
-const UpdateForm = ({ onRefresh }: { onRefresh: () => void }) => {
+const UpdateForm = ({onRefresh, defaultValues}: { onRefresh: () => void, defaultValues: any }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const { dataPallet,fetchPalletById } = usePalletStore();
-
-    useEffect(() => {
-        // fetchPalletById()
-    }, []);
 
     const formFields = [
         {
             name: "organization_id",
             label: "Organization Id",
             type: "text",
-            validation: { required: "Required" },
+            validation: {required: "Required"},
         },
         {
             name: "pallet_code",
             label: "Pallet Code",
             type: "text",
-            validation: { required: "Required" },
+            validation: {required: "Required"},
         },
         {
             name: "uom_name",
             label: "UOM Name",
             type: "text",
-            validation: { required: "Required" },
+            validation: {required: "Required"},
         },
         {
             name: "capacity",
             label: "Capacity",
             type: "number",
-            validation: { required: "Required" },
+            validation: {required: "Required"},
         },
         {
             name: "isActive",
             label: "Is Active",
             type: "select",
             options: [
-                { label: "--Select--", value: "" },
-                { label: "Active", value: true },
-                { label: "Inactive", value: false },
+                {label: "--Select--", value: ""},
+                {label: "Active", value: true},
+                {label: "Inactive", value: false},
             ],
-            validation: { required: "Required" },
+            validation: {required: "Required"},
         },
         {
             name: "isEmpty",
             label: "Is Empty",
             type: "select",
             options: [
-                { label: "--Select--", value: "" },
-                { label: "Yes", value: true },
-                { label: "No", value: false },
+                {label: "--Select--", value: ""},
+                {label: "Yes", value: true},
+                {label: "No", value: false},
             ],
-            validation: { required: "Required" },
+            validation: {required: "Required"},
         },
     ];
 
     const handleSubmit = async (data: any) => {
         // Ensure that the capacity is a number
+        console.log("PALLET",data)
         const payload = {
-            ...data,
             organization_id: Number(data.organization_id),
-            capacity: Number(data.capacity), // Converts capacity to number
+            capacity: Number(data.capacity),
+            pallet_code: data.pallet_code,
+            uom_name: data.uom_name,
+            isEmpty: data.isEmpty,
+            isActive: data.isActive,
         };
 
-        const res = await createPallet(payload);
+        const res = await updatePallet(data.id,payload);
 
         if (!res.success) {
             return;
@@ -95,7 +91,16 @@ const UpdateForm = ({ onRefresh }: { onRefresh: () => void }) => {
                 onClose={() => setIsModalOpen(false)}
                 onSubmit={handleSubmit}
                 formFields={formFields}
-                title="Update Pallet"
+                title="Update"
+                defaultValues={{
+                    id: defaultValues.id,
+                    organization_id: defaultValues.organization_id,
+                    pallet_code: defaultValues.pallet_code,
+                    uom_name: defaultValues.uom_name,
+                    capacity: defaultValues.capacity,
+                    isActive: defaultValues.isActive,
+                    isEmpty: defaultValues.isEmpty,
+                }}
             />
         </>
     );

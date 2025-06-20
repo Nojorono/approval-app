@@ -34,7 +34,7 @@ const AdjustTable = ({
                          onEdit,
                      }: MenuTableProps) => {
 
-
+    const { fetchPallet } = usePalletStore();
     const columns: ColumnDef<Pallet>[] = useMemo(
         () => [
             {
@@ -66,13 +66,7 @@ const AdjustTable = ({
                 header: "Action",
                 cell: ({row}) => (
                     <div className="space-x-4">
-                        {/*<ModalUpdateForm onRefresh={fetchPallet} />*/}
-                        <button
-                            className="fc-bg-primary"
-                            onClick={() => onDetail ? onDetail(row.original.id) : ''}
-                        >
-                            detail
-                        </button>
+                        <ModalUpdateForm defaultValues={row.original} onRefresh={fetchPallet} />
                         <button
                             className="text-red-600"
                             onClick={() => onDelete ? onDelete(row.original.id) : ''}

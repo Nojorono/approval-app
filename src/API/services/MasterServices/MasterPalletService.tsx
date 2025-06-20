@@ -71,7 +71,7 @@ export const createPallet = async (payload: PalletPayload) => {
 };
 
 export const updatePallet = async (id: number, payload: PalletPayload) => {
-    const {data} = await axiosInstance.put(`/master-pallet/${id}`, payload);
+    const {data} = await axiosInstance.patch(`/master-pallet/${id}`, payload);
     assert200(data.success === true ? 200 : 500, data.message);
     return data;
 };
