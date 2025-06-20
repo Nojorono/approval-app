@@ -71,6 +71,7 @@ const CreateForm = ({
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleSubmit}
         formFields={formFields}
+        mode="create"
       />
     </>
   );
