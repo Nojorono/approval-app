@@ -7,16 +7,18 @@ import {
   showSuccessToast,
 } from "../../../../components/toast/index.tsx";
 
-const CreateForm = ({
+const UpdateForm = ({
   onRefresh,
   isModalOpen,
   setIsModalOpen,
+  defaultValues,
 }: {
   onRefresh: () => void;
   isModalOpen: boolean;
   setIsModalOpen: (open: boolean) => void;
+  defaultValues?: any;
 }) => {
-  const { createUomData, error } = useUomStore();
+  const { updateUomData, error } = useUomStore();
 
   const formFields = [
     {
@@ -44,10 +46,16 @@ const CreateForm = ({
     },
   ];
 
-  const handleSubmit = async (data: any) => {
+  const submitModal = async (data: any) => {
     try {
-      const payload = { ...data };
-      await createUomData(payload);
+      const { id, ...rest } = data;
+      const payload = {
+        code: rest.code,
+        name: rest.name,
+        description: rest.description,
+        isActive: !!rest.isActive,
+      };
+      await updateUomData(id, payload);
 
       if (error) {
         showErrorToast(error);
@@ -66,14 +74,21 @@ const CreateForm = ({
   return (
     <>
       <ReusableFormModal
-        title="Create UOM"
+        title="Detail UOM"
         isOpen={isModalOpen ?? false}
         onClose={() => setIsModalOpen(false)}
-        onSubmit={handleSubmit}
+        onSubmit={submitModal}
         formFields={formFields}
+        defaultValues={{
+          id: defaultValues?.id ?? "",
+          code: defaultValues?.code ?? "",
+          name: defaultValues?.name ?? "",
+          description: defaultValues?.description ?? "",
+          isActive: defaultValues?.isActive ?? "",
+        }}
       />
     </>
   );
 };
 
-export default CreateForm;
+export default UpdateForm;

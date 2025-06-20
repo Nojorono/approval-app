@@ -19,6 +19,7 @@ import {
   Inbound,
   CreateInbound,
   MasterUOM,
+  MasterIO,
 } from "./utils/PagesComponent";
 
 import dummyRoutes from "./helper/dummyRoutes";
@@ -116,6 +117,7 @@ export function AppRoutes() {
       "/inbound_planning": <Inbound />,
 
       "/master_uom": <MasterUOM />,
+      "/master_io": <MasterIO />,
     };
 
     return map[path] || <DefaultPage />;

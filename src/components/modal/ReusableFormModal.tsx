@@ -9,6 +9,8 @@ interface ReusableFormModalProps {
   formFields: Array<any>;
   title: string;
   defaultValues?: any;
+  isEditMode?: boolean;
+  setIsEditMode?: (val: boolean) => void;
 }
 
 const ReusableFormModal: React.FC<ReusableFormModalProps> = ({

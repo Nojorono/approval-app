@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Input from "../../../../components/form/input/InputField";
 import AdjustTable from "./AdjustTable";
 import Label from "../../../../components/form/Label";
 import { useDebounce } from "../../../../helper/useDebounce";
-import ModalCreateForm from "../../MasterUOM/Table/CreateUOM";
-import { useUomStore } from "../../../../API/store/MasterStore";
-import Button from "../../../../components/ui/button/Button";
+import ModalCreateForm from "./CreateIO";
+import { useUomStore, useIOStore } from "../../../../API/store/MasterStore";
 
 interface Option {
   value: string;
@@ -16,14 +14,20 @@ interface Option {
 
 const DataTable = () => {
   const navigate = useNavigate();
-  const { fetchUomData, uom, isLoading, error } = useUomStore();
+
+  const { isLoading, error, fetchIOData, ioList } = useIOStore();
+
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const debouncedFilter = useDebounce(globalFilter, 500);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [startDate, setStartDate] = useState<Date | null>(null);
 
   useEffect(() => {
-    fetchUomData();
+    fetchIOData();
   }, []);
+
+  const handleDetail = (id: number) => {
+    console.log(`Navigating to detail page for UOM with ID: ${id}`);
+  };
 
   return (
     <>
@@ -39,29 +43,21 @@ const DataTable = () => {
                 placeholder="🔍 Masukan data.."
               />
             </div>
-
             <div className="space-x-4">
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => setIsModalOpen(true)}
-              >
-                <FaPlus className="mr-2" /> Tambah UOM
-              </Button>
-
-              <ModalCreateForm
-                onRefresh={fetchUomData}
-                isModalOpen={isModalOpen}
-                setIsModalOpen={setIsModalOpen}
-              />
+              <ModalCreateForm onRefresh={fetchIOData} />
             </div>
           </div>
         </div>
 
         <AdjustTable
-          data={Array.isArray(uom) ? uom : []}
+          data={ioList.map((item) => ({
+            ...item,
+            id: Number(item.id),
+            organization_id: String(item.organization_id),
+          }))}
           globalFilter={debouncedFilter}
           setGlobalFilter={setGlobalFilter}
+          onDetail={handleDetail}
         />
       </>
     </>

@@ -222,7 +222,10 @@ const ModalForm: React.FC<FormInputProps> = ({
           )}
         </div>
         <div className="flex justify-end space-x-2 mt-10">
-          <Button type="submit" className="bg-blue-500 text-white py-2 px-3 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300">
+          <Button
+            type="submit"
+            className="bg-blue-500 text-white py-2 px-3 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+          >
             Submit
           </Button>
 

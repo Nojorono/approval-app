@@ -11,6 +11,9 @@ import Inbound from "../pages/Inbound";
 import CreateInbound from "../pages/Inbound/Table/CreateInbound";
 import MasterPallet from "../pages/Master/MasterPallet";
 import MasterUOM from "../pages/Master/MasterUOM";
+import MasterIO from "../pages/Master/MasterIO";
+
+
 
 export {
   // PAGE MASTER
@@ -18,6 +21,8 @@ export {
   MasterMenu,
   MasterPallet,
   MasterUOM,
+  MasterIO,
+  
 
   // MASTER ROLES PAGE
   MasterRole,
