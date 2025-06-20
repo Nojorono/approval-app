@@ -20,6 +20,7 @@ const ReusableFormModal: React.FC<ReusableFormModalProps> = ({
   formFields,
   title,
   defaultValues,
+  isEditMode = false,
 }) => {
   return (
     <>
@@ -36,6 +37,7 @@ const ReusableFormModal: React.FC<ReusableFormModalProps> = ({
           }}
           onClose={onClose}
           defaultValues={defaultValues}
+          isEditMode={isEditMode}
         />
       </ModalComponent>
     </>

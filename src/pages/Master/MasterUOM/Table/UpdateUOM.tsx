@@ -86,6 +86,7 @@ const UpdateForm = ({
           description: defaultValues?.description ?? "",
           isActive: defaultValues?.isActive ?? "",
         }}
+        isEditMode={true}
       />
     </>
   );

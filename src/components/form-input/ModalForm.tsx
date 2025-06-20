@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import Select from "react-select";
 import DatePicker from "../form/date-picker";
@@ -32,6 +32,7 @@ type FormInputProps = {
   onSubmit: SubmitHandler<FormValues>;
   onClose: () => void;
   defaultValues?: FormValues;
+  isEditMode?: boolean;
 };
 
 const ModalForm: React.FC<FormInputProps> = ({
@@ -39,6 +40,7 @@ const ModalForm: React.FC<FormInputProps> = ({
   onSubmit,
   onClose,
   defaultValues,
+  isEditMode,
 }) => {
   const {
     register,
@@ -49,6 +51,8 @@ const ModalForm: React.FC<FormInputProps> = ({
   } = useForm<FormValues>({
     defaultValues,
   });
+
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     if (defaultValues) {
@@ -64,15 +68,18 @@ const ModalForm: React.FC<FormInputProps> = ({
     const commonClasses =
       "w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300";
 
-    // const errorClasses =
-    //   "w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-red-300";
+    const errorClasses =
+      "w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-red-300 bg-gray-100 cursor-not-allowed text-gray-500";
+
+    const isDisabled = isEditMode && !isEditing;
 
     switch (field.type) {
       case "textarea":
         return (
           <textarea
             {...register(field.name, field.validation)}
-            className={commonClasses}
+            className={isDisabled ? errorClasses : commonClasses}
+            disabled={isDisabled}
           />
         );
       case "select":
@@ -90,7 +97,7 @@ const ModalForm: React.FC<FormInputProps> = ({
                 {...controllerField}
                 options={field.options}
                 placeholder="Select an option"
-                className="react-select-container"
+                className={isDisabled ? errorClasses : "react-select-container"}
                 classNamePrefix="react-select"
                 value={field.options?.find(
                   (option) => option.value === controllerField.value
@@ -103,6 +110,7 @@ const ModalForm: React.FC<FormInputProps> = ({
                   controllerField.onChange(value);
                 }}
                 menuPlacement="auto"
+                isDisabled={isDisabled}
               />
             )}
           />
@@ -112,7 +120,8 @@ const ModalForm: React.FC<FormInputProps> = ({
           <input
             type="file"
             {...register(field.name, field.validation)}
-            className={commonClasses}
+            className={isDisabled ? errorClasses : commonClasses}
+            disabled={isDisabled}
           />
         );
       case "date":
@@ -128,6 +137,7 @@ const ModalForm: React.FC<FormInputProps> = ({
                 onChange={(date: Date | Date[]) =>
                   controllerField.onChange(Array.isArray(date) ? date[0] : date)
                 }
+                readOnly={isDisabled}
               />
             )}
           />
@@ -143,6 +153,7 @@ const ModalForm: React.FC<FormInputProps> = ({
                   label={field.name}
                   checked={controllerField.value || false}
                   onChange={(checked) => controllerField.onChange(checked)}
+                  disabled={isEditMode && !isEditing}
                 />
               )}
             />
@@ -156,7 +167,8 @@ const ModalForm: React.FC<FormInputProps> = ({
           <input
             type={field.type}
             {...register(field.name, field.validation)}
-            className={commonClasses}
+            className={isDisabled ? errorClasses : commonClasses}
+            disabled={isDisabled}
           />
         );
       default:
@@ -164,7 +176,8 @@ const ModalForm: React.FC<FormInputProps> = ({
           <input
             type={field.type}
             {...register(field.name, field.validation)}
-            className={commonClasses}
+            className={isDisabled ? errorClasses : commonClasses}
+            disabled={isDisabled}
           />
         );
     }
@@ -222,20 +235,28 @@ const ModalForm: React.FC<FormInputProps> = ({
           )}
         </div>
         <div className="flex justify-end space-x-2 mt-10">
-          <Button
-            type="submit"
-            className="bg-blue-500 text-white py-2 px-3 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
-          >
-            Submit
-          </Button>
+          {(!isEditMode || isEditing) && (
+            <Button type="submit" variant="secondary" size="md">
+              Submit
+            </Button>
+          )}
 
-          <button
-            type="button"
-            onClick={onClose}
-            className="bg-gray-500 text-white py-2 px-3 rounded-md hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-300"
-          >
+          {isEditMode && !isEditing && (
+            <Button
+              type="button"
+              variant="primary"
+              size="md"
+              onClick={() => {
+                setIsEditing(true);
+              }}
+            >
+              Update
+            </Button>
+          )}
+
+          <Button type="button" variant="outline" size="md" onClick={onClose}>
             Close
-          </button>
+          </Button>
         </div>
       </form>
     </div>
