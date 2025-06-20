@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import Input from "../../../../components/form/input/InputField";
 import AdjustTable from "./AdjustTable";
 import Label from "../../../../components/form/Label";
 import { useDebounce } from "../../../../helper/useDebounce";
 import ModalCreateForm from "./CreatePallet.tsx";
+import {useRoleStore} from "../../../../API/store/MasterStore";
+import {usePalletStore} from "../../../../API/store/MasterStore/masterPalletStore.ts";
 
 interface Option {
   value: string;
@@ -24,42 +26,6 @@ type Inbound = {
   taskType: string;
 };
 
-// Dummy Data
-const dummyData: Inbound[] = [
-  {
-    id: 1,
-    inboundNo: "PL-WH-IN-0425-0001",
-    clientName: "Niaga Nusa Abadi",
-    warehouseName: "Pre-Loading Warehouse",
-    poNo: "25210100011",
-    planDate: "2025-04-07 00:00:00",
-    orderType: "Regular",
-    status: "Fully Received",
-    taskType: "Single Receive",
-  },
-  {
-    id: 2,
-    inboundNo: "CWH03-IN-0325-0005",
-    clientName: "Niaga Nusa Abadi",
-    warehouseName: "Central WH 3",
-    poNo: "25210100002",
-    planDate: "2025-03-12 00:00:00",
-    orderType: "Regular",
-    status: "Fully Received",
-    taskType: "Partial Receive",
-  },
-  {
-    id: 3,
-    inboundNo: "CWH04-IN-0325-0004",
-    clientName: "Niaga Nusa Abadi",
-    warehouseName: "Central WH 4",
-    poNo: "25210100002",
-    planDate: "2025-03-13 00:00:00",
-    orderType: "Regular",
-    status: "Open",
-    taskType: "Single Receive",
-  },
-];
 
 const DataTable = () => {
   const navigate = useNavigate();
@@ -69,22 +35,31 @@ const DataTable = () => {
 
   const [startDate, setStartDate] = useState<Date | null>(null);
 
-  const handleDetail = (id: number) => {
-    navigate("/detail_user", { state: { userId: id } });
+
+  const { fetchPallet, dataPallet, deletePallet,fetchPalletById } = usePalletStore();
+
+  useEffect(() => {
+    fetchPallet()
+  }, []);
+
+  const handleDelete = async (id: number) => {
+    try {
+      await deletePallet(id);
+      fetchPallet();
+    } catch (error) {
+      console.error(`Failed to delete role with ID: ${id}`, error);
+    }
   };
 
-  const options = [
-    { value: "A", label: "Active" },
-    { value: "I", label: "Inactive" },
-  ];
+  const handleDetail = async (id: number) => {
+    try {
+      await fetchPalletById(id);
+    } catch (error) {
+      console.error(`Failed to delete role with ID: ${id}`, error);
+    }
+  }
 
-  const handleResetFilters = () => {
-    console.log("Resetting filters");
-  };
 
-  const fetchMenus = async () => {
-    console.log("Fetching Data...");
-  };
 
   return (
     <>
@@ -101,15 +76,17 @@ const DataTable = () => {
               />
             </div>
             <div className="space-x-4">
-              <ModalCreateForm onRefresh={fetchMenus} />
+              <ModalCreateForm onRefresh={fetchPallet} />
             </div>
           </div>
         </div>
 
         <AdjustTable
-          data={dummyData}
+          data={dataPallet}
           globalFilter={debouncedFilter}
           setGlobalFilter={setGlobalFilter}
+          onDelete={handleDelete}
+          onDetail={handleDetail}
         />
       </>
     </>
