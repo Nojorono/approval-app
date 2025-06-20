@@ -1,102 +1,104 @@
-import React, { useMemo } from "react";
-import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
-import { ColumnDef } from "@tanstack/react-table";
+import React, {useMemo} from "react";
+import {FaEye, FaTrash} from "react-icons/fa";
+import {ColumnDef} from "@tanstack/react-table";
 import TableComponent from "../../../../components/tables/MasterDataTable/TableComponent";
 import Badge from "../../../../components/ui/badge/Badge";
-import { usePagePermissions } from "../../../../utils/UserPermission/UserPagePermissions";
-import Checkbox from "../../../../components/form/input/Checkbox";
-import Button from "../../../../components/ui/button/Button";
+import ModalUpdateForm from "./UpdatePallet.tsx";
+import {usePalletStore} from "../../../../API/store/MasterStore/masterPalletStore.ts";
 
-type Inbound = {
-  id: number;
-  inboundNo: string;
-  clientName: string;
-  warehouseName: string;
-  poNo: string;
-  planDate: string;
-  orderType: string;
-  status: string;
-  taskType: string;
+type Pallet = {
+    id: number;
+    organization_id: number;
+    pallet_code: string;
+    uom_name: string;
+    capacity: number;
+    isActive: string;
+    isEmpty: boolean;
 };
 
 type MenuTableProps = {
-  data: Inbound[];
-  globalFilter?: string;
-  setGlobalFilter?: (value: string) => void;
-  onDetail?: (id: number) => void;
-  onDelete?: (id: number) => void;
-  onEdit?: (data: Inbound) => void;
+    data: Pallet[];
+    globalFilter?: string;
+    setGlobalFilter?: (value: string) => void;
+    onDetail?: (id: number) => void;
+    onDelete?: (id: number) => void;
+    onEdit?: (data: Pallet) => void;
 };
 
 const AdjustTable = ({
-  data,
-  globalFilter,
-  setGlobalFilter,
-  onDetail,
-  onDelete,
-  onEdit,
-}: MenuTableProps) => {
+                         data,
+                         globalFilter,
+                         setGlobalFilter,
+                         onDetail,
+                         onDelete,
+                         onEdit,
+                     }: MenuTableProps) => {
 
 
-  const columns: ColumnDef<Inbound>[] = useMemo(
-    () => [
-      {
-        accessorKey: "inboundNo",
-        header: "Inbound Planning No",
-      },
-      {
-        accessorKey: "clientName",
-        header: "Client Name",
-      },
-      {
-        accessorKey: "warehouseName",
-        header: "Warehouse Name",
-      },
-      {
-        accessorKey: "poNo",
-        header: "PO No",
-      },
-      {
-        accessorKey: "planDate",
-        header: "Plan Delivery Date",
-      },
-      {
-        accessorKey: "orderType",
-        header: "Order Type",
-      },
-      {
-        accessorKey: "status",
-        header: "Inbound Status",
-      },
-      {
-        accessorKey: "taskType",
-        header: "Task Type",
-      },
-      {
-        id: "actions",
-        header: "Action",
-        cell: ({ row }) => (
-          <button>
-            <Badge variant="solid" size="sm" color="secondary">
-              <FaEye />
-              Show
-            </Badge>
-          </button>
-        ),
-      },
-    ],
-    []
-  );
+    const columns: ColumnDef<Pallet>[] = useMemo(
+        () => [
+            {
+                accessorKey: "organization_id",
+                header: "Organization ID",
+            },
+            {
+                accessorKey: "pallet_code",
+                header: "Pallet Code",
+            },
+            {
+                accessorKey: "uom_name",
+                header: "UOM NAME",
+            },
+            {
+                accessorKey: "capacity",
+                header: "Capacity",
+            },
+            {
+                accessorKey: "isActive",
+                header: "Active",
+            },
+            {
+                accessorKey: "isEmpty",
+                header: "Is Empty",
+            },
+            {
+                id: "actions",
+                header: "Action",
+                cell: ({row}) => (
+                    <div className="space-x-4">
+                        {/*<ModalUpdateForm onRefresh={fetchPallet} />*/}
+                        <button
+                            className="fc-bg-primary"
+                            onClick={() => onDetail ? onDetail(row.original.id) : ''}
+                        >
+                            detail
+                        </button>
+                        <button
+                            className="text-red-600"
+                            onClick={() => onDelete ? onDelete(row.original.id) : ''}
+                        >
+                            <FaTrash/>
+                        </button>
+                    </div>
+                ),
+            },
+        ],
+        [onDelete]
+    );
 
-  return (
-    <TableComponent
-      data={data}
-      columns={columns}
-      globalFilter={globalFilter}
-      setGlobalFilter={setGlobalFilter}
-      onDetail={onDetail}
-    />
-  );
+
+    return (
+        <>
+            <TableComponent
+                data={data}
+                columns={columns}
+                globalFilter={globalFilter}
+                setGlobalFilter={setGlobalFilter}
+                onDetail={onDetail}
+            />
+        </>
+
+    );
 };
 
 export default AdjustTable;
