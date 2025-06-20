@@ -47,33 +47,27 @@ const UpdateForm = ({
   ];
 
   const submitModal = async (data: any) => {
-    try {
-      const { id, ...rest } = data;
-      const payload = {
-        code: rest.code,
-        name: rest.name,
-        description: rest.description,
-        isActive: !!rest.isActive,
-      };
-      await updateUomData(id, payload);
+    const { id, ...rest } = data;
+    const payload = {
+      code: rest.code,
+      name: rest.name,
+      description: rest.description,
+      isActive: !!rest.isActive,
+    };
+    const { success, message } = await updateUomData(id, payload);
 
-      if (error) {
-        showErrorToast(error);
-        return;
-      }
+    if (success) {
       onRefresh();
-      showSuccessToast("UOM berhasil ditambahkan");
-      setTimeout(() => {
-        setIsModalOpen(false);
-      }, 500);
-    } catch (error: any) {
-      showErrorToast(error?.message || "Failed to create UOM");
+      setIsModalOpen(false);
+    } else {
+      console.warn("Update UOM failed:", message);
     }
   };
 
   return (
     <>
       <ReusableFormModal
+        isEditMode={true}
         title="Detail UOM"
         isOpen={isModalOpen ?? false}
         onClose={() => setIsModalOpen(false)}
@@ -86,7 +80,6 @@ const UpdateForm = ({
           description: defaultValues?.description ?? "",
           isActive: defaultValues?.isActive ?? "",
         }}
-        isEditMode={true}
       />
     </>
   );

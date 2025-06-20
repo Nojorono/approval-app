@@ -254,7 +254,7 @@ const ModalForm: React.FC<FormInputProps> = ({
             </Button>
           )}
 
-          <Button type="button" variant="outline" size="md" onClick={onClose}>
+          <Button type="button" variant="danger" size="md" onClick={onClose}>
             Close
           </Button>
         </div>

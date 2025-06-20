@@ -8,7 +8,7 @@ import Checkbox from "../../../../components/form/input/Checkbox";
 import Button from "../../../../components/ui/button/Button";
 
 type IOdata = {
-  id: number;
+  id: any;
   organization_id: string;
   organization_name: string;
   operating_unit: string;
@@ -49,10 +49,7 @@ const AdjustTable = ({
         id: "actions",
         header: "Action",
         cell: ({ row }) => (
-          <button
-            type="button"
-            onClick={() => onDetail && onDetail(row.original.id)}
-          >
+          <button type="button" onClick={() => handleDetail(row.original)}>
             <Badge variant="solid" size="sm" color="secondary">
               <FaEye />
               Show
@@ -64,6 +61,13 @@ const AdjustTable = ({
     [onDetail]
   );
 
+  const handleDetail = async (data: any) => {
+    console.log("Detail data:", data);
+
+    // if (!data) return;
+    // setSelectedUOM(data);
+    // setIsModalOpen(true);
+  };
   return (
     <TableComponent
       data={data}

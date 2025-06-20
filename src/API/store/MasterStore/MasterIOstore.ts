@@ -33,8 +33,9 @@ export const useIOStore = create<IOState>((set) => ({
     fetchIOData: async () => {
         set({ isLoading: true, error: null });
         try {
-            const ioList = await fetchIO();
-            set({ ioList });
+            const ioList = await fetchIO();            
+            // Ensure the result is of type IO[]
+            set({ ioList: ioList as unknown as IO[] });
         } catch (error: any) {
             const message = error.message || "Failed to fetch IO";
             showErrorToast(message);
@@ -84,7 +85,7 @@ export const useIOStore = create<IOState>((set) => ({
             const updatedIO = await updateIO(id, payload);
             set((state) => ({
                 io: updatedIO,
-                ioList: state.ioList.map((item) => (item.id === id ? updatedIO : item))
+                ioList: state.ioList.map((item) => (String(item.id) === id ? updatedIO : item))
             }));
             showSuccessToast("IO updated successfully");
         } catch (error: any) {
@@ -101,8 +102,8 @@ export const useIOStore = create<IOState>((set) => ({
         try {
             await deleteIO(id);
             set((state) => ({
-                io: state.io?.id === id ? null : state.io,
-                ioList: state.ioList.filter((item) => item.id !== id)
+                io: String(state.io?.id) === id ? null : state.io,
+                ioList: state.ioList.filter((item) => String(item.id) !== id)
             }));
             showSuccessToast("IO deleted successfully");
         } catch (error: any) {

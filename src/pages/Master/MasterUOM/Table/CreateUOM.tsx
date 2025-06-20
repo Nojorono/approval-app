@@ -45,21 +45,14 @@ const CreateForm = ({
   ];
 
   const handleSubmit = async (data: any) => {
-    try {
-      const payload = { ...data };
-      await createUomData(payload);
+    const payload = { ...data };
 
-      if (error) {
-        showErrorToast(error);
-        return;
-      }
+    const { success, message } = await createUomData(payload);
+    if (success) {
       onRefresh();
-      showSuccessToast("UOM berhasil ditambahkan");
-      setTimeout(() => {
-        setIsModalOpen(false);
-      }, 500);
-    } catch (error: any) {
-      showErrorToast(error?.message || "Failed to create UOM");
+      setIsModalOpen(false);
+    } else {
+      console.warn("Create UOM failed:", message);
     }
   };
 
@@ -71,7 +64,6 @@ const CreateForm = ({
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleSubmit}
         formFields={formFields}
-        mode="create"
       />
     </>
   );

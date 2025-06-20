@@ -31,7 +31,7 @@ const AdjustTable = ({
   onDelete,
   onEdit,
 }: MenuTableProps) => {
-  const { fetchUomById, fetchUomData } = useUomStore();
+  const { fetchUOM, deleteUomData } = useUomStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUOM, setSelectedUOM] = useState<any>(null);
 
@@ -62,27 +62,45 @@ const AdjustTable = ({
         id: "actions",
         header: "Action",
         cell: ({ row }) => (
-          <button type="button" onClick={() => handleDetail(row.original)}>
-            <Badge variant="solid" size="sm" color="secondary">
-              <FaEye />
-              Show
-            </Badge>
-          </button>
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+            <button type="button" onClick={() => handleDetail(row.original)}>
+              <Badge variant="solid" size="sm" color="secondary">
+                <FaEye />
+                Show
+              </Badge>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleDelete(row.original.id)}
+              style={{ color: "red", background: "none", border: "none" }}
+              title="Delete"
+            >
+              <FaTrash />
+            </button>
+          </div>
         ),
       },
     ],
-    [onDetail]
+    [onDetail, onDelete]
   );
+  
   const handleDetail = async (data: any) => {
     if (!data) return;
     setSelectedUOM(data);
     setIsModalOpen(true);
   };
 
+  const handleDelete = async (id: number) => {
+    if (!id) return;
+    deleteUomData(id);
+    fetchUOM();
+    setIsModalOpen(false);
+  };
+
   return (
     <>
       <ModalUpdate
-        onRefresh={fetchUomData}
+        onRefresh={fetchUOM}
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         defaultValues={selectedUOM}

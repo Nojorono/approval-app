@@ -16,13 +16,13 @@ interface Option {
 
 const DataTable = () => {
   const navigate = useNavigate();
-  const { fetchUomData, uom, isLoading, error } = useUomStore();
+  const { fetchUOM, uom, isLoading, error } = useUomStore();
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const debouncedFilter = useDebounce(globalFilter, 500);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    fetchUomData();
+    fetchUOM();
   }, []);
 
   return (
@@ -50,7 +50,7 @@ const DataTable = () => {
               </Button>
 
               <ModalCreateForm
-                onRefresh={fetchUomData}
+                onRefresh={fetchUOM}
                 isModalOpen={isModalOpen}
                 setIsModalOpen={setIsModalOpen}
               />
@@ -59,7 +59,10 @@ const DataTable = () => {
         </div>
 
         <AdjustTable
-          data={Array.isArray(uom) ? uom : []}
+          data={uom.map((item) => ({
+            ...item,
+            isActive: String(item.isActive),
+          }))}
           globalFilter={debouncedFilter}
           setGlobalFilter={setGlobalFilter}
         />

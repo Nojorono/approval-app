@@ -52,7 +52,7 @@ const DataTable = () => {
         <AdjustTable
           data={ioList.map((item) => ({
             ...item,
-            id: Number(item.id),
+            id: item.id,
             organization_id: String(item.organization_id),
           }))}
           globalFilter={debouncedFilter}

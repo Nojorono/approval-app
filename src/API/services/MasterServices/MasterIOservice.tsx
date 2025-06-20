@@ -53,14 +53,8 @@ export const createIO = async (payload: CreateIOPayload): Promise<IO> => {
   return Array.isArray(data) ? data[0] : data;
 };
 
-export const updateIO = async (
-  id: string,
-  payload: UpdateIOPayload
-): Promise<IO> => {
-  const res = await axiosInstance.patch<IOResponse>(
-    `/master-io/${id}`,
-    payload
-  );
+export const updateIO = async (id: string, payload: UpdateIOPayload): Promise<IO> => {
+  const res = await axiosInstance.patch<IOResponse>(`/master-io/${id}`, payload);
   if (!res.data.success) throw new Error(res.data.error || res.data.message);
   const data = res.data.data;
   return Array.isArray(data) ? data[0] : data;
