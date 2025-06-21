@@ -35,6 +35,8 @@ export const useUomStore = create<UomState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const uom = await fetchUOM();
+      console.log("Fetched UOM data:", uom);
+      
       set({ uom });
       return { success: true };
     } catch (error: any) {
@@ -81,7 +83,13 @@ export const useUomStore = create<UomState>((set, get) => ({
   updateUomData: async (id: number, payload: UpdateUomPayload): Promise<{ success: boolean; message?: string }> => {
     set({ isLoading: true, error: null });
     try {
-      await updateUom(id, payload);
+
+      const { code, name, description, isActive } = payload;
+      const updatePayload = { code, name, description, isActive };
+
+      console.log("Updating UOM with ID:", id, "and payload:", updatePayload);
+      
+      await updateUom(id, updatePayload);
       showSuccessToast("UOM updated successfully");
       // Refresh list
       await get().fetchUOM();

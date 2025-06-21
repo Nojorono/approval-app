@@ -1,7 +1,7 @@
 import React from "react";
 import { Controller } from "react-hook-form";
 import Select from "react-select";
-import DatePicker from "../../form/date-picker";
+import DatePicker from "../../../form/date-picker";
 
 export interface Option {
   value: string;

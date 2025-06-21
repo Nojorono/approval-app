@@ -6,6 +6,8 @@ import {
   createPallet,
   updatePallet,
 } from "../../../../API/services/MasterServices/MasterPalletService.tsx";
+import Badge from "../../../../components/ui/badge/Badge.tsx";
+import { FaEye } from "react-icons/fa";
 
 const UpdateForm = ({
   onRefresh,
@@ -91,9 +93,12 @@ const UpdateForm = ({
 
   return (
     <>
-      <Button variant="primary" size="sm" onClick={() => setIsModalOpen(true)}>
-        Detail
-      </Button>
+      <button type="button" onClick={() => setIsModalOpen(true)}>
+        <Badge variant="solid" size="sm" color="secondary">
+          <FaEye />
+          Show
+        </Badge>
+      </button>
 
       <ReusableFormModal
         isOpen={isModalOpen}

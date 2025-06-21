@@ -62,7 +62,7 @@ const ModalForm: React.FC<FormInputProps> = ({
 
   const handleSubmit = (data: FormValues) => {
     onSubmit(data); // Kirim data ke parent
-  };
+  };  
 
   const renderField = (field: FormField) => {
     const commonClasses =

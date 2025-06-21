@@ -33,7 +33,7 @@ export const useIOStore = create<IOState>((set) => ({
     fetchIOData: async () => {
         set({ isLoading: true, error: null });
         try {
-            const ioList = await fetchIO();            
+            const ioList = await fetchIO();
             // Ensure the result is of type IO[]
             set({ ioList: ioList as unknown as IO[] });
         } catch (error: any) {

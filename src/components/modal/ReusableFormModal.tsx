@@ -27,7 +27,7 @@ const ReusableFormModal: React.FC<ReusableFormModalProps> = ({
       <ModalComponent
         isOpen={isOpen}
         onClose={onClose}
-        title={title}
+        title={isEditMode ? "Update Detail" : title}
         size="large"
       >
         <ModalForm

@@ -77,19 +77,19 @@ const CreateForm = ({ onRefresh }: { onRefresh: () => void }) => {
   };
 
   return (
-      <>
-        <Button variant="primary" size="sm" onClick={() => setIsModalOpen(true)}>
-          <FaPlus className="mr-2" /> Tambah Pallet
-        </Button>
+    <>
+      <Button variant="primary" size="sm" onClick={() => setIsModalOpen(true)}>
+        <FaPlus className="mr-2" /> Tambah Pallet
+      </Button>
 
-        <ReusableFormModal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            onSubmit={handleSubmit}
-            formFields={formFields}
-            title="Create Pallet"
-        />
-      </>
+      <ReusableFormModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleSubmit}
+        formFields={formFields}
+        title="Create Pallet"
+      />
+    </>
   );
 };
 

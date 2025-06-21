@@ -60,6 +60,10 @@ export const updateUom = async (
   id: number,
   payload: UpdateUomPayload
 ): Promise<Uom> => {
+
+  console.log("Updating UOM with ID:", id, "and payload:", payload);
+  
+
   const res = await axiosInstance.patch<UomResponse>(
     `/master-uom/${id}`,
     payload
