@@ -5,18 +5,23 @@ import Label from "../../../../components/form/Label";
 import Button from "../../../../components/ui/button/Button";
 import { useDebounce } from "../../../../helper/useDebounce";
 import DynamicTable from "../../../../components/wms-components/DynamicTable";
-import { useUomStore } from "../../../../API/store/MasterStore";
+import { useStoreUom } from "../../../../DynamicAPI/store/Store/MasterStore";
 
 const DataTable = () => {
-  const { fetchUOM, uom, createUomData, updateUomData, deleteUomData } =
-    useUomStore();
+  const {
+    list: uom,
+    createData,
+    updateData,
+    deleteData,
+    fetchAll,
+  } = useStoreUom();
 
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
 
   useEffect(() => {
-    fetchUOM();
+    fetchAll();
   }, []);
 
   const columns = useMemo(
@@ -55,6 +60,28 @@ const DataTable = () => {
     { name: "isActive", label: "", type: "checkbox" },
   ];
 
+  // Fungsi untuk format payload create
+  const handleCreate = (data: any) => {
+    const { code, name, description, isActive } = data;
+    return createData({
+      code,
+      name,
+      description,
+      isActive: !!isActive,
+    });
+  };
+
+  // Fungsi untuk format payload update
+  const handleUpdate = (data: any) => {
+    const { id, code, name, description, isActive } = data;
+    return updateData(id, {
+      code,
+      name,
+      description,
+      isActive: !!isActive,
+    });
+  };
+
   return (
     <>
       <div className="p-4 bg-white shadow rounded-md mb-5">
@@ -74,7 +101,7 @@ const DataTable = () => {
               size="sm"
               onClick={() => setCreateModalOpen(true)}
             >
-              <FaPlus className="mr-2" /> Tambah UOM
+              <FaPlus className="mr-2" /> Tambah Data
             </Button>
           </div>
         </div>
@@ -90,13 +117,12 @@ const DataTable = () => {
         onCloseCreateModal={() => setCreateModalOpen(false)}
         columns={columns}
         formFields={formFields}
-        onSubmit={createUomData}
-        onUpdate={(data) => {
-          const { id, ...rest } = data;
-          return updateUomData(id, { ...rest, isActive: !!rest.isActive });
+        onSubmit={handleCreate}
+        onUpdate={handleUpdate}
+        onDelete={async (id) => {
+          await deleteData(id);
         }}
-        onDelete={deleteUomData}
-        onRefresh={fetchUOM}
+        onRefresh={fetchAll}
         getRowId={(row) => row.id}
         title="Form UOM"
       />

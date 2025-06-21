@@ -1,13 +1,14 @@
 import { create } from "zustand";
 import { showErrorToast } from "../../../components/toast";
 import {
-    createPallet, deletePallet,
-    fetchAllPallet, getPalletById,
+    fetchAllPallet,
+    getPalletById,
+    createPallet,
+    updatePallet,
+    deletePallet,
     Pallet,
-    PalletPayload, updatePallet
-} from "../../services/MasterServices/MasterPalletService.tsx";
-import {getRoleById} from "../../services/MasterServices";
-
+    PalletPayload,
+} from "../../services/MasterServices/MasterPalletService";
 
 type Result = { ok: true } | { ok: false; message: string };
 
@@ -17,7 +18,7 @@ interface PalletState {
     error: string | null;
 
     fetchPallet: () => Promise<void>;
-    fetchPalletById: (id: number) => Promise<Pallet>;
+    fetchPalletById: (id: number) => Promise<Pallet | null>;
 
     createPallet: (data: PalletPayload) => Promise<Result>;
     updatePallet: (id: number, data: PalletPayload) => Promise<Result>;
@@ -26,18 +27,15 @@ interface PalletState {
     reset: () => void;
 }
 
-export const usePalletStore = create<PalletState>((set) => ({
+export const usePalletStore = create<PalletState>((set, get) => ({
     dataPallet: [],
     loading: false,
     error: null,
 
-    /* ---------- queries ---------- */
     fetchPallet: async () => {
         set({ loading: true, error: null });
         try {
             const data = await fetchAllPallet();
-
-            localStorage.setItem("local_pallet", JSON.stringify(data));
             set({ dataPallet: data, loading: false });
         } catch (e: any) {
             showErrorToast(e.message);
@@ -52,17 +50,28 @@ export const usePalletStore = create<PalletState>((set) => ({
             set({ loading: false });
             return pallet;
         } catch (e: any) {
+            showErrorToast(e.message);
             set({ error: e.message, loading: false });
-            throw e;
+            return null;
         }
     },
 
-    /* ---------- commands ---------- */
     createPallet: async (data) => {
         set({ loading: true, error: null });
         try {
-            const newPallet = await createPallet(data);
-            set((s) => ({ dataPallet: [...s.dataPallet, newPallet], loading: false }));
+            // Pastikan payload sesuai format dan tipe data yang dibutuhkan server
+            const finalPayload = {
+                organization_id: Number(data.organization_id),
+                pallet_code: String(data.pallet_code),
+                uom_name: String(data.uom_name),
+                capacity: Number(data.capacity),
+                isActive: Boolean(data.isActive),
+                isEmpty: Boolean(data.isEmpty),
+            };
+            const res = await createPallet(finalPayload);
+            // Ambil data baru dari response, atau fetch ulang
+            await get().fetchPallet();
+            set({ loading: false });
             return { ok: true };
         } catch (e: any) {
             showErrorToast(e.message);
@@ -74,11 +83,18 @@ export const usePalletStore = create<PalletState>((set) => ({
     updatePallet: async (id, data) => {
         set({ loading: true, error: null });
         try {
-            const updated = await updatePallet(id, data);
-            set((s) => ({
-                dataPallet: s.dataPallet.map((m) => (m.id === id ? { ...m, ...updated } : m)),
-                loading: false,
-            }));
+            // Pastikan payload sesuai format dan tipe data yang dibutuhkan server
+            const finalPayload = {
+                organization_id: Number(data.organization_id),
+                pallet_code: String(data.pallet_code),
+                uom_name: String(data.uom_name),
+                capacity: Number(data.capacity),
+                isActive: Boolean(data.isActive),
+                isEmpty: Boolean(data.isEmpty),
+            };
+            await updatePallet(id, finalPayload);
+            await get().fetchPallet();
+            set({ loading: false });
             return { ok: true };
         } catch (e: any) {
             showErrorToast(e.message);
@@ -97,7 +113,6 @@ export const usePalletStore = create<PalletState>((set) => ({
             }));
             return { ok: true };
         } catch (e: any) {
-
             showErrorToast(e.message);
             set({ error: e.message, loading: false });
             return { ok: false, message: e.message };
