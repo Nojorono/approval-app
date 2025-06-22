@@ -1,5 +1,5 @@
 import axios from "axios";
-import EnPoint from "../../utils/EndPoint";
+import EnPoint from "../utils/EndPoint";
 
 const baseURL = EnPoint;
 

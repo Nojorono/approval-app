@@ -5,7 +5,7 @@ import DynamicForm, {
 } from "../../../../components/form-input/DynamicForm";
 import TableMenuPermission from "../Table/CreatePermission";
 import { useRoleStore } from "../../../../API/store/MasterStore/MasterRoleStore";
-import { useMenuStore } from "../../../../API/store/MasterStore/MasterMenuStore";
+import { useStoreMenu } from "../../../../DynamicAPI/stores/Store/MasterStore";
 import { useNavigate } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from "../../../../components/toast";
 
@@ -44,7 +44,13 @@ const fields: FieldConfig[] = [
 function CreateRole() {
   const navigate = useNavigate();
   const { createRole } = useRoleStore();
-  const { fetchMenus, menus } = useMenuStore();
+  const {
+    list: menus,
+    createData,
+    updateData,
+    deleteData,
+    fetchAll: fetchMenus,
+  } = useStoreMenu();
   const tablePermissionRef = useRef<any>(null);
 
   useEffect(() => {

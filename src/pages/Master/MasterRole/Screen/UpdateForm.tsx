@@ -4,10 +4,11 @@ import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import Checkbox from "../../../../components/form/input/Checkbox";
 
-import { useMenuStore, useRoleStore } from "../../../../API/store/MasterStore";
+import { useRoleStore } from "../../../../API/store/MasterStore";
 import { showErrorToast, showSuccessToast } from "../../../../components/toast";
 import Button from "../../../../components/ui/button/Button";
 import { signOut } from "../../../../utils/SignOut";
+import { useStoreMenu } from "../../../../DynamicAPI/stores/Store/MasterStore";
 
 // Constants for options
 const STATUS_OPTIONS = [
@@ -72,7 +73,13 @@ const SelectField = ({ label, name, control, options, placeholder }: any) => (
 
 export default function UpdateFormWithTable(paramRole: any) {
   const navigate = useNavigate();
-  const { fetchMenus, menus } = useMenuStore();
+  const {
+    list: menus,
+    createData,
+    updateData,
+    deleteData,
+    fetchAll: fetchMenus,
+  } = useStoreMenu();
   const { updateRole } = useRoleStore();
 
   type StatusOption = { value: boolean | ""; label: string } | null;

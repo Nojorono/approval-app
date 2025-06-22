@@ -89,6 +89,26 @@ const dummyRoutes = [
     created_at: "2025-05-06T01:03:15.036Z",
     updated_at: "2025-05-06T01:14:04.189Z",
   },
+  {
+    id: 11,
+    name: "Master Warehouse",
+    path: "/master_warehouse",
+    icon: "FaRegFileAlt",
+    parentId: 2,
+    order: 7,
+    created_at: "2025-05-06T01:03:15.036Z",
+    updated_at: "2025-05-06T01:14:04.189Z",
+  },
+    {
+    id: 12,
+    name: "Master Item",
+    path: "/master_item",
+    icon: "FaRegFileAlt",
+    parentId: 2,
+    order: 8,
+    created_at: "2025-05-06T01:03:15.036Z",
+    updated_at: "2025-05-06T01:14:04.189Z",
+  },
 ];
 
 export default dummyRoutes;

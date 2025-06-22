@@ -5,16 +5,16 @@ import Label from "../../../../components/form/Label";
 import Button from "../../../../components/ui/button/Button";
 import { useDebounce } from "../../../../helper/useDebounce";
 import DynamicTable from "../../../../components/wms-components/DynamicTable";
-import { useStorePallet } from "../../../../DynamicAPI/stores/Store/MasterStore";
+import { useStoreItem } from "../../../../DynamicAPI/stores/Store/MasterStore";
 
 const DataTable = () => {
   const {
-    list: pallet,
+    list: items,
     createData,
     updateData,
     deleteData,
     fetchAll,
-  } = useStorePallet();
+  } = useStoreItem();
 
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
@@ -23,15 +23,11 @@ const DataTable = () => {
   useEffect(() => {
     fetchAll();
   }, []);
-
   // Fungsi untuk format payload create
   const handleCreate = (data: any) => {
     const formattedData = {
       ...data,
       organization_id: Number(data.organization_id),
-      capacity: Number(data.capacity),
-      isActive: data.isActive === "true" || data.isActive === true,
-      isEmpty: data.isEmpty === "true" || data.isEmpty === true,
     };
     return createData(formattedData);
   };
@@ -40,40 +36,30 @@ const DataTable = () => {
   const handleUpdate = (data: any) => {
     const { id, ...rest } = data;
     return updateData(id, {
+      sku: String(rest.sku),
+      name: String(rest.name),
+      description: String(rest.description),
       organization_id: Number(rest.organization_id),
-      pallet_code: String(rest.pallet_code),
-      uom_name: String(rest.uom_name),
-      capacity: Number(rest.capacity),
-      isActive: rest.isActive === "true" || rest.isActive === true,
-      isEmpty: rest.isEmpty === "true" || rest.isEmpty === true,
     });
   };
 
   const columns = useMemo(
     () => [
       {
+        accessorKey: "sku",
+        header: "SKU",
+      },
+      {
+        accessorKey: "name",
+        header: "Name",
+      },
+      {
+        accessorKey: "description",
+        header: "Description",
+      },
+      {
         accessorKey: "organization_id",
         header: "Organization ID",
-      },
-      {
-        accessorKey: "pallet_code",
-        header: "Pallet Code",
-      },
-      {
-        accessorKey: "uom_name",
-        header: "UOM NAME",
-      },
-      {
-        accessorKey: "capacity",
-        header: "Capacity",
-      },
-      {
-        accessorKey: "isActive",
-        header: "Active",
-      },
-      {
-        accessorKey: "isEmpty",
-        header: "Is Empty",
       },
     ],
     []
@@ -81,49 +67,27 @@ const DataTable = () => {
 
   const formFields = [
     {
+      name: "sku",
+      label: "SKU",
+      type: "text",
+      validation: { required: "Required" },
+    },
+    {
+      name: "name",
+      label: "Name",
+      type: "text",
+      validation: { required: "Required" },
+    },
+    {
+      name: "description",
+      label: "Description",
+      type: "text",
+      validation: { required: "Required" },
+    },
+    {
       name: "organization_id",
       label: "Organization Id",
-      type: "text",
-      validation: { required: "Required" },
-    },
-    {
-      name: "pallet_code",
-      label: "Pallet Code",
-      type: "text",
-      validation: { required: "Required" },
-    },
-    {
-      name: "uom_name",
-      label: "UOM Name",
-      type: "text",
-      validation: { required: "Required" },
-    },
-    {
-      name: "capacity",
-      label: "Capacity",
       type: "number",
-      validation: { required: "Required" },
-    },
-    {
-      name: "isActive",
-      label: "Is Active",
-      type: "select",
-      options: [
-        { label: "--Select--", value: "" },
-        { label: "Active", value: true },
-        { label: "Inactive", value: false },
-      ],
-      validation: { required: "Required" },
-    },
-    {
-      name: "isEmpty",
-      label: "Is Empty",
-      type: "select",
-      options: [
-        { label: "--Select--", value: "" },
-        { label: "Yes", value: true },
-        { label: "No", value: false },
-      ],
       validation: { required: "Required" },
     },
   ];
@@ -154,7 +118,7 @@ const DataTable = () => {
       </div>
 
       <DynamicTable
-        data={pallet}
+        data={items}
         globalFilter={debouncedSearch}
         isCreateModalOpen={isCreateModalOpen}
         onCloseCreateModal={() => setCreateModalOpen(false)}

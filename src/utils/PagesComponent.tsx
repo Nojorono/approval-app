@@ -12,8 +12,9 @@ import CreateInbound from "../pages/Inbound/Table/CreateInbound";
 import MasterPallet from "../pages/Master/MasterPallet";
 import MasterUOM from "../pages/Master/MasterUOM";
 import MasterIO from "../pages/Master/MasterIO";
+import MasterWarehouse from "../pages/Master/MasterWarehouse";
 
-
+import MasterItem from "../pages/Master/MasterItem";
 
 export {
   // PAGE MASTER
@@ -22,7 +23,8 @@ export {
   MasterPallet,
   MasterUOM,
   MasterIO,
-  
+  MasterWarehouse,
+  MasterItem,
 
   // MASTER ROLES PAGE
   MasterRole,

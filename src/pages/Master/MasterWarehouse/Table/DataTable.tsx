@@ -5,16 +5,16 @@ import Label from "../../../../components/form/Label";
 import Button from "../../../../components/ui/button/Button";
 import { useDebounce } from "../../../../helper/useDebounce";
 import DynamicTable from "../../../../components/wms-components/DynamicTable";
-import { useStoreUom } from "../../../../DynamicAPI/stores/Store/MasterStore";
+import { useStoreWarehouse } from "../../../../DynamicAPI/stores/Store/MasterStore";
 
 const DataTable = () => {
   const {
-    list: uom,
+    list: Warehouse,
     createData,
     updateData,
     deleteData,
     fetchAll,
-  } = useStoreUom();
+  } = useStoreWarehouse();
 
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
@@ -26,28 +26,24 @@ const DataTable = () => {
 
   const columns = useMemo(
     () => [
-      { accessorKey: "code", header: "Kode UOM" },
-      { accessorKey: "name", header: "Nama UOM" },
+      { accessorKey: "id", header: "ID" },
+      { accessorKey: "organization_id", header: "Organization ID" },
+      { accessorKey: "name", header: "Nama Gudang" },
       { accessorKey: "description", header: "Deskripsi" },
-      {
-        accessorKey: "isActive",
-        header: "Status",
-        cell: (cell: any) => (cell.getValue() ? "Active" : "Inactive"),
-      },
     ],
     []
   );
 
   const formFields = [
     {
-      name: "code",
-      label: "Kode UOM",
-      type: "text",
+      name: "organization_id",
+      label: "Organization ID",
+      type: "number",
       validation: { required: "Required" },
     },
     {
       name: "name",
-      label: "Nama UOM",
+      label: "Nama Gudang",
       type: "text",
       validation: { required: "Required" },
     },
@@ -57,28 +53,25 @@ const DataTable = () => {
       type: "text",
       validation: { required: "Required" },
     },
-    { name: "isActive", label: "", type: "checkbox" },
   ];
 
   // Fungsi untuk format payload create
   const handleCreate = (data: any) => {
-    const { code, name, description, isActive } = data;
+    const { organization_id, name, description } = data;
     return createData({
-      code,
+      organization_id: Number(organization_id),
       name,
       description,
-      isActive: !!isActive,
     });
   };
 
   // Fungsi untuk format payload update
   const handleUpdate = (data: any) => {
-    const { id, code, name, description, isActive } = data;
+    const { id, organization_id, name, description } = data;
     return updateData(id, {
-      code,
+      organization_id,
       name,
       description,
-      isActive: !!isActive,
     });
   };
 
@@ -108,10 +101,7 @@ const DataTable = () => {
       </div>
 
       <DynamicTable
-        data={uom.map((item) => ({
-          ...item,
-          isActive: Boolean(item.isActive),
-        }))}
+        data={Warehouse}
         globalFilter={debouncedSearch}
         isCreateModalOpen={isCreateModalOpen}
         onCloseCreateModal={() => setCreateModalOpen(false)}

@@ -20,6 +20,8 @@ import {
   CreateInbound,
   MasterUOM,
   MasterIO,
+  MasterWarehouse,
+  MasterItem,
 } from "./utils/PagesComponent";
 
 import dummyRoutes from "./helper/dummyRoutes";
@@ -53,6 +55,7 @@ export function AppRoutes() {
   }, [navigate]);
 
   const storedUserLogin = localStorage.getItem("user_login_data");
+
   const userMenus =
     storedUserLogin && storedUserLogin !== "undefined"
       ? JSON.parse(storedUserLogin).menus
@@ -118,6 +121,8 @@ export function AppRoutes() {
 
       "/master_uom": <MasterUOM />,
       "/master_io": <MasterIO />,
+      "/master_warehouse": <MasterWarehouse />,
+      "/master_item": <MasterItem />,
     };
 
     return map[path] || <DefaultPage />;
