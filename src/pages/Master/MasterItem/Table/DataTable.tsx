@@ -23,6 +23,7 @@ const DataTable = () => {
   useEffect(() => {
     fetchAll();
   }, []);
+  
   // Fungsi untuk format payload create
   const handleCreate = (data: any) => {
     const formattedData = {
