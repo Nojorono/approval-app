@@ -71,7 +71,10 @@ export function AppRoutes() {
       { path: "update", element: <UpdateRole /> },
     ],
 
-    "/inbound_planning": [{ path: "create", element: <CreateInbound /> }],
+    "/inbound_planning": [
+      { path: "create", element: <CreateInbound /> },
+      { path: "detail", element: <CreateInbound /> },
+    ],
   };
 
   // Gabungkan user menu + manual child

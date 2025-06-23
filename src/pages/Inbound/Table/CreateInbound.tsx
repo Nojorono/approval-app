@@ -327,42 +327,51 @@ const InboundPlanningAdd = () => {
                 ),
               },
 
-              // {
-              //   label: "Notes",
-              //   content: (
-              //     <textarea
-              //       className="w-full border rounded p-2 min-h-[100px]"
-              //       placeholder="Enter notes here..."
-              //       {...methods.register("notes")}
-              //     />
-              //   ),
-              // },
+              {
+                label: "Notes",
+                content: (
+                  <textarea
+                    className="w-full border rounded p-2 min-h-[100px]"
+                    placeholder="Enter notes here..."
+                    {...methods.register("notes")}
+                  />
+                ),
+              },
 
-              // {
-              //   label: "Attachment",
-              //   content: (
-              //     <input
-              //       type="file"
-              //       multiple
-              //       accept="*"
-              //       className="block w-full text-sm text-gray-500
-              //   file:mr-4 file:py-2 file:px-4
-              //   file:rounded file:border-0
-              //   file:text-sm file:font-semibold
-              //   file:bg-orange-50 file:text-orange-700
-              //   hover:file:bg-orange-100"
-              //       onChange={(e) => {
-              //         const files = Array.from(e.target.files || []);
-              //         if (files.length > 3) {
-              //           alert("You can only upload up to 3 files.");
-              //           e.target.value = "";
-              //           return;
-              //         }
-              //         methods.setValue("attachments", files);
-              //       }}
-              //     />
-              //   ),
-              // },
+              {
+                label: "History",
+                content: (
+                  <div className="text-gray-500">
+                    <p>No history available yet.</p>
+                  </div>
+                ),
+              },
+
+              {
+                label: "Attachment",
+                content: (
+                  <input
+                    type="file"
+                    multiple
+                    accept="*"
+                    className="block w-full text-sm text-gray-500
+                file:mr-4 file:py-2 file:px-4
+                file:rounded file:border-0
+                file:text-sm file:font-semibold
+                file:bg-orange-50 file:text-orange-700
+                hover:file:bg-orange-100"
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files || []);
+                      if (files.length > 3) {
+                        alert("You can only upload up to 3 files.");
+                        e.target.value = "";
+                        return;
+                      }
+                      methods.setValue("attachments", files);
+                    }}
+                  />
+                ),
+              },
             ]}
             activeTab={activeTab}
             onTabChange={setActiveTab}
