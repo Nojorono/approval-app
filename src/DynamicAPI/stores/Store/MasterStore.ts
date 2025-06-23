@@ -1,5 +1,14 @@
 import { createCrudStore } from "../CreateCrudStore";
-import { uomService, palletService, IoService, warehouseService, MenuService, ParentMenuService, ItemService } from "../../services/Service/MasterService";
+import {
+    uomService,
+    palletService,
+    IoService,
+    warehouseService,
+    MenuService,
+    ParentMenuService,
+    ItemService,
+    supplierService
+} from "../../services/Service/MasterService";
 
 import { Uom, CreateUom, UpdateUom } from "../../types/UomTypes";
 import { Pallet, CreatePallet, UpdatePallet } from "../../types/PalletTypes";
@@ -8,6 +17,7 @@ import { Warehouse, CreateWarehouse, UpdateWarehouse } from "../../types/Warehou
 import { Menu, CreateMenu, UpdateMenu } from "../../types/MenuTypes";
 
 import { Item, CreateItem, UpdateItem } from "../../types/ItemTypes";
+import {CreateSupplier, Supplier, UpdateSupplier} from "../../types/SupplierTypes.tsx";
 
 export const useStoreUom = createCrudStore<Uom, CreateUom, UpdateUom>({
     name: "UOM",
@@ -42,4 +52,9 @@ export const useStoreParentMenu = createCrudStore<Menu, CreateMenu, UpdateMenu>(
 export const useStoreItem = createCrudStore<Item, CreateItem, UpdateItem>({
     name: "Item",
     service: ItemService,
+});
+
+export const useStoreSupplier = createCrudStore<Supplier, CreateSupplier, UpdateSupplier>({
+    name: "Supplier",
+    service: supplierService,
 });

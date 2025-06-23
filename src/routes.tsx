@@ -25,6 +25,7 @@ import {
 } from "./utils/PagesComponent";
 
 import dummyRoutes from "./helper/dummyRoutes";
+import MasterSupplier from "./pages/Master/MasterSupplier";
 
 const DefaultPage: React.FC = () => {
   return (
@@ -123,6 +124,7 @@ export function AppRoutes() {
       "/master_io": <MasterIO />,
       "/master_warehouse": <MasterWarehouse />,
       "/master_item": <MasterItem />,
+      "/master_supplier": <MasterSupplier />,
     };
 
     return map[path] || <DefaultPage />;
