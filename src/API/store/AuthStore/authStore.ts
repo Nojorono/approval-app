@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { loginService } from '../../services/AuthServices/AuthService';
 
+
 interface AuthState {
   resetAuth: any;
   isLoading: boolean;
@@ -65,15 +66,26 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await loginService(data);
+      const accessToken = response.data.token;
+      const refreshToken = response.data.refreshToken;
+      const user = response.data.user;
+      const menus = response.data.menus;
+      const permissions = response.data.permissions;
 
-      // Simpan token dari response.data.token ke state
+      // Simpan ke localStorage
+      localStorage.setItem(
+        "user_login_data",
+        JSON.stringify({ accessToken, refreshToken, user, menus, permissions })
+      );
+      localStorage.setItem("role_id", user?.role_id?.toString() || "");
+      localStorage.setItem("token", accessToken);
+
       set({
-        accessToken: response.data.token,
-        // refreshToken, user, menus, permissions belum tersedia di response
-        // refreshToken: null,
-        // user: null,
-        // menus: null,
-        // permissions: null,
+        accessToken,
+        refreshToken,
+        user,
+        menus,
+        permissions,
       });
     } catch (err: any) {
       set({ error: err.message });
@@ -92,5 +104,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       menus: null,
       permissions: null,
     });
+    localStorage.removeItem("user_login_data");
+    localStorage.removeItem("role_id");
+    localStorage.removeItem("token");
   },
 }));

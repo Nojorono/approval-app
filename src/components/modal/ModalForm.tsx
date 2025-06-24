@@ -1,6 +1,6 @@
 import React from "react";
-import ModalComponent from "../../components/modal/ModalComponent";
-import ModalForm from "../form-input/ModalForm";
+import ModalComponent from "./ModalComponent";
+import FormModal from "../form-input/FormModal";
 
 interface ReusableFormModalProps {
   isOpen: boolean;
@@ -30,7 +30,7 @@ const ReusableFormModal: React.FC<ReusableFormModalProps> = ({
         title={isEditMode ? "Update Detail" : title}
         size="large"
       >
-        <ModalForm
+        <FormModal
           formFields={formFields}
           onSubmit={(data) => {
             onSubmit(data);

@@ -8,6 +8,7 @@ import Button from "../ui/button/Button";
 import CustomToast, { showSuccessToast } from "../../components/toast";
 // import { useMenuStore } from "../../API/store/MasterStore";
 import { useAuthStore } from "../../API/store/AuthStore/authStore";
+import { useStoreMenu } from "../../DynamicAPI/stores/Store/MasterStore";
 
 interface SignInFormValues {
   username: string;
@@ -21,7 +22,7 @@ interface SignInFormValues {
 export default function SignInForm() {
   const navigate = useNavigate();
   const { authLogin } = useAuthStore();
-  // const { fetchMenus } = useMenuStore();
+  const { fetchAll: fetchMenus } = useStoreMenu();
 
   const [showPassword, setShowPassword] = useState(false);
   const toggleShowPassword = () => setShowPassword((prev) => !prev);
@@ -56,28 +57,12 @@ export default function SignInForm() {
     try {
       await authLogin({
         ...data,
-        // ip_address: ipAddress,
-        // device_info: navigator.userAgent,
-        // platform: "web",
       });
-
-      // const { accessToken, refreshToken, user, menus, permissions } =
-      //   useAuthStore.getState();
-
-      // fetchMenus();
-      // localStorage.setItem(
-      //   "user_login_data",
-      //   JSON.stringify({ accessToken, refreshToken, user, menus, permissions })
-      // );
-      // localStorage.setItem("role_id", user?.role_id.toString() || "");
-
       const { accessToken } = useAuthStore.getState();
-
       if (!accessToken) {
         throw new Error("Login failed!");
       }
-
-      localStorage.setItem("token", accessToken);
+      fetchMenus();
       showSuccessToast("Login successful!");
       setTimeout(() => {
         navigate("/master_menu");

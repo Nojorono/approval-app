@@ -1,5 +1,5 @@
 import React from "react";
-import ReusableFormModal from "../../components/modal/ReusableFormModal";
+import ReusableFormModal from "../modal/ModalForm";
 
 interface Props {
   isOpen: boolean;

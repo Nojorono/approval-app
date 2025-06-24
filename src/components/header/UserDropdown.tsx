@@ -29,7 +29,7 @@ export default function UserDropdown() {
     return storedUserLogin && storedUserLogin !== "undefined"
       ? JSON.parse(storedUserLogin).user
       : null;
-  })();
+  })();  
 
   return (
     <div className="relative">
@@ -42,7 +42,7 @@ export default function UserDropdown() {
         </span>
         {user_login ? (
           <span className="block mr-1 font-medium text-theme-sm">
-            {user_login.employee_name}
+            {user_login.username}
           </span>
         ) : (
           <span className="block mr-1 font-medium text-theme-sm">Guest</span>
@@ -77,10 +77,10 @@ export default function UserDropdown() {
             {user_login ? (
               <>
                 <span className="block text-theme-xs text-gray-500 dark:text-gray-400">
-                  {user_login.employee_id}
+                  {user_login.firstName + " " + user_login.lastName}
                 </span>
                 <span className="block mr-1 font-medium text-theme-sm">
-                  {user_login.employee_name}
+                  {user_login.username}
                 </span>
               </>
             ) : (

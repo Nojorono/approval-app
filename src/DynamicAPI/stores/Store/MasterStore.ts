@@ -1,13 +1,26 @@
 import { createCrudStore } from "../CreateCrudStore";
-import { uomService, palletService, IoService, warehouseService, MenuService, ParentMenuService, ItemService } from "../../services/Service/MasterService";
+import {
+    uomService,
+    palletService,
+    IoService,
+    warehouseService,
+    MenuService,
+    ParentMenuService,
+    ItemService,
+    supplierService,
+    InboundPlanningService,
+    UserService
+} from "../../services/Service/MasterService";
 
 import { Uom, CreateUom, UpdateUom } from "../../types/UomTypes";
 import { Pallet, CreatePallet, UpdatePallet } from "../../types/PalletTypes";
 import { Io, CreateIo, UpdateIo } from "../../types/IoTypes";
 import { Warehouse, CreateWarehouse, UpdateWarehouse } from "../../types/WarehouseTypes";
 import { Menu, CreateMenu, UpdateMenu } from "../../types/MenuTypes";
-
 import { Item, CreateItem, UpdateItem } from "../../types/ItemTypes";
+import { CreateSupplier, Supplier, UpdateSupplier } from "../../types/SupplierTypes.tsx";
+import { CreateInboundPlanning, InboundPlanning, UpdateInboundPlanning } from "../../types/InboundPlanning.tsx";
+import { CreateUser, User, UpdateUser } from "../../types/User.tsx";
 
 export const useStoreUom = createCrudStore<Uom, CreateUom, UpdateUom>({
     name: "UOM",
@@ -42,4 +55,19 @@ export const useStoreParentMenu = createCrudStore<Menu, CreateMenu, UpdateMenu>(
 export const useStoreItem = createCrudStore<Item, CreateItem, UpdateItem>({
     name: "Item",
     service: ItemService,
+});
+
+export const useStoreSupplier = createCrudStore<Supplier, CreateSupplier, UpdateSupplier>({
+    name: "Supplier",
+    service: supplierService,
+});
+
+export const useStoreInboundPlanning = createCrudStore<InboundPlanning, CreateInboundPlanning, UpdateInboundPlanning>({
+    name: "InboundPlanning",
+    service: InboundPlanningService,
+});
+
+export const useStoreUser = createCrudStore<User, CreateUser, UpdateUser>({
+    name: "User",
+    service: UserService,
 });

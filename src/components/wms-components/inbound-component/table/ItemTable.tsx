@@ -26,6 +26,7 @@ const TableComponent = <T extends { id: number }>({
   setGlobalFilter,
   enableSelection = true,
 }: TableComponentProps<T>) => {
+  
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 20,

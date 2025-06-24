@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller } from "react-hook-form";
 import Select from "react-select";
 import DatePicker from "../../../form/date-picker";
@@ -36,7 +36,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   setValue,
   handleSubmit,
 }) => {
-  React.useEffect(() => {
+  useEffect(() => {
     Object.entries(defaultValues).forEach(([key, value]) => {
       setValue(key, value);
     });

@@ -11,7 +11,7 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: ReactNode;
-  size?: "small" | "medium" | "large"; // Untuk lebar modal
+  size?: "small" | "medium" | "large" | "xl";
   height?: string; // Tambahkan properti height
 }
 
@@ -21,35 +21,32 @@ const ModalComponent = ({
   title,
   children,
   size = "medium",
-  height = "auto", // Default tinggi modal
 }: ModalProps) => {
-  // Tentukan ukuran modal berdasarkan size
   const sizeClasses = {
-    small: "sm:max-w-sm", // Lebar kecil
-    medium: "sm:max-w-3xl", // Lebar sedang
-    large: "sm:max-w-7xl", // Lebar besar
+    small: "sm:max-w-sm",
+    medium: "sm:max-w-3xl",
+    large: "sm:max-w-7xl",
+    xl: "sm:max-w-9xl",
   };
 
   return (
-    <Dialog open={isOpen} onClose={() => {}} className="relative z-9999">
+    <Dialog open={isOpen} onClose={() => {}} className="relative z-[1000]">
       <DialogBackdrop
         transition
         className="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 
-      data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
+        data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
       />
-
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+        <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-6">
           <DialogPanel
             transition
-            className={`relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full ${sizeClasses[size]}`}
-            style={{ height }} // Gunakan properti height
+            className={`relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in w-full max-h-[90vh] ${sizeClasses[size]}`}
           >
-            <div className="bg-white px-8 pt-8 pb-8 sm:p-10 sm:pb-10 w-full">
-              {/* Button X untuk close modal */}
+            <div className="relative flex flex-col h-full">
+              {/* Close Button */}
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 focus:outline-none"
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 focus:outline-none z-10"
                 aria-label="Close"
               >
                 <svg
@@ -68,21 +65,19 @@ const ModalComponent = ({
                 </svg>
               </button>
 
-              <div className="sm:flex sm:items-start w-full">
-                <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                  <DialogTitle
-                    as="h2"
-                    className="text-3xl font-medium leading-8 text-gray-900"
-                  >
-                    {title}
-                  </DialogTitle>
-                  <div
-                    className="mt-6 w-full text-lg"
-                    style={{ maxHeight: "auto", overflowY: "auto" }}
-                  >
-                    {children}
-                  </div>
-                </div>
+              {/* Header */}
+              <div className="p-6 border-b">
+                <DialogTitle className="text-2xl font-semibold text-gray-900">
+                  {title}
+                </DialogTitle>
+              </div>
+
+              {/* Body (scrollable if needed) */}
+              <div
+                className="overflow-y-auto p-6"
+                style={{ maxHeight: "calc(90vh - 120px)" }} // hitung tinggi modal dikurangi header & padding
+              >
+                {children}
               </div>
             </div>
           </DialogPanel>

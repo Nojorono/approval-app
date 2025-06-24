@@ -15,21 +15,23 @@ interface TableComponentProps<T> {
   columns: ColumnDef<T>[];
   globalFilter?: string;
   setGlobalFilter?: (value: string) => void;
-  onDetail?: (id: number) => void;
+  onDetail?: (id?: any) => void;
   enableSelection?: boolean;
+  pageSize?: number;
 }
 
-const TableComponent = <T extends { id: number }>({
+const TableComponent = <T extends { id?: any }>({
   data,
   columns,
   globalFilter,
   setGlobalFilter,
   enableSelection = true,
+  pageSize,
 }: TableComponentProps<T>) => {
-  const [pagination, setPagination] = useState({
+  const [pagination, setPagination] = useState(() => ({
     pageIndex: 0,
-    pageSize: 20,
-  });
+    pageSize: pageSize ?? 20,
+  }));
 
   const table = useReactTable<T>({
     data,
@@ -48,7 +50,7 @@ const TableComponent = <T extends { id: number }>({
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     enableRowSelection: enableSelection,
-  });  
+  });
 
   return (
     <>

@@ -34,7 +34,7 @@ const DynamicTable = ({
   getRowId = (row) => row.id,
   title,
 }: Props) => {
-  const [selectedItem, setSelectedItem] = useState<any | null>(null);  
+  const [selectedItem, setSelectedItem] = useState<any | null>(null);
 
   const enhancedColumns = useMemo(() => {
     return [
@@ -44,11 +44,26 @@ const DynamicTable = ({
         header: "Action",
         cell: ({ row }) => (
           <div className="flex gap-2">
-            <button onClick={() => setSelectedItem(row.original)}>
+            {/* <button onClick={() => setSelectedItem(row.original)}>
               <Badge variant="solid" size="sm" color="secondary">
                 <FaEye /> Show
               </Badge>
             </button>
+
+            <button
+              onClick={() => handleDelete(getRowId(row.original))}
+              className="text-red-500"
+            >
+              <FaTrash />
+            </button> */}
+
+            <button
+              className="text-green-600"
+              onClick={() => setSelectedItem(row.original)}
+            >
+              <FaEye />
+            </button>
+
             <button
               onClick={() => handleDelete(getRowId(row.original))}
               className="text-red-500"
@@ -73,7 +88,6 @@ const DynamicTable = ({
     setSelectedItem(null);
     onCloseCreateModal();
   };
-  
 
   return (
     <>
@@ -88,7 +102,6 @@ const DynamicTable = ({
         formFields={formFields}
         title={title}
       />
-
 
       <TableComponent
         data={data}

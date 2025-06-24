@@ -62,7 +62,7 @@ const ModalForm: React.FC<FormInputProps> = ({
 
   const handleSubmit = (data: FormValues) => {
     onSubmit(data); // Kirim data ke parent
-  };  
+  };
 
   const renderField = (field: FormField) => {
     const commonClasses =
@@ -111,6 +111,12 @@ const ModalForm: React.FC<FormInputProps> = ({
                 }}
                 menuPlacement="auto"
                 isDisabled={isDisabled}
+                styles={{
+                  menuPortal: (base) => ({
+                    ...base,
+                    zIndex: 9999, // ⬅️ pastikan dropdown berada di atas modal
+                  }),
+                }}
               />
             )}
           />
@@ -194,8 +200,11 @@ const ModalForm: React.FC<FormInputProps> = ({
       : [];
 
   return (
-    <div className="mx-auto mt-10 p-6 rounded-md">
-      <form onSubmit={handleFormSubmit(handleSubmit)} className="space-y-4">
+    <div className="mx-auto mt-5 p-6 rounded-md bg-red">
+      <form
+        onSubmit={handleFormSubmit(handleSubmit)}
+        className="space-y-4 mb-5"
+      >
         <div
           className={`grid ${
             formFields.length > 6 ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"
@@ -234,7 +243,7 @@ const ModalForm: React.FC<FormInputProps> = ({
             </div>
           )}
         </div>
-        <div className="flex justify-end space-x-2 mt-10">
+        <div className="flex justify-end space-x-2 mt-6 pt-4 border-t">
           {(!isEditMode || isEditing) && (
             <Button type="submit" variant="secondary" size="md">
               Submit

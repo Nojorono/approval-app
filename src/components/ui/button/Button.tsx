@@ -3,7 +3,13 @@ import { ReactNode } from "react";
 interface ButtonProps {
   children: ReactNode; // Button text or content
   size?: "xsm" | "sm" | "md"; // Button size
-  variant?: "primary" | "outline" | "secondary" | "danger" | "rounded"; // Button variant
+  variant?:
+    | "primary"
+    | "outline"
+    | "secondary"
+    | "danger"
+    | "rounded"
+    | "action"; // Button variant
   startIcon?: ReactNode; // Icon before the text
   endIcon?: ReactNode; // Icon after the text
   onClick?: () => void; // Click handler
@@ -25,7 +31,7 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
   // Size Classes
   const sizeClasses = {
-    xsm: "px-2 py-1 text-xs",
+    xsm: "px-3 py-2 text-xs",
     sm: "px-4 py-3 text-sm",
     md: "px-5 py-3.5 text-sm",
   };
@@ -40,6 +46,8 @@ const Button: React.FC<ButtonProps> = ({
       "bg-green-500 text-white shadow-theme-xs hover:bg-green-600 disabled:bg-green-300",
     danger:
       "bg-red-500 text-white shadow-theme-xs hover:bg-red-600 disabled:bg-red-300",
+    action:
+      "bg-blue-500 text-white shadow-theme-xs hover:bg-blue-600 disabled:bg-blue-300",
     outline:
       "bg-white text-orange-700 ring-1 ring-inset ring-orange-300 hover:bg-orange-50 dark:bg-gray-800 dark:text-orange-400 dark:ring-orange-700 dark:hover:bg-white/[0.03] dark:hover:text-orange-300",
   };
