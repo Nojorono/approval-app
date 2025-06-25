@@ -11,9 +11,7 @@ import Spinner from "../../../components/ui/spinner";
 import { usePagePermissions } from "../../../utils/UserPermission/UserPagePermissions";
 import { showErrorToast } from "../../../components/toast";
 import { useDebounce } from "../../../helper/useDebounce";
-
 import { useStoreInboundPlanning } from "../../../DynamicAPI/stores/Store/MasterStore";
-
 
 const TableMasterMenu = () => {
   const navigate = useNavigate();
@@ -44,21 +42,20 @@ const TableMasterMenu = () => {
 
   return (
     <>
-      <>
-        <div className="p-4 bg-white shadow rounded-md mb-5">
-          <div className="flex justify-between items-center">
-            <div className="space-x-4">
-              <Label htmlFor="search">Search</Label>
-              <Input
-                onChange={(e) => setGlobalFilter(e.target.value)}
-                type="text"
-                id="search"
-                placeholder="🔍 Masukan data.."
-              />
-            </div>
+      <div className="p-4 bg-white shadow rounded-md mb-5">
+        <div className="flex justify-between items-center">
+          <div className="space-x-4">
+            <Label htmlFor="search">Search</Label>
+            <Input
+              onChange={(e) => setGlobalFilter(e.target.value)}
+              type="text"
+              id="search"
+              placeholder="🔍 Masukan data.."
+            />
+          </div>
 
-            <div className="space-x-4">
-              {/* <Button variant="outline" size="sm">
+          <div className="space-x-4">
+            {/* <Button variant="outline" size="sm">
                 <FaFileDownload className="mr-2" /> Unduh Data
               </Button>
 
@@ -66,66 +63,65 @@ const TableMasterMenu = () => {
                 <FaFileImport className="mr-2" /> Unggah Data
               </Button> */}
 
-              <Button
-                size="sm"
-                variant="primary"
-                startIcon={<FaPlus className="size-5" />}
-                onClick={() => navigate("/inbound_planning/create")}
-              >
-                Add Inbound Planning
-              </Button>
-            </div>
-          </div>
-
-          <div className="flex justify-between items-center mt-5">
-            <div className="space-x-4">
-              <Label htmlFor="search">Inbound Planning No</Label>
-              <Input type="text" id="search" placeholder="Inbound plan no.." />
-            </div>
-
-            <div className="space-x-4">
-              <Label htmlFor="date-picker">Plan Delivery Date</Label>
-              <DatePicker
-                id="start-date-salesman"
-                placeholder="Select a date"
-                defaultDate={startDate || undefined}
-              />
-            </div>
-
-            <div className="space-x-4">
-              <Label htmlFor="jenis-kunjungan-select">Order Type</Label>
-              <Select
-                options={options}
-                placeholder="Pilih"
-                onChange={(value) => console.log("Selected value:", value)}
-              />
-            </div>
-
-            <div className="space-x-4">
-              <Label htmlFor="jenis-kunjungan-select">Status</Label>
-              <Select
-                options={options}
-                placeholder="Pilih"
-                onChange={(value) => console.log("Selected value:", value)}
-              />
-            </div>
-
-            <div className="flex justify-center items-center mt-5">
-              <Button variant="rounded" size="sm" onClick={handleResetFilters}>
-                <FaUndo />
-              </Button>
-            </div>
+            <Button
+              size="sm"
+              variant="primary"
+              startIcon={<FaPlus className="size-5" />}
+              onClick={() => navigate("/inbound_planning/create")}
+            >
+              Add Inbound Planning
+            </Button>
           </div>
         </div>
 
-        <AdjustTable
-          data={inboundPlanningData}
-          globalFilter={debouncedFilter}
-          setGlobalFilter={setGlobalFilter}
-          onDetail={handleDetail}
-          onRefresh={fetchAll}
-        />
-      </>
+        <div className="flex justify-between items-center mt-5">
+          <div className="space-x-4">
+            <Label htmlFor="search">Inbound Planning No</Label>
+            <Input type="text" id="search" placeholder="Inbound plan no.." />
+          </div>
+
+          <div className="space-x-4">
+            <Label htmlFor="date-picker">Plan Delivery Date</Label>
+            <DatePicker
+              id="start-date-salesman"
+              placeholder="Select a date"
+              defaultDate={startDate || undefined}
+            />
+          </div>
+
+          <div className="space-x-4">
+            <Label htmlFor="jenis-kunjungan-select">Order Type</Label>
+            <Select
+              options={options}
+              placeholder="Pilih"
+              onChange={(value) => console.log("Selected value:", value)}
+            />
+          </div>
+
+          <div className="space-x-4">
+            <Label htmlFor="jenis-kunjungan-select">Status</Label>
+            <Select
+              options={options}
+              placeholder="Pilih"
+              onChange={(value) => console.log("Selected value:", value)}
+            />
+          </div>
+
+          <div className="flex justify-center items-center mt-5">
+            <Button variant="rounded" size="sm" onClick={handleResetFilters}>
+              <FaUndo />
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <AdjustTable
+        data={inboundPlanningData}
+        globalFilter={debouncedFilter}
+        setGlobalFilter={setGlobalFilter}
+        onDetail={handleDetail}
+        onRefresh={fetchAll}
+      />
     </>
   );
 };

@@ -5,9 +5,11 @@ import TableComponent from "../../../components/tables/MasterDataTable/TableComp
 import Badge from "../../../components/ui/badge/Badge";
 import Button from "../../../components/ui/button/Button";
 import { InboundPlanning } from "../../../DynamicAPI/types/InboundPlanning";
-import TabModal from "../../../components/modal/ModalTab";
+import { useNavigate } from "react-router-dom";
+
+import TabModal from "../../../components/modal/type/ModalTab";
 import { usePagePermissions } from "../../../utils/UserPermission/UserPagePermissions";
-import FormModal from "../../../components/modal/ModalForm";
+import FormModal from "../../../components/modal/type/ModalForm";
 
 import { showErrorToast, showSuccessToast } from "../../../components/toast";
 
@@ -26,8 +28,14 @@ const AdjustTable = ({
   onDetail,
   onRefresh,
 }: MenuTableProps) => {
+  const navigate = useNavigate();
+
   const columns: ColumnDef<InboundPlanning>[] = useMemo(
     () => [
+      {
+        accessorKey: "id",
+        header: "ID",
+      },
       {
         accessorKey: "inbound_planning_no",
         header: "Inbound Planning No",
@@ -51,11 +59,11 @@ const AdjustTable = ({
         accessorKey: "client_name",
         header: "Client Name",
       },
-      {
-        accessorKey: "warehouse_id",
-        header: "Warehouse ID",
-        cell: ({ row }) => row.original.warehouse_id ?? "",
-      },
+      // {
+      //   accessorKey: "warehouse_id",
+      //   header: "Warehouse ID",
+      //   cell: ({ row }) => row.original.warehouse_id ?? "",
+      // },
       {
         accessorKey: "po_no",
         header: "PO No",
@@ -95,7 +103,7 @@ const AdjustTable = ({
           if (status === "IN_PROGRESS") {
             return (
               <Button
-                variant="action"
+                variant="outline"
                 size="xsm"
                 onClick={() =>
                   handleModalTab(String(row.original.inbound_planning_no))
@@ -170,8 +178,7 @@ const AdjustTable = ({
   const [inboundPlanId, setInboundPlanId] = useState<string | null>(null);
 
   const handleModalTab = (id: string) => {
-    setInboundPlanId(String(id));
-    setOpenMdlTab(true);
+    navigate("/inbound_planning/detail", { state: { id } });
   };
 
   const onClose = () => {
@@ -225,14 +232,7 @@ const AdjustTable = ({
         globalFilter={globalFilter}
         setGlobalFilter={setGlobalFilter}
         onDetail={onDetail}
-      />
-
-      <TabModal
-        isOpen={openMdlTab}
-        onClose={onClose}
-        onSubmit={(data) => handleSubmit(data)}
-        formFields={formFields}
-        title={inboundPlanId || "Inbound Plan Details"}
+        pageSize={5}
       />
     </>
   );

@@ -23,6 +23,8 @@ import {
   MasterItem,
 } from "./utils/PagesComponent";
 import MasterSupplier from "./pages/Master/MasterSupplier";
+import DetailInbound from "./pages/Inbound/Table/DetailInbound";
+import dummyRoutes from "./helper/dummyRoutes";
 
 const DefaultPage = () => (
   <div style={{ textAlign: "center", marginTop: "50px" }}>
@@ -72,7 +74,7 @@ export function AppRoutes() {
     ],
     "/inbound_planning": [
       { path: "create", element: <CreateInbound /> },
-      { path: "detail", element: <CreateInbound /> },
+      { path: "detail", element: <DetailInbound /> },
     ],
   };
 

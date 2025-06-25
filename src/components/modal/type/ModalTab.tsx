@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
-import ModalComponent from "./ModalComponent";
-import TabsSection from "../wms-components/inbound-component/tabs/TabsSection";
-import TableComponent from "../tables/MasterDataTable/TableComponent";
+import ModalComponent from "../ModalComponent";
+import TabsSection from "../../wms-components/inbound-component/tabs/TabsSection";
+import TableComponent from "../../tables/MasterDataTable/TableComponent";
 import {
   itemDetailsData,
   itemDetailsColumns,
@@ -9,8 +9,8 @@ import {
   transportLoadingColumns,
   scanHistoryData,
   scanHistoryColumns,
-} from "../../helper/dummyDataInbound";
-import Button from "../../components/ui/button/Button";
+} from "../../../helper/dummyDataInbound";
+import Button from "../../ui/button/Button";
 import { FaEye, FaPlus } from "react-icons/fa";
 
 interface ReusableFormModalProps {
@@ -46,16 +46,16 @@ const ReusableFormModal: React.FC<ReusableFormModalProps> = ({
         <div>
           <div className="mb-4 flex justify-between items-center">
             <div />
-            <Button
+            {/* <Button
               variant="primary"
               size="xsm"
               startIcon={<FaPlus className="size-5" />}
             >
               Add Checker
-            </Button>
+            </Button> */}
           </div>
 
-          <TabsSection
+          {/* <TabsSection
             tabs={[
               {
                 label: "Item Details",
@@ -88,7 +88,7 @@ const ReusableFormModal: React.FC<ReusableFormModalProps> = ({
             ]}
             activeTab={activeTab}
             onTabChange={setActiveTab}
-          />
+          /> */}
         </div>
       </ModalComponent>
     </>

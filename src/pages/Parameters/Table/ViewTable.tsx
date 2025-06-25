@@ -3,7 +3,7 @@ import { FaPlus, FaFileImport, FaFileDownload, FaUndo } from "react-icons/fa";
 
 import Input from "../../../components/form/input/InputField";
 import AdjustTable from "../Table/AdjustTable";
-import ReusableFormModal from "../../../components/modal/ModalForm";
+import ReusableFormModal from "../../../components/modal/type/ModalForm";
 import Button from "../../../components/ui/button/Button";
 import { usePagePermissions } from "../../../utils/UserPermission/UserPagePermissions";
 import { useParametersStore } from "../../../API/store/ParameterStore/parameterStore";

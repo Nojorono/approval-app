@@ -1,6 +1,8 @@
-import React from "react";
-import ModalComponent from "./ModalComponent";
-import FormModal from "../form-input/FormModal";
+import React, { useState, useMemo } from "react";
+import ModalComponent from "../ModalComponent";
+import AssignChecker from "../../../pages/Inbound/Screen/AssignChecker";
+import Button from "../../ui/button/Button";
+import { FaEye, FaPlus } from "react-icons/fa";
 
 interface ReusableFormModalProps {
   isOpen: boolean;
@@ -28,17 +30,9 @@ const ReusableFormModal: React.FC<ReusableFormModalProps> = ({
         isOpen={isOpen}
         onClose={onClose}
         title={isEditMode ? "Update Detail" : title}
-        size="large"
+        size="medium"
       >
-        <FormModal
-          formFields={formFields}
-          onSubmit={(data) => {
-            onSubmit(data);
-          }}
-          onClose={onClose}
-          defaultValues={defaultValues}
-          isEditMode={isEditMode}
-        />
+        <AssignChecker />
       </ModalComponent>
     </>
   );
