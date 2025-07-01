@@ -14,7 +14,8 @@ import MasterUOM from "../pages/Master/MasterUOM";
 import MasterIO from "../pages/Master/MasterIO";
 import MasterWarehouse from "../pages/Master/MasterWarehouse";
 import MasterItem from "../pages/Master/MasterItem";
-
+import MasterClassification from "../pages/Master/MasterClassification";
+import MasterVehicle from "../pages/Master/MasterVehicle";
 
 export {
   // PAGE MASTER
@@ -25,6 +26,8 @@ export {
   MasterIO,
   MasterWarehouse,
   MasterItem,
+  MasterClassification,
+  MasterVehicle,
 
   // MASTER ROLES PAGE
   MasterRole,

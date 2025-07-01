@@ -13,6 +13,7 @@ interface ReusableFormModalProps {
   defaultValues?: any;
   isEditMode?: boolean;
   setIsEditMode?: (val: boolean) => void;
+  parmeters?: any;
 }
 
 const ReusableFormModal: React.FC<ReusableFormModalProps> = ({
@@ -23,6 +24,7 @@ const ReusableFormModal: React.FC<ReusableFormModalProps> = ({
   title,
   defaultValues,
   isEditMode = false,
+  parmeters,
 }) => {
   return (
     <>
@@ -32,7 +34,7 @@ const ReusableFormModal: React.FC<ReusableFormModalProps> = ({
         title={isEditMode ? "Update Detail" : title}
         size="medium"
       >
-        <AssignChecker />
+        <AssignChecker formFields={formFields} parmeters={parmeters} />
       </ModalComponent>
     </>
   );

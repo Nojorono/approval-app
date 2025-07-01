@@ -7,10 +7,6 @@ import Button from "../../../components/ui/button/Button";
 import { InboundPlanning } from "../../../DynamicAPI/types/InboundPlanning";
 import { useNavigate } from "react-router-dom";
 
-import TabModal from "../../../components/modal/type/ModalTab";
-import { usePagePermissions } from "../../../utils/UserPermission/UserPagePermissions";
-import FormModal from "../../../components/modal/type/ModalForm";
-
 import { showErrorToast, showSuccessToast } from "../../../components/toast";
 
 type MenuTableProps = {
@@ -105,9 +101,7 @@ const AdjustTable = ({
               <Button
                 variant="outline"
                 size="xsm"
-                onClick={() =>
-                  handleModalTab(String(row.original.inbound_planning_no))
-                }
+                onClick={() => handleModalTab(row.original)}
                 startIcon={<FaEye className="size-5" />}
               >
                 Detail
@@ -121,64 +115,13 @@ const AdjustTable = ({
     [onDetail]
   );
 
-  const formFields = [
-    {
-      name: "inbound_plan_id",
-      label: "Inbound Plan ID",
-      type: "text",
-      validation: { required: "Required" },
-    },
-    {
-      name: "checker_leader_id",
-      label: "Checker Leader ID",
-      type: "text",
-      validation: { required: "Required" },
-    },
-    {
-      name: "checkers",
-      label: "Checkers",
-      type: "array",
-      fields: [
-        {
-          name: "id",
-          label: "Checker ID",
-          type: "text",
-          validation: { required: "Required" },
-        },
-        {
-          name: "name",
-          label: "Checker Name",
-          type: "text",
-          validation: { required: "Required" },
-        },
-      ],
-      validation: { required: "At least one checker is required" },
-    },
-    {
-      name: "status",
-      label: "Status",
-      type: "text",
-      validation: { required: "Required" },
-    },
-    {
-      name: "assign_date_start",
-      label: "Assign Date Start",
-      type: "datetime-local",
-      validation: { required: "Required" },
-    },
-    {
-      name: "assign_date_finish",
-      label: "Assign Date Finish",
-      type: "datetime-local",
-      validation: { required: "Required" },
-    },
-  ];
-
   const [openMdlTab, setOpenMdlTab] = useState(false);
   const [inboundPlanId, setInboundPlanId] = useState<string | null>(null);
 
-  const handleModalTab = (id: string) => {
-    navigate("/inbound_planning/detail", { state: { id } });
+  const handleModalTab = (data: any) => {
+    console.log("Opening modal for data:", data);
+
+    navigate("/inbound_planning/detail", { state: { data } });
   };
 
   const onClose = () => {

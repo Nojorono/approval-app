@@ -1,24 +1,24 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import TabsSection from "../../../components/wms-components/inbound-component/tabs/TabsSection";
 import { ColumnDef } from "@tanstack/react-table";
 import Badge from "../../../components/ui/badge/Badge";
-import { FaPlus, FaTrash } from "react-icons/fa";
+import {
+  FaBox,
+  FaCube,
+  FaCubes,
+  FaPlus,
+  FaTrash,
+  FaUserPlus,
+} from "react-icons/fa";
 import { useForm } from "react-hook-form";
-import DynamicForm, {
-  FieldConfig,
-} from "../../../components/wms-components/inbound-component/form/DynamicForm";
+import { FieldConfig } from "../../../components/wms-components/inbound-component/form/DynamicForm";
 import DatePicker from "../../../components/form/date-picker";
 import Button from "../../../components/ui/button/Button";
 import { showErrorToast, showSuccessToast } from "../../../components/toast";
 import { useStoreInboundPlanning } from "../../../DynamicAPI/stores/Store/MasterStore";
 import {
-  InboundPlanning,
-  InboundPlanningItem,
-} from "../../../DynamicAPI/types/InboundPlanning";
-import {
   itemDetailsData,
-  itemDetailsColumns,
   transportLoadingData,
   transportLoadingColumns,
   scanHistoryData,
@@ -31,8 +31,8 @@ import { ModalAssign } from "../../../components/modal/type";
 const DetailInbound = () => {
   const location = useLocation();
 
-  const { id } = location.state || {};
-  const { createData } = useStoreInboundPlanning();
+  const { data } = location.state || {};
+  const { fetchById, detail } = useStoreInboundPlanning();
   const [openMdlTab, setOpenMdlTab] = useState(false);
   const [inboundPlanId, setInboundPlanId] = useState<string | null>(null);
 
@@ -46,6 +46,32 @@ const DetailInbound = () => {
   const [editableItems, setEditableItems] = useState<any[]>([]);
 
   const selectedPO = poList[0] || {};
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchById(data?.id);
+    };
+    fetchData();
+  }, []);
+
+  // Destructure detail data from store for easier usage
+  const {
+    id,
+    inbound_planning_no,
+    organization_id,
+    delivery_no,
+    po_no,
+    client_name,
+    order_type,
+    task_type,
+    notes,
+    supplier_id,
+    warehouse_id,
+    plan_delivery_date,
+    plan_status,
+    plan_type,
+    items = [],
+  } = detail || {};
 
   const fetchPoDetail = async (poNo: string) => {
     setPoList([]);
@@ -89,38 +115,37 @@ const DetailInbound = () => {
   };
 
   const onSubmit = (formData: any) => {
-    const payload: InboundPlanning = {
-      inbound_planning_no: "", // or generate if needed
-      organization_id: 1,
-      delivery_no: formData.receipt_no || "",
-      po_no: poNoInput,
-      client_name: formData.supplier_name || "",
-      order_type: formData.order_type.value || "",
-      task_type: formData.receive_type.value || "",
-      notes: formData.notes || "",
-      supplier_id: String(selectedPO.ID_VENDOR) || "",
-      warehouse_id: formData.warehouse_id.value || "",
-      plan_delivery_date: formData.plan_date
-        ? new Date(formData.plan_date).toISOString()
-        : "",
-      plan_status: "",
-      plan_type: "",
-      items: editableItems.map(
-        (item): InboundPlanningItem => ({
-          inbound_plan_id: "",
-          item_id: String(item.SKU),
-          expired_date: item.expired_date
-            ? new Date(item.expired_date).toISOString()
-            : "",
-          qty_plan: Number(item.PO_LINE_QUANTITY) || 0,
-          uom: item.UOM || "",
-          classification_item_id: item.classification || "",
-        })
-      ),
-    };
-
-    console.log("Full Payload:", payload);
-    createData(payload);
+    // const payload: InboundPlanning = {
+    //   inbound_planning_no: "", // or generate if needed
+    //   organization_id: 1,
+    //   delivery_no: formData.receipt_no || "",
+    //   po_no: poNoInput,
+    //   client_name: formData.supplier_name || "",
+    //   order_type: formData.order_type.value || "",
+    //   task_type: formData.receive_type.value || "",
+    //   notes: formData.notes || "",
+    //   supplier_id: String(selectedPO.ID_VENDOR) || "",
+    //   warehouse_id: formData.warehouse_id.value || "",
+    //   plan_delivery_date: formData.plan_date
+    //     ? new Date(formData.plan_date).toISOString()
+    //     : "",
+    //   plan_status: "",
+    //   plan_type: "",
+    //   items: editableItems.map(
+    //     (item): InboundPlanningItem => ({
+    //       inbound_plan_id: "",
+    //       item_id: String(item.SKU),
+    //       expired_date: item.expired_date
+    //         ? new Date(item.expired_date).toISOString()
+    //         : "",
+    //       qty_plan: Number(item.PO_LINE_QUANTITY) || 0,
+    //       uom: item.UOM || "",
+    //       classification_item_id: item.classification || "",
+    //     })
+    //   ),
+    // };
+    // console.log("Full Payload:", payload);
+    // createData(payload);
   };
 
   const updateItemField = (index: number, field: string, value: any) => {
@@ -296,21 +321,15 @@ const DetailInbound = () => {
 
   const formFields = [
     {
-      name: "inbound_plan_id",
-      label: "Inbound Plan ID",
-      type: "text",
-      validation: { required: "Required" },
-    },
-    {
       name: "checker_leader_id",
       label: "Checker Leader ID",
-      type: "text",
+      type: "select",
       validation: { required: "Required" },
     },
     {
       name: "checkers",
       label: "Checkers",
-      type: "array",
+      type: "multiselect",
       fields: [
         {
           name: "id",
@@ -341,8 +360,38 @@ const DetailInbound = () => {
     },
     {
       name: "status",
-      label: "",
-      type: "checkbox",
+      label: "Status",
+      type: "text",
+    },
+  ];
+
+  // Mapping detail items for table usage
+  const mappedItemDetails = items.map((item: any) => ({
+    sku: item?.item?.sku || "",
+    item_name: item?.item?.name || "",
+    inbound_plan_id: detail?.id || "",
+    expired_date: item?.expired_date || "",
+    qty_plan: Number(item?.qty_plan ?? 0),
+    uom: item?.uom || "",
+    classification_item_id: item?.classification_item?.id || "",
+  }));
+
+  const itemDetailsColumns: ColumnDef<any>[] = [
+    {
+      header: "SKU",
+      accessorKey: "sku",
+    },
+    {
+      header: "Item Name",
+      accessorKey: "item_name",
+    },
+    {
+      header: "Quantity",
+      accessorKey: "qty_plan",
+    },
+    {
+      header: "UOM",
+      accessorKey: "uom",
     },
   ];
 
@@ -351,19 +400,37 @@ const DetailInbound = () => {
       <PageBreadcrumb
         breadcrumbs={[
           { title: "Inbound Planning", path: "/inbound_planning" },
-          { title: "Detail Inbound Planning" },
+          { title: `Detail Inbound Planning` },
         ]}
       />
-
-      {/* <DynamicForm
-        fields={fields}
-        onSubmit={methods.handleSubmit(onSubmit)}
-        defaultValues={{}}
-        control={methods.control}
-        register={methods.register}
-        setValue={methods.setValue}
-        handleSubmit={methods.handleSubmit}
-      /> */}
+      <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
+        <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+          <div className="flex flex-col items-center w-full gap-6 xl:flex-row">
+            <div className="w-20 h-20 overflow-hidden">
+              <FaCubes className="absolute w-20 h-20 text-orange-400 dark:text-orange-600" />
+            </div>
+            <div className="order-3 xl:order-2">
+              <h4 className="mb-2 text-lg font-semibold text-center text-gray-800 dark:text-white/90 xl:text-left">
+                Inbound Planning :
+              </h4>
+              <h5 className="mb-2 text-lg font-semibold text-center text-gray-800 dark:text-white/90 xl:text-left">
+                {inbound_planning_no || "N/A"}
+              </h5>
+            </div>
+            <div className="flex items-center order-2 gap-2 grow xl:order-3 xl:justify-end">
+              <Button
+                type="button"
+                variant="primary"
+                size="md"
+                onClick={() => setOpenMdlTab(true)}
+                startIcon={<FaUserPlus size={18} />}
+              >
+                Assign Checker
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <ModalAssign
         isOpen={openMdlTab}
@@ -371,20 +438,8 @@ const DetailInbound = () => {
         onSubmit={(data) => handleSubmit(data)}
         formFields={formFields}
         title={"Assign Checker"}
+        parmeters={{ id }}
       />
-
-      <div className="flex justify-end mt-6">
-        {/* <h1>Inbound No : IN-12345ABC</h1> */}
-        <Button
-          type="button"
-          variant="primary"
-          size="md"
-          onClick={() => setOpenMdlTab(true)}
-          startIcon={<FaPlus />}
-        >
-          Assign Checker
-        </Button>
-      </div>
 
       <div className="mt-6 mb-4">
         <TabsSection
@@ -393,7 +448,7 @@ const DetailInbound = () => {
               label: "Item Details",
               content: (
                 <TableComponent
-                  data={itemDetailsData}
+                  data={mappedItemDetails}
                   columns={itemDetailsColumns}
                   pageSize={5}
                 />
@@ -431,7 +486,7 @@ const DetailInbound = () => {
         />
       </div>
 
-      {/* <div className="flex justify-end mt-6">
+      <div className="flex justify-end mt-6">
         <Button
           type="submit"
           variant="primary"
@@ -440,7 +495,7 @@ const DetailInbound = () => {
         >
           SAVE
         </Button>
-      </div> */}
+      </div>
     </div>
   );
 };

@@ -1,14 +1,8 @@
-export interface InboundPlanningItem {
-  inbound_plan_id: string;
-  item_id: string;
-  expired_date: string;
-  qty_plan: number;
-  uom: string;
-  classification_item_id: string;
-}
+// =============================
+// SHARED TYPES
+// =============================
 
-export interface InboundPlanning {
-  id?: any;
+export interface InboundPlanningBase {
   inbound_planning_no: string;
   organization_id: number;
   delivery_no: string;
@@ -19,11 +13,105 @@ export interface InboundPlanning {
   notes: string;
   supplier_id: string;
   warehouse_id: string;
-  items: InboundPlanningItem[];
   plan_delivery_date: string;
   plan_status: string;
   plan_type: string;
 }
 
-export type CreateInboundPlanning = Omit<InboundPlanning, "id">;
+// =============================
+// POST Payload (Create)
+// =============================
+
+export interface InboundPlanningItemCreate {
+  inbound_plan_id: string;
+  sku: string;
+  expired_date: string;
+  qty_plan: number;
+  uom: string;
+  classification_item_id: string;
+}
+
+export interface CreateInboundPlanning extends InboundPlanningBase {
+  items: InboundPlanningItemCreate[];
+}
+
+// =============================
+// GET ALL / GET BY ID (Read)
+// =============================
+
+export interface ItemDetail {
+  id?: any;
+  sku: string;
+  name: string;
+  description: string;
+  organization_id: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface InboundPlanningItemRead {
+  id?: any;
+  item: ItemDetail | null;
+  expired_date: string;
+  qty_plan: string;
+  uom: string;
+  classification_item: any;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface InboundPlanning extends InboundPlanningBase {
+  id?: any;
+  items: InboundPlanningItemRead[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// =============================
+// UPDATE Payload (Partial Create)
+// =============================
+
 export type UpdateInboundPlanning = Partial<CreateInboundPlanning>;
+
+// export interface InboundPlanningItemDetail {
+//   id?: any;
+//   sku: string;
+//   name: string;
+//   description: string;
+//   expired_date: string;
+//   organization_id: number;
+// }
+
+// export interface InboundPlanningItem {
+//   id?: any;
+//   inbound_plan_id: string;
+//   name: string;
+//   sku: string;
+//   expired_date: string;
+//   qty_plan: number;
+//   uom: string;
+//   classification_item_id: string;
+//   item: InboundPlanningItemDetail[];
+// }
+
+// export interface InboundPlanning {
+//   id?: any;
+//   supplier_address?: string;
+//   inbound_planning_no: string;
+//   organization_id: number;
+//   delivery_no: string;
+//   po_no: string;
+//   client_name: string;
+//   order_type: string;
+//   task_type: string;
+//   notes: string;
+//   supplier_id: string;
+//   warehouse_id: string;
+//   items: InboundPlanningItem[];
+//   plan_delivery_date: string;
+//   plan_status: string;
+//   plan_type: string;
+// }
+
+// export type CreateInboundPlanning = Omit<InboundPlanning, "id">;
+// export type UpdateInboundPlanning = Partial<CreateInboundPlanning>;

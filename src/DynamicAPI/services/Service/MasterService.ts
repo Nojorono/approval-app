@@ -8,7 +8,11 @@ import { Warehouse, CreateWarehouse, UpdateWarehouse } from "../../types/Warehou
 import { Menu, CreateMenu, UpdateMenu } from "../../types/MenuTypes";
 import { Item, CreateItem, UpdateItem } from "../../types/ItemTypes";
 import { InboundPlanning, CreateInboundPlanning, UpdateInboundPlanning } from "../../types/InboundPlanning";
-import { User, CreateUser, UpdateUser } from "../../types/User";
+import { User, CreateUser, UpdateUser } from "../../types/UserTypes";
+import { CheckerAssign, CreateCheckerAssign, UpdateCheckerAssign } from "../../types/CheckerAssign";
+import { Classification, CreateClassification, UpdateClassification } from "../../types/Classification";
+import { Vehicle, CreateVehicle, UpdateVehicle } from "../../types/VehicleTypes";
+
 
 
 // Daftar semua entitas service di sini
@@ -22,7 +26,9 @@ export const ParentMenuService = createCrudService<Menu, CreateMenu, UpdateMenu>
 export const ItemService = createCrudService<Item, CreateItem, UpdateItem>("/master-item");
 export const InboundPlanningService = createCrudService<InboundPlanning, CreateInboundPlanning, UpdateInboundPlanning>("/inbound-plan");
 export const UserService = createCrudService<User, CreateUser, UpdateUser>("/user");
+export const CheckerAssignService = createCrudService<CheckerAssign, CreateCheckerAssign, UpdateCheckerAssign>("/checker-assign");
+export const ClassificationService = createCrudService<Classification, CreateClassification, UpdateClassification>("/master-classification-item");
 
-
+export const VehicleService = createCrudService<Vehicle, CreateVehicle, UpdateVehicle>("/master-vehicle");
 
 

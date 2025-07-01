@@ -9,7 +9,10 @@ import {
     ItemService,
     supplierService,
     InboundPlanningService,
-    UserService
+    UserService,
+    CheckerAssignService,
+    ClassificationService,
+    VehicleService
 } from "../../services/Service/MasterService";
 
 import { Uom, CreateUom, UpdateUom } from "../../types/UomTypes";
@@ -19,8 +22,17 @@ import { Warehouse, CreateWarehouse, UpdateWarehouse } from "../../types/Warehou
 import { Menu, CreateMenu, UpdateMenu } from "../../types/MenuTypes";
 import { Item, CreateItem, UpdateItem } from "../../types/ItemTypes";
 import { CreateSupplier, Supplier, UpdateSupplier } from "../../types/SupplierTypes.tsx";
-import { CreateInboundPlanning, InboundPlanning, UpdateInboundPlanning } from "../../types/InboundPlanning.tsx";
-import { CreateUser, User, UpdateUser } from "../../types/User.tsx";
+import { InboundPlanning, CreateInboundPlanning, UpdateInboundPlanning } from "../../types/InboundPlanning";
+import { CreateUser, User, UpdateUser } from "../../types/UserTypes.tsx";
+import { CreateCheckerAssign, CheckerAssign, UpdateCheckerAssign } from "../../types/CheckerAssign.tsx";
+import { CreateClassification, Classification, UpdateClassification } from "../../types/Classification.tsx";
+
+import { CreateVehicle, Vehicle, UpdateVehicle } from "../../types/VehicleTypes.tsx";
+
+
+
+
+
 
 export const useStoreUom = createCrudStore<Uom, CreateUom, UpdateUom>({
     name: "UOM",
@@ -70,4 +82,19 @@ export const useStoreInboundPlanning = createCrudStore<InboundPlanning, CreateIn
 export const useStoreUser = createCrudStore<User, CreateUser, UpdateUser>({
     name: "User",
     service: UserService,
+});
+
+export const useStoreCheckerAssign = createCrudStore<CheckerAssign, CreateCheckerAssign, UpdateCheckerAssign>({
+    name: "CheckerAssign",
+    service: CheckerAssignService,
+});
+
+export const useStoreClassification = createCrudStore<Classification, CreateClassification, UpdateClassification>({
+    name: "Classification",
+    service: ClassificationService,
+});
+
+export const useStoreVehicle = createCrudStore<Vehicle, CreateVehicle, UpdateVehicle>({
+    name: "Vehicle",
+    service: VehicleService,
 });
