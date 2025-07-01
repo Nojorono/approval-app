@@ -12,7 +12,8 @@ import {
     UserService,
     CheckerAssignService,
     ClassificationService,
-    VehicleService
+    VehicleService,
+    TransporterService,
 } from "../../services/Service/MasterService";
 
 import { Uom, CreateUom, UpdateUom } from "../../types/UomTypes";
@@ -22,16 +23,12 @@ import { Warehouse, CreateWarehouse, UpdateWarehouse } from "../../types/Warehou
 import { Menu, CreateMenu, UpdateMenu } from "../../types/MenuTypes";
 import { Item, CreateItem, UpdateItem } from "../../types/ItemTypes";
 import { CreateSupplier, Supplier, UpdateSupplier } from "../../types/SupplierTypes.tsx";
-import { InboundPlanning, CreateInboundPlanning, UpdateInboundPlanning } from "../../types/InboundPlanning";
+import { InboundPlanning, CreateInboundPlanning, UpdateInboundPlanning } from "../../types/InboundPlanningTypes.tsx";
 import { CreateUser, User, UpdateUser } from "../../types/UserTypes.tsx";
-import { CreateCheckerAssign, CheckerAssign, UpdateCheckerAssign } from "../../types/CheckerAssign.tsx";
-import { CreateClassification, Classification, UpdateClassification } from "../../types/Classification.tsx";
-
+import { CreateCheckerAssign, CheckerAssign, UpdateCheckerAssign } from "../../types/CheckerAssignTypes.tsx";
+import { CreateClassification, Classification, UpdateClassification } from "../../types/ClassificationTypes.tsx";
 import { CreateVehicle, Vehicle, UpdateVehicle } from "../../types/VehicleTypes.tsx";
-
-
-
-
+import { CreateTransporter, Transporter, UpdateTransporter } from "../../types/TransporterTypes.tsx";
 
 
 export const useStoreUom = createCrudStore<Uom, CreateUom, UpdateUom>({
@@ -97,4 +94,9 @@ export const useStoreClassification = createCrudStore<Classification, CreateClas
 export const useStoreVehicle = createCrudStore<Vehicle, CreateVehicle, UpdateVehicle>({
     name: "Vehicle",
     service: VehicleService,
+});
+
+export const useStoreTransporter = createCrudStore<Transporter, CreateTransporter, UpdateTransporter>({
+    name: "Transporter",
+    service: TransporterService,
 });

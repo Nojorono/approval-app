@@ -25,7 +25,7 @@ import {
   MasterVehicle,
 } from "./utils/PagesComponent";
 import MasterSupplier from "./pages/Master/MasterSupplier";
-import DetailInbound from "./pages/Inbound/Table/DetailInbound";
+import DetailInbound from "./pages/Inbound/Table/Detail/DetailInbound";
 import dummyRoutes from "./helper/dummyRoutes";
 
 const DefaultPage = () => (

@@ -8,7 +8,7 @@ import CreateRole from "../pages/Master/MasterRole/Screen/CreateRole";
 import UpdateRole from "../pages/Master/MasterRole/Screen/UpdateRole";
 
 import Inbound from "../pages/Inbound";
-import CreateInbound from "../pages/Inbound/Table/CreateInbound";
+import CreateInbound from "../pages/Inbound/Table/Create/CreateInbound";
 import MasterPallet from "../pages/Master/MasterPallet";
 import MasterUOM from "../pages/Master/MasterUOM";
 import MasterIO from "../pages/Master/MasterIO";

@@ -22,8 +22,6 @@ export function useAutoLogout() {
           }
         );
 
-        console.log("Fetched user profile for auto logout:", data);
-
         // if (data.user.last_login !== user?.last_login) {
         //   alert("Anda login di device lain, sesi Anda akan berakhir.");
         //   logout();

@@ -79,10 +79,7 @@ export const createUser = async (payload: User) => {
 
 export const fetchDetailUser = async (employee_id: any) => {
   try {
-    const res = await axiosInstance.get(`/user/profile/${employee_id}`);
-
-    console.log('Fetched user details:', res);
-    
+    const res = await axiosInstance.get(`/user/profile/${employee_id}`);    
     return res.data.data;
   } catch (error: any) {
     console.error(

@@ -49,13 +49,26 @@ export interface ItemDetail {
   updatedAt: string;
 }
 
+// =============================
+// CLASSIFICATION TYPES
+// =============================
+
+export interface ClassificationItem {
+  id: string;
+  classification_name: string;
+  classification_code: string;
+  classification_description: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface InboundPlanningItemRead {
   id?: any;
   item: ItemDetail | null;
   expired_date: string;
   qty_plan: string;
   uom: string;
-  classification_item: any;
+  classification_item: ClassificationItem | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -72,46 +85,3 @@ export interface InboundPlanning extends InboundPlanningBase {
 // =============================
 
 export type UpdateInboundPlanning = Partial<CreateInboundPlanning>;
-
-// export interface InboundPlanningItemDetail {
-//   id?: any;
-//   sku: string;
-//   name: string;
-//   description: string;
-//   expired_date: string;
-//   organization_id: number;
-// }
-
-// export interface InboundPlanningItem {
-//   id?: any;
-//   inbound_plan_id: string;
-//   name: string;
-//   sku: string;
-//   expired_date: string;
-//   qty_plan: number;
-//   uom: string;
-//   classification_item_id: string;
-//   item: InboundPlanningItemDetail[];
-// }
-
-// export interface InboundPlanning {
-//   id?: any;
-//   supplier_address?: string;
-//   inbound_planning_no: string;
-//   organization_id: number;
-//   delivery_no: string;
-//   po_no: string;
-//   client_name: string;
-//   order_type: string;
-//   task_type: string;
-//   notes: string;
-//   supplier_id: string;
-//   warehouse_id: string;
-//   items: InboundPlanningItem[];
-//   plan_delivery_date: string;
-//   plan_status: string;
-//   plan_type: string;
-// }
-
-// export type CreateInboundPlanning = Omit<InboundPlanning, "id">;
-// export type UpdateInboundPlanning = Partial<CreateInboundPlanning>;

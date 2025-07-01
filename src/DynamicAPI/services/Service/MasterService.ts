@@ -7,12 +7,12 @@ import { Io, CreateIo, UpdateIo } from "../../types/IoTypes";
 import { Warehouse, CreateWarehouse, UpdateWarehouse } from "../../types/WarehouseTypes";
 import { Menu, CreateMenu, UpdateMenu } from "../../types/MenuTypes";
 import { Item, CreateItem, UpdateItem } from "../../types/ItemTypes";
-import { InboundPlanning, CreateInboundPlanning, UpdateInboundPlanning } from "../../types/InboundPlanning";
+import { InboundPlanning, CreateInboundPlanning, UpdateInboundPlanning } from "../../types/InboundPlanningTypes";
 import { User, CreateUser, UpdateUser } from "../../types/UserTypes";
-import { CheckerAssign, CreateCheckerAssign, UpdateCheckerAssign } from "../../types/CheckerAssign";
-import { Classification, CreateClassification, UpdateClassification } from "../../types/Classification";
+import { CheckerAssign, CreateCheckerAssign, UpdateCheckerAssign } from "../../types/CheckerAssignTypes";
+import { Classification, CreateClassification, UpdateClassification } from "../../types/ClassificationTypes";
 import { Vehicle, CreateVehicle, UpdateVehicle } from "../../types/VehicleTypes";
-
+import { Transporter, CreateTransporter, UpdateTransporter } from "../../types/TransporterTypes";
 
 
 // Daftar semua entitas service di sini
@@ -28,7 +28,10 @@ export const InboundPlanningService = createCrudService<InboundPlanning, CreateI
 export const UserService = createCrudService<User, CreateUser, UpdateUser>("/user");
 export const CheckerAssignService = createCrudService<CheckerAssign, CreateCheckerAssign, UpdateCheckerAssign>("/checker-assign");
 export const ClassificationService = createCrudService<Classification, CreateClassification, UpdateClassification>("/master-classification-item");
-
 export const VehicleService = createCrudService<Vehicle, CreateVehicle, UpdateVehicle>("/master-vehicle");
+
+
+export const TransporterService = createCrudService<Transporter, CreateTransporter, UpdateTransporter>("/inbound-transporter");
+
 
 

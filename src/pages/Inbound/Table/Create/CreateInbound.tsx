@@ -1,27 +1,30 @@
 import React, { useState, useMemo, useEffect } from "react";
-import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
-import TabsSection from "../../../components/wms-components/inbound-component/tabs/TabsSection";
+import { useNavigate } from "react-router-dom";
+import PageBreadcrumb from "../../../../components/common/PageBreadCrumb";
+import TabsSection from "../../../../components/wms-components/inbound-component/tabs/TabsSection";
 import { ColumnDef } from "@tanstack/react-table";
-import Badge from "../../../components/ui/badge/Badge";
+import Badge from "../../../../components/ui/badge/Badge";
 import { FaTrash } from "react-icons/fa";
-import ItemTable from "../../../components/wms-components/inbound-component/table/ItemTable";
+import ItemTable from "../../../../components/wms-components/inbound-component/table/ItemTable";
 import { useForm } from "react-hook-form";
 import DynamicForm, {
   FieldConfig,
-} from "../../../components/wms-components/inbound-component/form/DynamicForm";
-import DatePicker from "../../../components/form/date-picker";
-import Button from "../../../components/ui/button/Button";
-import { showErrorToast, showSuccessToast } from "../../../components/toast";
+} from "../../../../components/wms-components/inbound-component/form/DynamicForm";
+import DatePicker from "../../../../components/form/date-picker";
+import Button from "../../../../components/ui/button/Button";
+import { showErrorToast, showSuccessToast } from "../../../../components/toast";
 import {
   useStoreInboundPlanning,
   useStoreClassification,
-} from "../../../DynamicAPI/stores/Store/MasterStore";
+} from "../../../../DynamicAPI/stores/Store/MasterStore";
 import {
   InboundPlanningItemCreate,
   CreateInboundPlanning,
-} from "../../../DynamicAPI/types/InboundPlanning";
+} from "../../../../DynamicAPI/types/InboundPlanningTypes";
 
 const InboundPlanningAdd = () => {
+  const navigate = useNavigate();
+
   const { createData } = useStoreInboundPlanning();
   const { fetchAll, list: clsData } = useStoreClassification();
 
@@ -120,7 +123,9 @@ const InboundPlanningAdd = () => {
         })
       ),
     };
+
     createData(payload);
+    navigate("/inbound_planning");
   };
 
   const updateItemField = (index: number, field: string, value: any) => {

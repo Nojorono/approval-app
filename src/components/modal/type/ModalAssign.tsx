@@ -34,7 +34,7 @@ const ReusableFormModal: React.FC<ReusableFormModalProps> = ({
         title={isEditMode ? "Update Detail" : title}
         size="medium"
       >
-        <AssignChecker formFields={formFields} parmeters={parmeters} />
+        <AssignChecker formFields={formFields} parmeters={parmeters} onClose={onClose} />
       </ModalComponent>
     </>
   );

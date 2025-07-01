@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import TableComponent from "../../../components/tables/MasterDataTable/TableComponent";
 import Badge from "../../../components/ui/badge/Badge";
 import Button from "../../../components/ui/button/Button";
-import { InboundPlanning } from "../../../DynamicAPI/types/InboundPlanning";
+import { InboundPlanning } from "../../../DynamicAPI/types/InboundPlanningTypes";
 import { useNavigate } from "react-router-dom";
 
 import { showErrorToast, showSuccessToast } from "../../../components/toast";
@@ -55,11 +55,6 @@ const AdjustTable = ({
         accessorKey: "client_name",
         header: "Client Name",
       },
-      // {
-      //   accessorKey: "warehouse_id",
-      //   header: "Warehouse ID",
-      //   cell: ({ row }) => row.original.warehouse_id ?? "",
-      // },
       {
         accessorKey: "po_no",
         header: "PO No",
@@ -116,11 +111,9 @@ const AdjustTable = ({
   );
 
   const [openMdlTab, setOpenMdlTab] = useState(false);
-  const [inboundPlanId, setInboundPlanId] = useState<string | null>(null);
 
   const handleModalTab = (data: any) => {
     console.log("Opening modal for data:", data);
-
     navigate("/inbound_planning/detail", { state: { data } });
   };
 
