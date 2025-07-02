@@ -61,7 +61,7 @@ const DataTable = () => {
       },
       {
         accessorKey: "uom_name",
-        header: "UOM NAME",
+        header: "UOM Name",
       },
       {
         accessorKey: "capacity",

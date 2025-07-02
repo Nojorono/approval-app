@@ -2,6 +2,7 @@ import React, { useEffect, useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useStoreTransporter } from "../../../../../DynamicAPI/stores/Store/MasterStore";
 import TableComponent from "../../../../../components/tables/MasterDataTable/TableComponent";
+import ActIndicator from "../../../../../components/ui/activityIndicator";
 
 const TransporterDetail = (data: any) => {
   const IdInbound = data.data.id;
@@ -16,22 +17,24 @@ const TransporterDetail = (data: any) => {
     fetchData();
   }, [IdInbound]);
 
+
+  console.log("Transporter Detail Data:", detail);
+  
+
   // Mapping detail for table usage
   const mappedTransporterDetail = useMemo(() => {
-    if (!detail) return [];
-    return [
-      {
-        transporter_code_number: detail.transporter_code_number || "",
-        transporter_name: detail.transporter_name || "",
-        transporter_phone: detail.transporter_phone || "",
-        vehicle_type: detail.vehicle?.vehicle_type || "",
-        vehicle_brand: detail.vehicle?.vehicle_brand || "",
-        arrival_time: detail.arrival_time || "",
-        unloading_start_time: detail.unloading_start_time || "",
-        unloading_end_time: detail.unloading_end_time || "",
-        departure_time: detail.departure_time || "",
-      },
-    ];
+    if (!detail || !Array.isArray(detail)) return [];
+    return detail.map((item: any) => ({
+      transporter_code_number: item.transporter_code_number || "",
+      transporter_name: item.transporter_name || "",
+      transporter_phone: item.transporter_phone || "",
+      vehicle_type: item.vehicle?.vehicle_type || "",
+      vehicle_brand: item.vehicle?.vehicle_brand || "",
+      arrival_time: item.arrival_time || "",
+      unloading_start_time: item.unloading_start_time || "",
+      unloading_end_time: item.unloading_end_time || "",
+      departure_time: item.departure_time || "",
+    }));
   }, [detail]);
 
   const transporterColumns: ColumnDef<any>[] = [
@@ -73,12 +76,13 @@ const TransporterDetail = (data: any) => {
     },
   ];
 
+  console.log("Mapped Transporter Detail:", mappedTransporterDetail);
+  
+
   return (
     <>
       {isLoading || detail == null ? (
-        <div style={{ textAlign: "center", padding: "2rem" }}>
-          Data Transporter belum Tersedia
-        </div>
+        <ActIndicator />
       ) : (
         <>
           <TableComponent

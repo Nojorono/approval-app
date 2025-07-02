@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import PageBreadcrumb from "../../../../components/common/PageBreadCrumb";
 import TabsSection from "../../../../components/wms-components/inbound-component/tabs/TabsSection";
-import { FaCubes, FaUserPlus } from "react-icons/fa";
+import { FaCheck, FaCubes, FaUserPlus } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import Button from "../../../../components/ui/button/Button";
-import { showErrorToast, showSuccessToast } from "../../../../components/toast";
 import { useStoreInboundPlanning } from "../../../../DynamicAPI/stores/Store/MasterStore";
 import { useLocation } from "react-router-dom";
-import { ModalAssign } from "../../../../components/modal/type";
+import { ModalAssign, ModalDialog } from "../../../../components/modal/type";
 
 import DetailInboundItem from "./DetailItem";
 import ViewChecker from "./ViewChecker";
@@ -30,12 +29,15 @@ const DetailInbound = () => {
   }, []);
 
   const [openMdlTab, setOpenMdlTab] = useState(false);
+  const [openMdlDialog, setOpnMdlDialog] = useState(false);
+
   const methods = useForm();
   const [activeTab, setActiveTab] = useState(0);
   const { id, inbound_planning_no } = detail || {};
 
   const onSubmit = (formData: any) => {
-    console.log("Form Assign Checker and Detail Data Submitted:", formData);
+    setOpnMdlDialog(true);
+    // console.log("Form Assign Checker and Detail Data Submitted:", formData);
   };
 
   const onClose = () => {
@@ -86,6 +88,10 @@ const DetailInbound = () => {
       validation: { required: "Required" },
     },
   ];
+
+  const handleConfirm = () => {
+    console.log("Confirmed!");
+  };
 
   return (
     <div>
@@ -162,15 +168,53 @@ const DetailInbound = () => {
         />
       </div>
 
-      <div className="flex justify-end mt-6">
+      <div className="flex justify-start mt-6">
         <Button
           type="submit"
-          variant="primary"
+          variant="secondary"
           size="md"
           onClick={methods.handleSubmit(onSubmit)}
+          startIcon={<FaCheck size={18} />}
         >
           Confirm Inbound
         </Button>
+
+        <ModalDialog
+          isOpen={openMdlDialog}
+          onClose={() => setOpnMdlDialog(false)}
+          onConfirm={handleConfirm}
+          title="Terjadi ketidaksesuaian data antara Qty Plan dan Qty Scan, apakah Anda ingin memproses data ini?"
+          size="xl"
+          confirmText="Proses"
+          cancelText="Tutup"
+        >
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200 text-sm">
+              <thead className="bg-gray-100 text-left">
+                <tr>
+                  <th className="px-4 py-2">ID</th>
+                  <th className="px-4 py-2">Nama</th>
+                  <th className="px-4 py-2">Qty Plan</th>
+                  <th className="px-4 py-2">Qty Scan</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="hover:bg-gray-50">
+                  <td className="px-4 py-2">1</td>
+                  <td className="px-4 py-2">SKU-123</td>
+                  <td className="px-4 py-2">4000</td>
+                  <td className="px-4 py-2">2000</td>
+                </tr>
+                 <tr className="hover:bg-gray-50">
+                  <td className="px-4 py-2">2</td>
+                  <td className="px-4 py-2">SKU-456</td>
+                  <td className="px-4 py-2">7000</td>
+                  <td className="px-4 py-2">5000</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ModalDialog>
       </div>
     </div>
   );

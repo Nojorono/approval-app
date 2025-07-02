@@ -5,11 +5,12 @@ import {
   useStoreCheckerAssign,
 } from "../../../../../DynamicAPI/stores/Store/MasterStore";
 import TableComponent from "../../../../../components/tables/MasterDataTable/TableComponent";
+import ActIndicator from "../../../../../components/ui/activityIndicator";
 
 const DetailInboundItem = (data: any) => {
   const IdInbound = data.data.id;
 
-  const { fetchById, detail } = useStoreInboundPlanning();
+  const { fetchById, detail, isLoading } = useStoreInboundPlanning();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,13 +66,17 @@ const DetailInboundItem = (data: any) => {
   ];
 
   return (
-    <div>
-      <TableComponent
-        data={mappedItemDetails}
-        columns={itemDetailsColumns}
-        pageSize={5}
-      />
-    </div>
+    <>
+      {isLoading ? (
+        <ActIndicator />
+      ) : (
+        <TableComponent
+          data={mappedItemDetails}
+          columns={itemDetailsColumns}
+          pageSize={5}
+        />
+      )}
+    </>
   );
 };
 

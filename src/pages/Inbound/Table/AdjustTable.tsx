@@ -113,7 +113,6 @@ const AdjustTable = ({
   const [openMdlTab, setOpenMdlTab] = useState(false);
 
   const handleModalTab = (data: any) => {
-    console.log("Opening modal for data:", data);
     navigate("/inbound_planning/detail", { state: { data } });
   };
 

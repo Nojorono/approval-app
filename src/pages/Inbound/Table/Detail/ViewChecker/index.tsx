@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useStoreCheckerAssign } from "../../../../../DynamicAPI/stores/Store/MasterStore";
 import TableComponent from "../../../../../components/tables/MasterDataTable/TableComponent";
+import ActIndicator from "../../../../../components/ui/activityIndicator";
 
 const ViewChecker = ({ data }: any) => {
   const IdInbound = data?.id;
@@ -87,9 +88,7 @@ const ViewChecker = ({ data }: any) => {
   return (
     <>
       {isLoading || detail == null ? (
-        <div style={{ textAlign: "center", padding: "2rem" }}>
-          Anda Belum Assign Checker
-        </div>
+        <ActIndicator />
       ) : (
         <>
           <TableComponent
