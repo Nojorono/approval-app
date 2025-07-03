@@ -3,9 +3,9 @@ import { ColumnDef } from "@tanstack/react-table";
 import {
   useStoreInboundPlanning,
   useStoreCheckerAssign,
-} from "../../../../../DynamicAPI/stores/Store/MasterStore";
-import TableComponent from "../../../../../components/tables/MasterDataTable/TableComponent";
-import ActIndicator from "../../../../../components/ui/activityIndicator";
+} from "../../../../../../DynamicAPI/stores/Store/MasterStore";
+import TableComponent from "../../../../../../components/tables/MasterDataTable/TableComponent";
+import ActIndicator from "../../../../../../components/ui/activityIndicator";
 
 const DetailInboundItem = (data: any) => {
   const IdInbound = data.data.id;

@@ -12,6 +12,9 @@ const TableMasterRole = () => {
   const navigate = useNavigate();
   const { canCreate, canManage } = usePagePermissions();
 
+  console.log("Permissions for this page:", { canCreate, canManage });
+  
+
   const { fetchRoles, roles, deleteRole } = useRoleStore();
   const [globalFilter, setGlobalFilter] = useState<string>("");
 

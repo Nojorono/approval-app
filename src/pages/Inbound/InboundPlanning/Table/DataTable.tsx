@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Input from "../../../components/form/input/InputField";
+import Input from "../../../../components/form/input/InputField";
 import AdjustTable from "./AdjustTable";
-import DatePicker from "../../../components/form/date-picker";
-import Label from "../../../components/form/Label";
-import Select from "../../../components/form/Select";
-import Button from "../../../components/ui/button/Button";
+import DatePicker from "../../../../components/form/date-picker";
+import Label from "../../../../components/form/Label";
+import Select from "../../../../components/form/Select";
+import Button from "../../../../components/ui/button/Button";
 import { FaPlus, FaFileImport, FaFileDownload, FaUndo } from "react-icons/fa";
-import Spinner from "../../../components/ui/spinner";
-import { usePagePermissions } from "../../../utils/UserPermission/UserPagePermissions";
-import { showErrorToast } from "../../../components/toast";
-import { useDebounce } from "../../../helper/useDebounce";
-import { useStoreInboundPlanning } from "../../../DynamicAPI/stores/Store/MasterStore";
+import Spinner from "../../../../components/ui/spinner";
+import { usePagePermissions } from "../../../../utils/UserPermission/UserPagePermissions";
+import { showErrorToast } from "../../../../components/toast";
+import { useDebounce } from "../../../../helper/useDebounce";
+import { useStoreInboundPlanning } from "../../../../DynamicAPI/stores/Store/MasterStore";
 
 const TableMasterMenu = () => {
   const navigate = useNavigate();

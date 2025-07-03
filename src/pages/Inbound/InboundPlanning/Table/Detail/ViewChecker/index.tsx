@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { useStoreCheckerAssign } from "../../../../../DynamicAPI/stores/Store/MasterStore";
-import TableComponent from "../../../../../components/tables/MasterDataTable/TableComponent";
-import ActIndicator from "../../../../../components/ui/activityIndicator";
+import { useStoreCheckerAssign } from "../../../../../../DynamicAPI/stores/Store/MasterStore";
+import TableComponent from "../../../../../../components/tables/MasterDataTable/TableComponent";
+import ActIndicator from "../../../../../../components/ui/activityIndicator";
 
 const ViewChecker = ({ data }: any) => {
   const IdInbound = data?.id;

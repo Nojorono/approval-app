@@ -4,9 +4,9 @@ import makeAnimated from "react-select/animated";
 import {
   useStoreUser,
   useStoreCheckerAssign,
-} from "../../../DynamicAPI/stores/Store/MasterStore";
+} from "../../../../DynamicAPI/stores/Store/MasterStore";
 import { useForm, Controller } from "react-hook-form";
-import Button from "../../../components/ui/button/Button";
+import Button from "../../../../components/ui/button/Button";
 
 const animatedComponents = makeAnimated();
 

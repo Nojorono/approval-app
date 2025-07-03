@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import ModalComponent from "../ModalComponent";
-import AssignChecker from "../../../pages/Inbound/Screen/AssignChecker";
+import AssignChecker from "../../../pages/Inbound/InboundPlanning/Screen/AssignChecker";
 import Button from "../../ui/button/Button";
 import { FaEye, FaPlus } from "react-icons/fa";
 

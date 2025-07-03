@@ -5,7 +5,10 @@ import Label from "../../../../components/form/Label";
 import Button from "../../../../components/ui/button/Button";
 import { useDebounce } from "../../../../helper/useDebounce";
 import DynamicTable from "../../../../components/wms-components/DynamicTable";
-import { useStorePallet } from "../../../../DynamicAPI/stores/Store/MasterStore";
+import {
+  useStorePallet,
+  useStoreIo,
+} from "../../../../DynamicAPI/stores/Store/MasterStore";
 
 const DataTable = () => {
   const {
@@ -13,15 +16,18 @@ const DataTable = () => {
     createData,
     updateData,
     deleteData,
-    fetchAll,
+    fetchAll: fetchPallet,
   } = useStorePallet();
+
+  const { list: IoList, fetchAll: fetchIO } = useStoreIo();
 
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
 
   useEffect(() => {
-    fetchAll();
+    fetchPallet();
+    fetchIO();
   }, []);
 
   // Fungsi untuk format payload create
@@ -53,7 +59,13 @@ const DataTable = () => {
     () => [
       {
         accessorKey: "organization_id",
-        header: "Organization ID",
+        header: "Organization",
+        cell: ({ row }: { row: { original: any } }) => {
+          const org = IoList.find(
+            (item: any) => item.organization_id === row.original.organization_id
+          );
+          return org ? org.organization_name : row.original.organization_id;
+        },
       },
       {
         accessorKey: "pallet_code",
@@ -76,14 +88,21 @@ const DataTable = () => {
         header: "Is Empty",
       },
     ],
-    []
+    [IoList]
   );
 
   const formFields = [
     {
       name: "organization_id",
-      label: "Organization Id",
-      type: "text",
+      label: "Organization",
+      type: "select",
+      options: [
+        { label: "--Select--", value: "" },
+        ...IoList.map((item: any) => ({
+          label: item.organization_name,
+          value: item.organization_id,
+        })),
+      ],
       validation: { required: "Required" },
     },
     {
@@ -128,6 +147,9 @@ const DataTable = () => {
     },
   ];
 
+  console.log("pallet", pallet);
+  
+
   return (
     <>
       <div className="p-4 bg-white shadow rounded-md mb-5">
@@ -165,7 +187,7 @@ const DataTable = () => {
         onDelete={async (id) => {
           await deleteData(id);
         }}
-        onRefresh={fetchAll}
+        onRefresh={fetchPallet}
         getRowId={(row) => row.id}
         title="Form Data"
       />

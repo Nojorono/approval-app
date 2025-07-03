@@ -1,13 +1,13 @@
 import React, { useMemo, useState } from "react";
 import { FaEye, FaCheck } from "react-icons/fa";
 import { ColumnDef } from "@tanstack/react-table";
-import TableComponent from "../../../components/tables/MasterDataTable/TableComponent";
-import Badge from "../../../components/ui/badge/Badge";
-import Button from "../../../components/ui/button/Button";
-import { InboundPlanning } from "../../../DynamicAPI/types/InboundPlanningTypes";
+import TableComponent from "../../../../components/tables/MasterDataTable/TableComponent";
+import Badge from "../../../../components/ui/badge/Badge";
+import Button from "../../../../components/ui/button/Button";
+import { InboundPlanning } from "../../../../DynamicAPI/types/InboundPlanningTypes";
 import { useNavigate } from "react-router-dom";
 
-import { showErrorToast, showSuccessToast } from "../../../components/toast";
+import { showErrorToast, showSuccessToast } from "../../../../components/toast";
 
 type MenuTableProps = {
   data: InboundPlanning[];

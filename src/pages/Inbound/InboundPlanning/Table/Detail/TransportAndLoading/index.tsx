@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { useStoreTransporter } from "../../../../../DynamicAPI/stores/Store/MasterStore";
-import TableComponent from "../../../../../components/tables/MasterDataTable/TableComponent";
-import ActIndicator from "../../../../../components/ui/activityIndicator";
+import { useStoreTransporter } from "../../../../../../DynamicAPI/stores/Store/MasterStore";
+import TableComponent from "../../../../../../components/tables/MasterDataTable/TableComponent";
+import ActIndicator from "../../../../../../components/ui/activityIndicator";
 
 const TransporterDetail = (data: any) => {
   const IdInbound = data.data.id;

@@ -1,27 +1,27 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import PageBreadcrumb from "../../../../components/common/PageBreadCrumb";
-import TabsSection from "../../../../components/wms-components/inbound-component/tabs/TabsSection";
+import PageBreadcrumb from "../../../../../components/common/PageBreadCrumb";
+import TabsSection from "../../../../../components/wms-components/inbound-component/tabs/TabsSection";
 import { ColumnDef } from "@tanstack/react-table";
-import Badge from "../../../../components/ui/badge/Badge";
+import Badge from "../../../../../components/ui/badge/Badge";
 import { FaTrash } from "react-icons/fa";
-import ItemTable from "../../../../components/wms-components/inbound-component/table/ItemTable";
+import ItemTable from "../../../../../components/wms-components/inbound-component/table/ItemTable";
 import { useForm } from "react-hook-form";
 import DynamicForm, {
   FieldConfig,
-} from "../../../../components/wms-components/inbound-component/form/DynamicForm";
-import DatePicker from "../../../../components/form/date-picker";
-import Button from "../../../../components/ui/button/Button";
-import { showErrorToast, showSuccessToast } from "../../../../components/toast";
+} from "../../../../../components/wms-components/inbound-component/form/DynamicForm";
+import DatePicker from "../../../../../components/form/date-picker";
+import Button from "../../../../../components/ui/button/Button";
+import { showErrorToast, showSuccessToast } from "../../../../../components/toast";
 import {
   useStoreInboundPlanning,
   useStoreClassification,
-} from "../../../../DynamicAPI/stores/Store/MasterStore";
+} from "../../../../../DynamicAPI/stores/Store/MasterStore";
 import {
   InboundPlanningItemCreate,
   CreateInboundPlanning,
-} from "../../../../DynamicAPI/types/InboundPlanningTypes";
-import ActIndicator from "../../../../components/ui/activityIndicator";
+} from "../../../../../DynamicAPI/types/InboundPlanningTypes";
+import ActIndicator from "../../../../../components/ui/activityIndicator";
 
 const InboundPlanningAdd = () => {
   const navigate = useNavigate();

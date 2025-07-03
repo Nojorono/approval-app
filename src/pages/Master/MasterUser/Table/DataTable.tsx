@@ -5,7 +5,10 @@ import Label from "../../../../components/form/Label";
 import Button from "../../../../components/ui/button/Button";
 import { useDebounce } from "../../../../helper/useDebounce";
 import DynamicTable from "../../../../components/wms-components/DynamicTable";
-import { useStoreUser } from "../../../../DynamicAPI/stores/Store/MasterStore";
+import {
+  useStoreUser,
+  useStoreIo,
+} from "../../../../DynamicAPI/stores/Store/MasterStore";
 import { useRoleStore } from "../../../../API/store/MasterStore";
 
 const DataTable = () => {
@@ -17,6 +20,8 @@ const DataTable = () => {
     fetchAll,
   } = useStoreUser();
 
+  const { list: IoList, fetchAll: fetchIO } = useStoreIo();
+
   const { fetchRoles, roles } = useRoleStore();
 
   const [search, setSearch] = useState("");
@@ -26,6 +31,7 @@ const DataTable = () => {
   useEffect(() => {
     fetchAll();
     fetchRoles();
+    fetchIO();
   }, []);
 
   // Fungsi untuk format payload create
@@ -56,7 +62,7 @@ const DataTable = () => {
       isActive: rest.isActive,
       roleId: Number(rest.roleId),
     });
-  };
+  };  
 
   const columns = useMemo(
     () => [
@@ -79,18 +85,29 @@ const DataTable = () => {
       },
       {
         accessorKey: "organizationId",
-        header: "Organization ID",
+        header: "Organization",
+        cell: (info: any) => {
+          const org = IoList?.find(
+            (org: any) => org.organization_id === info.getValue()
+          );
+          return org ? org.organization_name : "-";
+        },
       },
       {
         accessorKey: "roleId",
-        header: "Role ID",
+        header: "Role",
+        cell: (info: any) => {
+          const role = roles?.find((role: any) => role.id === info.getValue());
+          return role ? role.name : "-";
+        },
       },
       {
         accessorKey: "isActive",
         header: "Active",
+        cell: (info: any) => (info.getValue() ? "Active" : "Inactive"),
       },
     ],
-    []
+    [IoList, roles]
   );
 
   const formFields = [
@@ -120,8 +137,13 @@ const DataTable = () => {
     },
     {
       name: "organizationId",
-      label: "Organization ID",
-      type: "number",
+      label: "Organization",
+      type: "select",
+      options:
+        IoList?.map((org: any) => ({
+          label: org.organization_name,
+          value: org.organization_id,
+        })) || [],
       validation: { required: "Required" },
     },
     {

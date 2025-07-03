@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
-import PageBreadcrumb from "../../../../components/common/PageBreadCrumb";
-import TabsSection from "../../../../components/wms-components/inbound-component/tabs/TabsSection";
+import PageBreadcrumb from "../../../../../components/common/PageBreadCrumb";
+import TabsSection from "../../../../../components/wms-components/inbound-component/tabs/TabsSection";
 import { FaCheck, FaCubes, FaUserPlus } from "react-icons/fa";
 import { useForm } from "react-hook-form";
-import Button from "../../../../components/ui/button/Button";
-import { useStoreInboundPlanning } from "../../../../DynamicAPI/stores/Store/MasterStore";
+import Button from "../../../../../components/ui/button/Button";
+import { useStoreInboundPlanning } from "../../../../../DynamicAPI/stores/Store/MasterStore";
 import { useLocation } from "react-router-dom";
-import { ModalAssign, ModalDialog } from "../../../../components/modal/type";
+import { ModalAssign, ModalDialog } from "../../../../../components/modal/type";
 
 import DetailInboundItem from "./DetailItem";
 import ViewChecker from "./ViewChecker";
 import TransporterDetail from "./TransportAndLoading";
+import DynamicForm, {
+  FieldConfig,
+} from "../../../../../components/wms-components/inbound-component/form/DynamicForm";
 
 const DetailInbound = () => {
   const location = useLocation();
@@ -93,6 +96,74 @@ const DetailInbound = () => {
     console.log("Confirmed!");
   };
 
+  const fields: FieldConfig[] = [
+    {
+      name: "inbound_no",
+      label: "Inbound Planning No",
+      type: "text",
+      disabled: true,
+    },
+    {
+      name: "supplier_name",
+      label: "Supplier Name",
+      type: "text",
+      disabled: true,
+    },
+    {
+      name: "supplier_address",
+      label: "Supplier Address",
+      type: "text",
+      disabled: true,
+    },
+    {
+      name: "po_no",
+      label: "Reference No*",
+      type: "text",
+      disabled: true,
+    },
+    { name: "receipt_no", label: "Receipt No*", type: "text", disabled: true },
+    {
+      name: "order_type",
+      label: "Order Type*",
+      type: "select",
+      options: [
+        { label: "-- Order Type --", value: "" },
+        { label: "Regular", value: "regular" },
+        { label: "Transfer Warehouse", value: "transfer_warehouse" },
+      ],
+      disabled: true,
+    },
+    {
+      name: "warehouse_id",
+      label: "Warehouse Name*",
+      type: "select",
+      options: [
+        { label: "-- Select Warehouse --", value: "" },
+        { label: "Gudang A", value: "gudang_a" },
+        { label: "Gudang B", value: "gudang_b" },
+        { label: "Gudang C", value: "gudang_c" },
+      ],
+      disabled: true,
+    },
+    {
+      name: "receive_type",
+      label: "Receive Type*",
+      type: "select",
+      options: [
+        { label: "-- Select Type --", value: "" },
+        { value: "single_receive", label: "Single Receive" },
+        { value: "partial_receive", label: "Partial Receive" },
+      ],
+      disabled: true,
+    },
+    {
+      name: "plan_date",
+      label: "Plan Delivery Date*",
+      type: "date",
+      disabled: true,
+    },
+  ];
+
   return (
     <div>
       <PageBreadcrumb
@@ -126,6 +197,28 @@ const DetailInbound = () => {
                 Assign Checker
               </Button>
             </div>
+
+            {/* <div className="flex items-center order-2 gap-2 grow xl:order-3 xl:justify-end">
+              <Button
+                type="button"
+                variant="primary"
+                size="md"
+                onClick={() => setOpenMdlTab(true)}
+                startIcon={<FaUserPlus size={18} />}
+              >
+                Assign Checker
+              </Button>
+            </div>
+
+            <DynamicForm
+              fields={fields}
+              onSubmit={methods.handleSubmit(onSubmit)}
+              defaultValues={{}}
+              control={methods.control}
+              register={methods.register}
+              setValue={methods.setValue}
+              handleSubmit={methods.handleSubmit}
+            /> */}
           </div>
         </div>
       </div>
@@ -169,15 +262,28 @@ const DetailInbound = () => {
       </div>
 
       <div className="flex justify-start mt-6">
-        <Button
-          type="submit"
-          variant="secondary"
-          size="md"
-          onClick={methods.handleSubmit(onSubmit)}
-          startIcon={<FaCheck size={18} />}
-        >
-          Confirm Inbound
-        </Button>
+        <div className="flex gap-3">
+          <Button
+            type="submit"
+            variant="secondary"
+            size="md"
+            onClick={methods.handleSubmit(onSubmit)}
+            startIcon={<FaCheck size={18} />}
+          >
+            Confirm Inbound
+          </Button>
+        </div>
+        <div className="flex gap-3 ml-4">
+          {/* <Button
+            type="button"
+            variant="primary"
+            size="md"
+            onClick={() => setOpenMdlTab(true)}
+            startIcon={<FaUserPlus size={18} />}
+          >
+            Assign Checker
+          </Button> */}
+        </div>
 
         <ModalDialog
           isOpen={openMdlDialog}
@@ -205,7 +311,7 @@ const DetailInbound = () => {
                   <td className="px-4 py-2">4000</td>
                   <td className="px-4 py-2">2000</td>
                 </tr>
-                 <tr className="hover:bg-gray-50">
+                <tr className="hover:bg-gray-50">
                   <td className="px-4 py-2">2</td>
                   <td className="px-4 py-2">SKU-456</td>
                   <td className="px-4 py-2">7000</td>
