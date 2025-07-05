@@ -6,8 +6,8 @@ import Badge from "../../../../components/ui/badge/Badge";
 import Button from "../../../../components/ui/button/Button";
 import { InboundPlanning } from "../../../../DynamicAPI/types/InboundPlanningTypes";
 import { useNavigate } from "react-router-dom";
-
 import { showErrorToast, showSuccessToast } from "../../../../components/toast";
+import { toLocalISOString } from "../../../../helper/FormatDate";
 
 type MenuTableProps = {
   data: InboundPlanning[];
@@ -62,6 +62,7 @@ const AdjustTable = ({
       {
         accessorKey: "plan_delivery_date",
         header: "Plan Delivery Date",
+        cell: ({ row }) => toLocalISOString(row.original.plan_delivery_date),
       },
       {
         accessorKey: "order_type",

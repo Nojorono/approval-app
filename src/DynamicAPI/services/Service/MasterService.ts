@@ -13,6 +13,9 @@ import { CheckerAssign, CreateCheckerAssign, UpdateCheckerAssign } from "../../t
 import { Classification, CreateClassification, UpdateClassification } from "../../types/ClassificationTypes";
 import { Vehicle, CreateVehicle, UpdateVehicle } from "../../types/VehicleTypes";
 import { Transporter, CreateTransporter, UpdateTransporter } from "../../types/TransporterTypes";
+import { SubWarehouse, CreateSubWarehouse, UpdateSubWarehouse } from "../../types/SubWarehouseTypes";
+import { Bin, CreateBin, UpdateBin } from "../../types/MasterBinTypes";
+
 
 
 // Daftar semua entitas service di sini
@@ -29,9 +32,9 @@ export const UserService = createCrudService<User, CreateUser, UpdateUser>("/use
 export const CheckerAssignService = createCrudService<CheckerAssign, CreateCheckerAssign, UpdateCheckerAssign>("/checker-assign");
 export const ClassificationService = createCrudService<Classification, CreateClassification, UpdateClassification>("/master-classification-item");
 export const VehicleService = createCrudService<Vehicle, CreateVehicle, UpdateVehicle>("/master-vehicle");
-
-
 export const TransporterService = createCrudService<Transporter, CreateTransporter, UpdateTransporter>("/inbound-transporter");
+export const subWarehouseService = createCrudService<SubWarehouse, CreateSubWarehouse, UpdateSubWarehouse>("/master-warehouse-sub");
 
+export const binService = createCrudService<Bin, CreateBin, UpdateBin>("/master-warehouse-bin");
 
 

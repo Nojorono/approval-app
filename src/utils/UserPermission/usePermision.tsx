@@ -44,7 +44,6 @@ export const usePermission = () => {
 
   const hasPermission = useMemo(() => {
     return (menuId: number, permissionType: string): boolean => {
-      // Global manage (-1) check
       if (
         groupedPermissions.some(
           (perm) => perm.menu_id === -1 && perm.permissions.includes("Manage")

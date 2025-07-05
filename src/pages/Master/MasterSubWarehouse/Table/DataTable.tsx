@@ -8,18 +8,21 @@ import DynamicTable from "../../../../components/wms-components/DynamicTable";
 import {
   useStoreWarehouse,
   useStoreIo,
+  useStoreSubWarehouse,
 } from "../../../../DynamicAPI/stores/Store/MasterStore";
 
 const DataTable = () => {
+  const { list: Warehouse, fetchAll } = useStoreWarehouse();
+
+  const { fetchAll: fetchAllIo, list: ioList } = useStoreIo();
+
   const {
-    list: Warehouse,
+    fetchAll: fetchSubWH,
+    list: subWHList,
     createData,
     updateData,
     deleteData,
-    fetchAll,
-  } = useStoreWarehouse();
-
-  const { fetchAll: fetchAllIo, list: ioList } = useStoreIo();
+  } = useStoreSubWarehouse();
 
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
@@ -28,8 +31,8 @@ const DataTable = () => {
   useEffect(() => {
     fetchAll();
     fetchAllIo();
+    fetchSubWH();
   }, []);
-
   const columns = useMemo(
     () => [
       { accessorKey: "id", header: "ID" },
@@ -43,20 +46,42 @@ const DataTable = () => {
           return org ? org.organization_name : row.original.organization_id;
         },
       },
-      { accessorKey: "name", header: "Nama Gudang" },
+      {
+        accessorKey: "warehouse_id",
+        header: "Warehouse",
+        cell: ({ row }: any) => {
+          const wh = Warehouse.find(
+            (item: any) => item.id === row.original.warehouse_id
+          );
+          return wh ? wh.name : row.original.warehouse_id;
+        },
+      },
+      { accessorKey: "name", header: "Nama" },
+      { accessorKey: "code", header: "Kode" },
       { accessorKey: "description", header: "Deskripsi" },
+      { accessorKey: "capacity_bin", header: "Kapasitas Bin" },
     ],
-    [ioList]
+    [ioList, Warehouse]
   );
 
   const formFields = [
     {
       name: "organization_id",
-      label: "Organization ID",
+      label: "Organization",
       type: "select",
       options: ioList.map((item: any) => ({
         label: item.organization_name,
         value: item.organization_id,
+      })),
+      validation: { required: "Required" },
+    },
+    {
+      name: "warehouse_id",
+      label: "Warehouse",
+      type: "select",
+      options: Warehouse.map((item: any) => ({
+        label: item.name,
+        value: item.id,
       })),
       validation: { required: "Required" },
     },
@@ -67,30 +92,66 @@ const DataTable = () => {
       validation: { required: "Required" },
     },
     {
+      name: "code",
+      label: "Kode",
+      type: "text",
+      validation: { required: "Required" },
+    },
+    {
       name: "description",
       label: "Deskripsi",
       type: "text",
       validation: { required: "Required" },
     },
+    {
+      name: "capacity_bin",
+      label: "Kapasitas Bin",
+      type: "number",
+      validation: {
+        required: "Required",
+        min: { value: 0, message: "Harus >= 0" },
+      },
+    },
   ];
 
   // Fungsi untuk format payload create
   const handleCreate = (data: any) => {
-    const { organization_id, name, description } = data;
+    const {
+      organization_id,
+      warehouse_id,
+      name,
+      code,
+      description,
+      capacity_bin,
+    } = data;
     return createData({
       organization_id: Number(organization_id),
+      warehouse_id,
       name,
+      code,
       description,
+      capacity_bin: Number(capacity_bin),
     });
   };
 
   // Fungsi untuk format payload update
   const handleUpdate = (data: any) => {
-    const { id, organization_id, name, description } = data;
-    return updateData(id, {
+    const {
+      id,
       organization_id,
+      warehouse_id,
       name,
+      code,
       description,
+      capacity_bin,
+    } = data;
+    return updateData(id, {
+      organization_id: Number(organization_id),
+      warehouse_id,
+      name,
+      code,
+      description,
+      capacity_bin: Number(capacity_bin),
     });
   };
 
@@ -120,7 +181,7 @@ const DataTable = () => {
       </div>
 
       <DynamicTable
-        data={Warehouse}
+        data={subWHList}
         globalFilter={debouncedSearch}
         isCreateModalOpen={isCreateModalOpen}
         onCloseCreateModal={() => setCreateModalOpen(false)}

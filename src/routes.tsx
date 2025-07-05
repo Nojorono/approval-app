@@ -23,6 +23,8 @@ import {
   MasterItem,
   MasterClassification,
   MasterVehicle,
+  MasterSubWarehouse,
+  MasterBin,
 } from "./utils/PagesComponent";
 import MasterSupplier from "./pages/Master/MasterSupplier";
 import DetailInbound from "./pages/Inbound/InboundPlanning/Table/Detail/DetailInbound";
@@ -94,6 +96,8 @@ export function AppRoutes() {
       "/master_supplier": <MasterSupplier />,
       "/master_classification": <MasterClassification />,
       "/master_vehicle": <MasterVehicle />,
+      "/master_sub_warehouse": <MasterSubWarehouse />,
+      "/master_bin": <MasterBin />,
     };
     return map[path] || <DefaultPage />;
   };

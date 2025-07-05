@@ -8,18 +8,22 @@ import DynamicTable from "../../../../components/wms-components/DynamicTable";
 import {
   useStoreWarehouse,
   useStoreIo,
+  useStoreSubWarehouse,
+  useStoreBin,
 } from "../../../../DynamicAPI/stores/Store/MasterStore";
 
 const DataTable = () => {
+  const { list: Warehouse, fetchAll } = useStoreWarehouse();
+  const { fetchAll: fetchAllIo, list: ioList } = useStoreIo();
+  const { fetchAll: fetchSubWH, list: subWHList } = useStoreSubWarehouse();
+
   const {
-    list: Warehouse,
+    fetchAll: fetchBin,
+    list: binList,
     createData,
     updateData,
     deleteData,
-    fetchAll,
-  } = useStoreWarehouse();
-
-  const { fetchAll: fetchAllIo, list: ioList } = useStoreIo();
+  } = useStoreBin();
 
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
@@ -28,6 +32,8 @@ const DataTable = () => {
   useEffect(() => {
     fetchAll();
     fetchAllIo();
+    fetchSubWH();
+    fetchBin();
   }, []);
 
   const columns = useMemo(
@@ -43,16 +49,28 @@ const DataTable = () => {
           return org ? org.organization_name : row.original.organization_id;
         },
       },
-      { accessorKey: "name", header: "Nama Gudang" },
+      {
+        accessorKey: "warehouse_sub_id",
+        header: "Sub Warehouse",
+        cell: ({ row }: any) => {
+          const subWh = subWHList.find(
+            (item: any) => item.id === row.original.warehouse_sub_id
+          );
+          return subWh ? subWh.name : row.original.warehouse_sub_id;
+        },
+      },
+      { accessorKey: "name", header: "Nama" },
+      { accessorKey: "code", header: "Kode" },
       { accessorKey: "description", header: "Deskripsi" },
+      { accessorKey: "capacity_pallet", header: "Kapasitas Pallet" },
     ],
-    [ioList]
+    [ioList, subWHList]
   );
 
   const formFields = [
     {
       name: "organization_id",
-      label: "Organization ID",
+      label: "Organization",
       type: "select",
       options: ioList.map((item: any) => ({
         label: item.organization_name,
@@ -61,8 +79,24 @@ const DataTable = () => {
       validation: { required: "Required" },
     },
     {
+      name: "warehouse_sub_id",
+      label: "Sub Warehouse",
+      type: "select",
+      options: subWHList.map((item: any) => ({
+        label: item.name,
+        value: item.id,
+      })),
+      validation: { required: "Required" },
+    },
+    {
       name: "name",
-      label: "Nama Gudang",
+      label: "Nama Bin",
+      type: "text",
+      validation: { required: "Required" },
+    },
+    {
+      name: "code",
+      label: "Kode",
       type: "text",
       validation: { required: "Required" },
     },
@@ -72,25 +106,55 @@ const DataTable = () => {
       type: "text",
       validation: { required: "Required" },
     },
+    {
+      name: "capacity_pallet",
+      label: "Kapasitas Pallet",
+      type: "number",
+      validation: {
+        required: "Required",
+        min: { value: 0, message: "Harus >= 0" },
+      },
+    },
   ];
 
   // Fungsi untuk format payload create
   const handleCreate = (data: any) => {
-    const { organization_id, name, description } = data;
+    const {
+      organization_id,
+      warehouse_sub_id,
+      name,
+      code,
+      description,
+      capacity_pallet,
+    } = data;
     return createData({
       organization_id: Number(organization_id),
+      warehouse_sub_id,
       name,
+      code,
       description,
+      capacity_pallet: Number(capacity_pallet),
     });
   };
 
   // Fungsi untuk format payload update
   const handleUpdate = (data: any) => {
-    const { id, organization_id, name, description } = data;
-    return updateData(id, {
+    const {
+      id,
       organization_id,
+      warehouse_sub_id,
       name,
+      code,
       description,
+      capacity_pallet,
+    } = data;
+    return updateData(id, {
+      organization_id: Number(organization_id),
+      warehouse_sub_id,
+      name,
+      code,
+      description,
+      capacity_pallet: Number(capacity_pallet),
     });
   };
 
@@ -120,7 +184,7 @@ const DataTable = () => {
       </div>
 
       <DynamicTable
-        data={Warehouse}
+        data={binList}
         globalFilter={debouncedSearch}
         isCreateModalOpen={isCreateModalOpen}
         onCloseCreateModal={() => setCreateModalOpen(false)}

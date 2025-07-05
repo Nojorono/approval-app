@@ -14,6 +14,8 @@ import {
     ClassificationService,
     VehicleService,
     TransporterService,
+    subWarehouseService,
+    binService
 } from "../../services/Service/MasterService";
 
 import { Uom, CreateUom, UpdateUom } from "../../types/UomTypes";
@@ -29,6 +31,9 @@ import { CreateCheckerAssign, CheckerAssign, UpdateCheckerAssign } from "../../t
 import { CreateClassification, Classification, UpdateClassification } from "../../types/ClassificationTypes.tsx";
 import { CreateVehicle, Vehicle, UpdateVehicle } from "../../types/VehicleTypes.tsx";
 import { CreateTransporter, Transporter, UpdateTransporter } from "../../types/TransporterTypes.tsx";
+import { SubWarehouse, CreateSubWarehouse, UpdateSubWarehouse } from "../../types/SubWarehouseTypes";
+import { Bin, CreateBin, UpdateBin } from "../../types/MasterBinTypes";
+
 
 
 export const useStoreUom = createCrudStore<Uom, CreateUom, UpdateUom>({
@@ -99,4 +104,14 @@ export const useStoreVehicle = createCrudStore<Vehicle, CreateVehicle, UpdateVeh
 export const useStoreTransporter = createCrudStore<Transporter, CreateTransporter, UpdateTransporter>({
     name: "Transporter",
     service: TransporterService,
+});
+
+export const useStoreSubWarehouse = createCrudStore<SubWarehouse, CreateSubWarehouse, UpdateSubWarehouse>({
+    name: "SubWarehouse",
+    service: subWarehouseService,
+});
+
+export const useStoreBin = createCrudStore<Bin, CreateBin, UpdateBin>({
+    name: "Bin",
+    service: binService,
 });
