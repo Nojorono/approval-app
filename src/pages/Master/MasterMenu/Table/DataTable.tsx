@@ -10,27 +10,23 @@ import {
 } from "../../../../DynamicAPI/stores/Store/MasterStore";
 import {
   FaRegFileAlt,
-  FaDollarSign,
-  FaRegNewspaper,
   FaClipboardList,
   FaRoute,
-  FaUserTag,
-  FaChartLine,
-  FaCreditCard,
   FaPlus,
-  FaList,
+  FaWarehouse,
+  FaCog,
+  FaBoxes,
+  FaTruckMoving,
 } from "react-icons/fa";
 
 const iconOptions = [
   { value: "FaRegFileAlt", label: "Master Data", icon: <FaRegFileAlt /> },
-  { value: "FaDollarSign", label: "Bank Account", icon: <FaDollarSign /> },
+  { value: "FaWarehouse  ", label: "Inbound", icon: <FaWarehouse /> },
+  { value: "FaTruckMoving ", label: "Outbound", icon: <FaTruckMoving /> },
+  { value: "FaBoxes ", label: "Inventory", icon: <FaBoxes /> },
+  { value: "FaCog ", label: "Settings", icon: <FaCog /> },
   { value: "FaClipboardList", label: "Report", icon: <FaClipboardList /> },
   { value: "FaRoute", label: "Route", icon: <FaRoute /> },
-  { value: "FaUserTag", label: "Sales & Distribution", icon: <FaUserTag /> },
-  { value: "FaChartLine", label: "Target Sales", icon: <FaChartLine /> },
-  { value: "FaRegNewspaper", label: "News", icon: <FaRegNewspaper /> },
-  { value: "FaCreditCard", label: "Credit Limit", icon: <FaCreditCard /> },
-  { value: "FaList", label: "List", icon: <FaList /> },
 ];
 
 const DataTable = () => {

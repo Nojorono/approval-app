@@ -1,6 +1,10 @@
 import { useMemo } from "react";
 import * as Icons from "react-icons/fa";
 
+// =====================
+// Types
+// =====================
+
 export type NavItem = {
   name: string;
   icon: React.ReactNode;
@@ -18,37 +22,44 @@ export type MenuItem = {
   children?: MenuItem[];
 };
 
-// Helper: format name from camelCase to "Camel Case"
+export type SidebarItems = {
+  menuItems: NavItem[];
+  settingsItems: NavItem[];
+};
+
+// =====================
+// Helpers
+// =====================
+
 const formatName = (name: string): string =>
   name.replace(/([A-Z])/g, " $1").trim();
 
-// Helper: safely resolve icon
 const resolveIcon = (iconName: string): React.ReactNode => {
-  const IconComponent = Icons[iconName as keyof typeof Icons];
+  const cleanIconName = iconName?.trim().replace(/\u200B/g, "");
+  const IconComponent = Icons[cleanIconName as keyof typeof Icons];
+  if (!IconComponent) console.warn(`Icon not found: ${cleanIconName}`);
   return IconComponent ? <IconComponent /> : <Icons.FaFile />;
 };
 
-// Helper: build hierarchy from flat menu
 const buildMenuHierarchy = (menuItems: MenuItem[]): MenuItem[] => {
   const menuMap: Record<string | number, MenuItem> = {};
   menuItems.forEach((menu) => {
     menuMap[menu.id] = { ...menu, children: [] };
   });
 
-  const rootMenus: MenuItem[] = [];
+  const roots: MenuItem[] = [];
   menuItems.forEach((menu) => {
     if (menu.parentId) {
       const parent = menuMap[menu.parentId];
       if (parent) parent.children?.push(menuMap[menu.id]);
     } else {
-      rootMenus.push(menuMap[menu.id]);
+      roots.push(menuMap[menu.id]);
     }
   });
 
-  return rootMenus;
+  return roots;
 };
 
-// Helper: get local storage value safely
 const getParsedLocalStorage = (key: string): any => {
   const value = localStorage.getItem(key);
   try {
@@ -59,7 +70,11 @@ const getParsedLocalStorage = (key: string): any => {
   }
 };
 
-export const useDynamicSidebarItems = (): NavItem[] => {
+// =====================
+// Main Hook
+// =====================
+
+export const useDynamicSidebarItems = (): SidebarItems => {
   const localMenus: MenuItem[] = useMemo(() => {
     return getParsedLocalStorage("local_menus") ?? [];
   }, []);
@@ -69,43 +84,56 @@ export const useDynamicSidebarItems = (): NavItem[] => {
     return userData?.menus ?? null;
   }, []);
 
-  const navItems: NavItem[] = useMemo(() => {
+  const { menuItems, settingsItems } = useMemo(() => {
     const effectiveMenus = userLoginMenus?.length ? userLoginMenus : localMenus;
+    if (!effectiveMenus || effectiveMenus.length === 0) {
+      return { menuItems: [], settingsItems: [] };
+    }
 
-    if (!effectiveMenus || effectiveMenus.length === 0) return [];
+    const hierarchy = buildMenuHierarchy(effectiveMenus);
+    const menuItems: NavItem[] = [];
+    const settingsItems: NavItem[] = [];
 
-    const menuHierarchy = buildMenuHierarchy(effectiveMenus);
-
-    const items: NavItem[] = menuHierarchy.map((parent) => {
+    hierarchy.forEach((parent) => {
       const baseItem: NavItem = {
         name: formatName(parent.name),
         icon: resolveIcon(parent.icon),
         path: parent.path || "",
       };
 
-      if (parent.children && parent.children.length > 0) {
+      if (parent.children?.length) {
         baseItem.subItems = parent.children.map((child) => ({
           name: formatName(child.name),
           path: child.path || "",
         }));
       }
 
-      return baseItem;
+      // Pisahkan ke Settings section jika path === "/settings"
+      if (parent.path === "/settings") {
+        settingsItems.push(baseItem);
+      } else {
+        menuItems.push(baseItem);
+      }
     });
 
-    return items.sort((a, b) => {
-      const aHasChildren = !!a.subItems?.length;
-      const bHasChildren = !!b.subItems?.length;
-      return aHasChildren === bHasChildren ? 0 : aHasChildren ? -1 : 1;
-    });
+    // Optional sorting: Submenu dulu baru menu tunggal
+    const sortFn = (a: NavItem, b: NavItem) => {
+      const aHasSub = !!a.subItems?.length;
+      const bHasSub = !!b.subItems?.length;
+      return aHasSub === bHasSub ? 0 : aHasSub ? -1 : 1;
+    };
+
+    return {
+      menuItems: menuItems.sort(sortFn),
+      settingsItems: settingsItems.sort(sortFn),
+    };
   }, [localMenus, userLoginMenus]);
 
-  return navItems;
+  return { menuItems, settingsItems };
 };
 
 // import { useMemo } from "react";
-// import * as Icons from "react-icons/fa"; // Import semua ikon dari react-icons/fa
-// // import dummyRoutes from "../helper/dummyRoutes";
+// import * as Icons from "react-icons/fa";
 
 // export type NavItem = {
 //   name: string;
@@ -115,7 +143,7 @@ export const useDynamicSidebarItems = (): NavItem[] => {
 // };
 
 // export type MenuItem = {
-//   icon: string; // Pastikan kolom icon adalah string
+//   icon: string;
 //   id: string | number;
 //   name: string;
 //   path?: string;
@@ -124,105 +152,92 @@ export const useDynamicSidebarItems = (): NavItem[] => {
 //   children?: MenuItem[];
 // };
 
-// // Fungsi untuk membangun hierarki menu berdasarkan id dan parentId
-// const buildMenuHierarchy = (menuItems: MenuItem[]): MenuItem[] => {
-//   const menuMap: { [key: string]: MenuItem } = {};
+// // Format "camelCase" to "Camel Case"
+// const formatName = (name: string): string =>
+//   name.replace(/([A-Z])/g, " $1").trim();
 
-//   // Buat map dari menu berdasarkan id
+// // Safely resolve icon from string
+// const resolveIcon = (iconName: string): React.ReactNode => {
+//   const cleanIconName = iconName?.trim().replace(/\u200B/g, "");
+//   const IconComponent = Icons[cleanIconName as keyof typeof Icons];
+
+//   if (!IconComponent) {
+//     console.warn(`Icon not found: ${cleanIconName}`);
+//   }
+
+//   return IconComponent ? <IconComponent /> : <Icons.FaFile />;
+// };
+
+// // Convert flat menu list into hierarchy
+// const buildMenuHierarchy = (menuItems: MenuItem[]): MenuItem[] => {
+//   const menuMap: Record<string | number, MenuItem> = {};
 //   menuItems.forEach((menu) => {
 //     menuMap[menu.id] = { ...menu, children: [] };
 //   });
 
 //   const rootMenus: MenuItem[] = [];
-
-//   // Hubungkan parent dan children
 //   menuItems.forEach((menu) => {
 //     if (menu.parentId) {
 //       const parent = menuMap[menu.parentId];
-//       if (parent) {
-//         parent.children?.push(menuMap[menu.id]);
-//       }
+//       if (parent) parent.children?.push(menuMap[menu.id]);
 //     } else {
-//       rootMenus.push(menuMap[menu.id]); // Menu tanpa parentId menjadi root
+//       rootMenus.push(menuMap[menu.id]);
 //     }
 //   });
 
 //   return rootMenus;
 // };
 
+// // Safe access localStorage
+// const getParsedLocalStorage = (key: string): any => {
+//   const value = localStorage.getItem(key);
+//   try {
+//     return value && value !== "undefined" ? JSON.parse(value) : null;
+//   } catch {
+//     console.warn(`Failed to parse localStorage for key: ${key}`);
+//     return null;
+//   }
+// };
+
 // export const useDynamicSidebarItems = (): NavItem[] => {
 //   const localMenus: MenuItem[] = useMemo(() => {
-//     const storedMenus = localStorage.getItem("local_menus");
-//     try {
-//       return storedMenus && storedMenus !== "undefined"
-//         ? JSON.parse(storedMenus)
-//         : [];
-//     } catch {
-//       console.warn("Failed to parse local_menus from localStorage.");
-//       return [];
-//     }
+//     return getParsedLocalStorage("local_menus") ?? [];
 //   }, []);
 
-//   const user_login_menu = (() => {
-//     const storedUserLogin = localStorage.getItem("user_login_data");
-//     return storedUserLogin && storedUserLogin !== "undefined"
-//       ? JSON.parse(storedUserLogin).menus
-//       : null;
-//   })();
+//   const userLoginMenus: MenuItem[] | null = useMemo(() => {
+//     const userData = getParsedLocalStorage("user_login_data");
+//     return userData?.menus ?? null;
+//   }, []);
 
-//   const navItems = useMemo(() => {
-//     const effectiveMenus =
-//       user_login_menu && user_login_menu.length > 0
-//         ? user_login_menu
-//         : localMenus;
-
-//     // const effectiveMenus = dummyRoutes.map((menu) => ({
-//     //   ...menu,
-//     //   parentId: menu.parentId !== null ? String(menu.parentId) : null,
-//     // }));
-
+//   const navItems: NavItem[] = useMemo(() => {
+//     const effectiveMenus = userLoginMenus?.length ? userLoginMenus : localMenus;
 //     if (!effectiveMenus || effectiveMenus.length === 0) return [];
 
-//     // Bangun hierarki menu
 //     const menuHierarchy = buildMenuHierarchy(effectiveMenus);
 
-//     // Proses hierarki menu menjadi NavItem
-//     const processedNavItems = menuHierarchy.map((parent: MenuItem): NavItem => {
-//       const resolveIcon = (iconName: string): React.ReactNode => {
-//         const IconComponent = Icons[iconName as keyof typeof Icons];
-//         return IconComponent ? <IconComponent /> : <Icons.FaFile />;
-//       };
-
-//       // Jika menu tidak memiliki children, jadikan menu tunggal
-//       if (!parent.children || parent.children.length === 0) {
-//         return {
-//           name: parent.name.replace(/([A-Z])/g, " $1").trim(),
-//           icon: resolveIcon(parent.icon),
-//           path: parent.path || "",
-//         };
-//       }
-
-//       // Jika menu memiliki children, jadikan menu dengan dropdown
-//       const subItems = parent.children.map((child) => ({
-//         name: child.name.replace(/([A-Z])/g, " $1").trim(),
-//         path: child.path || "",
-//       }));
-
-//       return {
-//         name: parent.name.replace(/([A-Z])/g, " $1").trim(),
+//     const items: NavItem[] = menuHierarchy.map((parent) => {
+//       const baseItem: NavItem = {
+//         name: formatName(parent.name),
 //         icon: resolveIcon(parent.icon),
 //         path: parent.path || "",
-//         subItems,
 //       };
+
+//       if (parent.children && parent.children.length > 0) {
+//         baseItem.subItems = parent.children.map((child) => ({
+//           name: formatName(child.name),
+//           path: child.path || "",
+//         }));
+//       }
+
+//       return baseItem;
 //     });
 
-//     // Urutkan menu: yang memiliki children di atas
-//     return processedNavItems.sort((a, b) => {
-//       const aHasChildren = a.subItems && a.subItems.length > 0;
-//       const bHasChildren = b.subItems && b.subItems.length > 0;
+//     return items.sort((a, b) => {
+//       const aHasChildren = !!a.subItems?.length;
+//       const bHasChildren = !!b.subItems?.length;
 //       return aHasChildren === bHasChildren ? 0 : aHasChildren ? -1 : 1;
 //     });
-//   }, [localMenus]);
+//   }, [localMenus, userLoginMenus]);
 
 //   return navItems;
 // };
