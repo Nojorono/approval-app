@@ -65,7 +65,7 @@ export default function SignInForm() {
       fetchMenus();
       showSuccessToast("Login successful!");
       setTimeout(() => {
-        navigate("/master_menu");
+        navigate("/inbound_planning");
       }, 800);
     } catch (err: any) {
       console.error("Login failed:", err);

@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import PageBreadcrumb from "../../../../../components/common/PageBreadCrumb";
 import TabsSection from "../../../../../components/wms-components/inbound-component/tabs/TabsSection";
-import { FaCheck, FaCubes, FaUserPlus } from "react-icons/fa";
+import { FaCheck, FaEdit, FaUserPlus } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import Button from "../../../../../components/ui/button/Button";
 import { useStoreInboundPlanning } from "../../../../../DynamicAPI/stores/Store/MasterStore";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ModalAssign, ModalDialog } from "../../../../../components/modal/type";
-
 import DetailInboundItem from "./DetailItem";
 import ViewChecker from "./ViewChecker";
 import TransporterDetail from "./TransportAndLoading";
@@ -16,6 +15,7 @@ import DynamicForm, {
 } from "../../../../../components/wms-components/inbound-component/form/DynamicForm";
 
 const DetailInbound = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const { data } = location.state || {};
   const { fetchById, detail } = useStoreInboundPlanning();
@@ -36,7 +36,24 @@ const DetailInbound = () => {
 
   const methods = useForm();
   const [activeTab, setActiveTab] = useState(0);
-  const { id, inbound_planning_no } = detail || {};
+
+  console.log("DetailInbound data detail:", detail);
+  
+
+  const {
+    id,
+    inbound_planning_no,
+    delivery_no,
+    po_no,
+    client_name,
+    order_type,
+    task_type,
+    notes,
+    plan_delivery_date,
+    plan_status,
+    plan_type,
+    items = [],
+  } = detail || {};
 
   const onSubmit = (formData: any) => {
     setOpnMdlDialog(true);
@@ -47,8 +64,8 @@ const DetailInbound = () => {
     setOpenMdlTab(false);
   };
 
-  const handleSubmit = (data: any) => {
-    console.log("Submitted Data:", data);
+  const handleSubmit = (param: any) => {
+    console.log("Submitted Data:", param);
   };
 
   const formFields = [
@@ -96,22 +113,16 @@ const DetailInbound = () => {
     console.log("Confirmed!");
   };
 
-  const fields: FieldConfig[] = [
+  const InboundFields: FieldConfig[] = [
     {
-      name: "inbound_no",
+      name: "inbound_planning_no",
       label: "Inbound Planning No",
       type: "text",
       disabled: true,
     },
     {
-      name: "supplier_name",
+      name: "client_name",
       label: "Supplier Name",
-      type: "text",
-      disabled: true,
-    },
-    {
-      name: "supplier_address",
-      label: "Supplier Address",
       type: "text",
       disabled: true,
     },
@@ -121,7 +132,6 @@ const DetailInbound = () => {
       type: "text",
       disabled: true,
     },
-    { name: "receipt_no", label: "Receipt No*", type: "text", disabled: true },
     {
       name: "order_type",
       label: "Order Type*",
@@ -134,20 +144,8 @@ const DetailInbound = () => {
       disabled: true,
     },
     {
-      name: "warehouse_id",
-      label: "Warehouse Name*",
-      type: "select",
-      options: [
-        { label: "-- Select Warehouse --", value: "" },
-        { label: "Gudang A", value: "gudang_a" },
-        { label: "Gudang B", value: "gudang_b" },
-        { label: "Gudang C", value: "gudang_c" },
-      ],
-      disabled: true,
-    },
-    {
-      name: "receive_type",
-      label: "Receive Type*",
+      name: "task_type",
+      label: "Task Type*",
       type: "select",
       options: [
         { label: "-- Select Type --", value: "" },
@@ -164,6 +162,53 @@ const DetailInbound = () => {
     },
   ];
 
+  const defaultValues = {
+    id,
+    inbound_planning_no,
+    delivery_no,
+    po_no,
+    client_name,
+    order_type,
+    task_type,
+    notes,
+    plan_delivery_date,
+    plan_status,
+    plan_type,
+    plan_date: plan_delivery_date ? new Date(plan_delivery_date) : null,
+  };
+
+  const simplifiedItems = items.map((itemWrapper) => {    
+    const { id, item, expired_date, qty_plan, uom, classification_item } =
+      itemWrapper;
+
+    const sku = item?.sku ?? "";
+    const name = item?.name ?? "";
+    const description = item?.description ?? "";
+    const classification_name = classification_item?.classification_name ?? "";
+    const classification_code = classification_item?.classification_code ?? "";
+
+    return {
+      id,
+      sku,
+      name,
+      description,
+      expired_date,
+      qty_plan,
+      uom,
+      classification_name,
+      classification_code,
+    };
+  });
+
+  const handleUpdate = () => {
+    console.log(
+      "Update Inbound Planning with ID:",
+      id,
+      "and Inbound Planning No:",
+      inbound_planning_no
+    );
+  };
+
   return (
     <div>
       <PageBreadcrumb
@@ -172,53 +217,45 @@ const DetailInbound = () => {
           { title: `Detail Inbound Planning` },
         ]}
       />
+
       <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
         <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
           <div className="flex flex-col items-center w-full gap-6 xl:flex-row">
-            <div className="w-20 h-20 overflow-hidden">
-              <FaCubes className="absolute w-20 h-20 text-orange-400 dark:text-orange-600" />
-            </div>
-            <div className="order-3 xl:order-2">
-              <h4 className="mb-2 text-lg font-semibold text-center text-gray-800 dark:text-white/90 xl:text-left">
-                Inbound Planning :
-              </h4>
-              <h5 className="mb-2 text-lg font-semibold text-center text-gray-800 dark:text-white/90 xl:text-left">
-                {inbound_planning_no || "N/A"}
-              </h5>
-            </div>
-            <div className="flex items-center order-2 gap-2 grow xl:order-3 xl:justify-end">
-              <Button
-                type="button"
-                variant="primary"
-                size="md"
-                onClick={() => setOpenMdlTab(true)}
-                startIcon={<FaUserPlus size={18} />}
-              >
-                Assign Checker
-              </Button>
-            </div>
-
-            {/* <div className="flex items-center order-2 gap-2 grow xl:order-3 xl:justify-end">
-              <Button
-                type="button"
-                variant="primary"
-                size="md"
-                onClick={() => setOpenMdlTab(true)}
-                startIcon={<FaUserPlus size={18} />}
-              >
-                Assign Checker
-              </Button>
-            </div>
-
             <DynamicForm
-              fields={fields}
+              fields={InboundFields}
               onSubmit={methods.handleSubmit(onSubmit)}
-              defaultValues={{}}
+              defaultValues={defaultValues}
               control={methods.control}
               register={methods.register}
               setValue={methods.setValue}
               handleSubmit={methods.handleSubmit}
-            /> */}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6 mt-3">
+        <div className="flex flex-col items-center w-full gap-6 xl:flex-row">
+          <div className="flex items-center order-2 gap-2 grow xl:order-3 xl:justify-end">
+            <Button
+              type="button"
+              variant="primary"
+              size="md"
+              onClick={() => handleUpdate()}
+              startIcon={<FaEdit size={18} />}
+            >
+              Update Inbound
+            </Button>
+
+            <Button
+              type="button"
+              variant="primary"
+              size="md"
+              onClick={() => setOpenMdlTab(true)}
+              startIcon={<FaUserPlus size={18} />}
+            >
+              Assign Checker
+            </Button>
           </div>
         </div>
       </div>
@@ -237,7 +274,7 @@ const DetailInbound = () => {
           tabs={[
             {
               label: "Item Details",
-              content: <DetailInboundItem data={data} />,
+              content: <DetailInboundItem data={simplifiedItems} />,
             },
             {
               label: "Transport & Loading",
@@ -272,17 +309,6 @@ const DetailInbound = () => {
           >
             Confirm Inbound
           </Button>
-        </div>
-        <div className="flex gap-3 ml-4">
-          {/* <Button
-            type="button"
-            variant="primary"
-            size="md"
-            onClick={() => setOpenMdlTab(true)}
-            startIcon={<FaUserPlus size={18} />}
-          >
-            Assign Checker
-          </Button> */}
         </div>
 
         <ModalDialog

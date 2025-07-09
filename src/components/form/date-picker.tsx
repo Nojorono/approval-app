@@ -14,7 +14,7 @@ type PropsType = {
   label?: string;
   placeholder?: string;
   readOnly?: boolean;
-  position?: 
+  position?:
     | "auto"
     | "above"
     | "below"
@@ -61,16 +61,18 @@ export default function DatePicker({
   return (
     <div key={defaultDate?.toString()}>
       {label && <Label htmlFor={id}>{label}</Label>}
-      <div className="relative">
+      <div className={`relative ${readOnly ? "cursor-not-allowed" : ""}`}>
         <input
           id={id}
           placeholder={placeholder}
           readOnly={readOnly}
-          className={`h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30 ${
-            readOnly
-              ? "bg-gray-100 text-gray-500 border-gray-100 cursor-not-allowed"
-              : "bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20 dark:border-gray-700 dark:focus:border-brand-800"
-          }`}
+          className={`h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400
+    ${
+      readOnly
+        ? "bg-gray-100 text-gray-500 border-gray-100 cursor-not-allowed !cursor-not-allowed"
+        : "bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20 dark:border-gray-700 dark:focus:border-brand-800"
+    }`}
+          style={readOnly ? { cursor: "not-allowed" } : {}}
         />
 
         <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">

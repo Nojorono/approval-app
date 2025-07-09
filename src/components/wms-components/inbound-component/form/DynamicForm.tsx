@@ -47,6 +47,8 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
 
   const disabledClasses = "bg-gray-100 text-gray-500 cursor-not-allowed";
 
+  console.log("DynamicForm fields:", fields);
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -120,13 +122,13 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
             <Controller
               control={control}
               name={field.name}
-              render={({ field }) => (
+              render={({ field: controllerField }) => (
                 <DatePicker
-                  id={field.name}
+                  id={controllerField.name}
                   label=""
-                  defaultDate={field.value}
-                  onChange={([date]: Date[]) => field.onChange(date)}
-                  readOnly={field.disabled}
+                  defaultDate={controllerField.value}
+                  onChange={([date]: Date[]) => controllerField.onChange(date)}
+                  readOnly={field.disabled} // ✅ Ini sekarang mengacu ke config yang benar
                 />
               )}
             />

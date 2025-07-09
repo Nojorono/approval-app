@@ -231,9 +231,15 @@ const AppSidebar: React.FC = () => {
 
       {/* Main + Settings */}
       <div className="flex flex-col justify-between flex-1 overflow-y-auto duration-300 ease-linear no-scrollbar">
-        <nav className="mb-6 flex flex-col gap-8">
-          {renderSection(menuItems, "main", "Menu")}
-          {renderSection(settingsItems, "settings", "Settings")}
+        <nav className="mb-6 flex flex-col flex-grow">
+          <div className="flex flex-col gap-8 flex-grow">
+            {renderSection(menuItems, "main", "Menu")}
+          </div>
+          {settingsItems.length > 0 && (
+            <div className="mt-auto pt-6 border-t border-gray-200 dark:border-gray-800">
+              {renderSection(settingsItems, "settings", "Settings")}
+            </div>
+          )}
         </nav>
       </div>
     </aside>
@@ -241,9 +247,6 @@ const AppSidebar: React.FC = () => {
 };
 
 export default AppSidebar;
-
-
-
 
 // // components/AppSidebar.tsx
 // import React, { useCallback, useEffect, useRef, useState } from "react";
