@@ -47,8 +47,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
 
   const disabledClasses = "bg-gray-100 text-gray-500 cursor-not-allowed";
 
-  console.log("DynamicForm fields:", fields);
-
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
