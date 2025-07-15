@@ -38,9 +38,8 @@ const DefaultPage = () => (
 
 export function AppRoutes() {
   const navigate = useNavigate();
-  const token =
-    useAuthStore((state) => state.accessToken) ||
-    localStorage.getItem("accessToken");
+  const token = useAuthStore((state) => state.accessToken) || "";
+  const userMenus = useAuthStore((state) => state.menus) || [];
 
   const isAuthenticated = () => {
     if (token) {
@@ -55,18 +54,6 @@ export function AppRoutes() {
       signOut(navigate);
     }
   }, [navigate]);
-
-  const userMenus = useMemo(() => {
-    const stored = localStorage.getItem("user_login_data");
-    try {
-      return stored && stored !== "undefined"
-        ? JSON.parse(stored).menus ?? []
-        : [];
-    } catch {
-      console.warn("Failed to parse user_login_data");
-      return [];
-    }
-  }, []);
 
   const manualChildRoutes: Record<
     string,

@@ -48,8 +48,6 @@ const InboundPlanningAdd = () => {
   const location = useLocation();
   const { defaultValues } = location.state || {};
 
-  console.log("Location state data:", defaultValues);
-
   const { createData } = useStoreInboundPlanning();
   const { fetchAll, list: clsData } = useStoreClassification();
 
@@ -131,13 +129,16 @@ const InboundPlanningAdd = () => {
         (item): InboundPlanningItemCreate => ({
           inbound_plan_id: "",
           sku: item.SKU || "",
-          expired_date: toLocalISOString(item.expired_date),
+          expired_date: "",
           qty_plan: Number(item.PO_LINE_QUANTITY) || 0,
           uom: item.UOM || "",
           classification_item_id: item.classification || "",
         })
       ),
     };
+
+    console.log("Submitting Inbound Planning:", payload);
+    
 
     createData(payload);
     navigate("/inbound_planning");
@@ -273,13 +274,11 @@ const InboundPlanningAdd = () => {
       name: "supplier_name",
       label: "Supplier Name",
       type: "text",
-      disabled: true,
     },
     {
       name: "supplier_address",
       label: "Supplier Address",
       type: "text",
-      disabled: true,
     },
     {
       name: "po_no",
@@ -356,6 +355,7 @@ const InboundPlanningAdd = () => {
         register={methods.register}
         setValue={methods.setValue}
         handleSubmit={methods.handleSubmit}
+        isEditMode={true}
       />
 
       <div className="flex justify-end mt-4 mb-2">

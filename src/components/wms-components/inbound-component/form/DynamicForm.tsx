@@ -25,6 +25,8 @@ interface DynamicFormProps {
   register: any;
   setValue: any;
   handleSubmit: any;
+  isEditMode?: boolean;
+  onEditToggle?: () => void;
 }
 
 const DynamicForm: React.FC<DynamicFormProps> = ({
@@ -35,7 +37,9 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   register,
   setValue,
   handleSubmit,
+  isEditMode,
 }) => {
+
   useEffect(() => {
     Object.entries(defaultValues).forEach(([key, value]) => {
       setValue(key, value);
@@ -44,7 +48,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
 
   const commonClasses =
     "w-full px-3 py-[6px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm";
-
   const disabledClasses = "bg-gray-100 text-gray-500 cursor-not-allowed";
 
   return (
@@ -63,10 +66,10 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
               type="text"
               {...register(field.name)}
               className={`${commonClasses} ${
-                field.disabled ? disabledClasses : ""
+                !isEditMode || field.disabled ? disabledClasses : ""
               }`}
-              disabled={field.disabled}
-              readOnly={field.disabled}
+              disabled={!isEditMode || field.disabled}
+              readOnly={!isEditMode || field.disabled}
             />
           )}
 
@@ -75,10 +78,10 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
               {...register(field.name)}
               rows={3}
               className={`${commonClasses} ${
-                field.disabled ? disabledClasses : ""
+                !isEditMode || field.disabled ? disabledClasses : ""
               }`}
-              disabled={field.disabled}
-              readOnly={field.disabled}
+              disabled={!isEditMode || field.disabled}
+              readOnly={!isEditMode || field.disabled}
             />
           )}
 
@@ -91,12 +94,14 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
                   {...controllerField}
                   options={field.options}
                   className={`react-select-container text-sm ${
-                    field.disabled ? "bg-gray-100 text-gray-400" : ""
+                    !isEditMode || field.disabled
+                      ? "bg-gray-100 text-gray-400"
+                      : ""
                   }`}
                   classNamePrefix="react-select"
-                  isDisabled={field.disabled}
+                  isDisabled={!isEditMode || field.disabled}
                   styles={
-                    field.disabled
+                    !isEditMode || field.disabled
                       ? {
                           control: (base) => ({
                             ...base,
@@ -126,7 +131,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
                   label=""
                   defaultDate={controllerField.value}
                   onChange={([date]: Date[]) => controllerField.onChange(date)}
-                  readOnly={field.disabled} // ✅ Ini sekarang mengacu ke config yang benar
+                  readOnly={!isEditMode || field.disabled}
                 />
               )}
             />
@@ -137,10 +142,10 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
               type="file"
               {...register(field.name)}
               className={`${commonClasses} ${
-                field.disabled ? disabledClasses : ""
+                !isEditMode || field.disabled ? disabledClasses : ""
               }`}
-              disabled={field.disabled}
-              readOnly={field.disabled}
+              disabled={!isEditMode || field.disabled}
+              readOnly={!isEditMode || field.disabled}
             />
           )}
 
@@ -152,4 +157,5 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     </form>
   );
 };
+
 export default DynamicForm;
