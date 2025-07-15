@@ -25,6 +25,8 @@ const DetailInboundItem: React.FC<DetailInboundItemProps> = ({
   const [editItemIndex, setEditItemIndex] = useState<number | null>(null);
   const [editItemData, setEditItemData] = useState<any>(null);
 
+
+
   const skuOptions = [
     {
       id: "f7b2a026-3c4e-45a6-8db9-21022044b9b6",
