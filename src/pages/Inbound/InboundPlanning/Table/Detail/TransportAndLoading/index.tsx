@@ -6,7 +6,6 @@ import ActIndicator from "../../../../../../components/ui/activityIndicator";
 
 const TransporterDetail = (data: any) => {
   const IdInbound = data.data.id;
-
   const { fetchById, detail, isLoading } = useStoreTransporter();
 
   useEffect(() => {
@@ -15,11 +14,7 @@ const TransporterDetail = (data: any) => {
     };
 
     fetchData();
-  }, [IdInbound]);
-
-
-  console.log("Transporter Detail Data:", detail);
-  
+  }, [IdInbound]);  
 
   // Mapping detail for table usage
   const mappedTransporterDetail = useMemo(() => {
@@ -74,10 +69,7 @@ const TransporterDetail = (data: any) => {
       header: "Departure Time",
       accessorKey: "departure_time",
     },
-  ];
-
-  console.log("Mapped Transporter Detail:", mappedTransporterDetail);
-  
+  ];  
 
   return (
     <>

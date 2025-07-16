@@ -14,6 +14,7 @@ import DynamicForm, {
   FieldConfig,
 } from "../../../../../components/wms-components/inbound-component/form/DynamicForm";
 import ActIndicator from "../../../../../components/ui/activityIndicator";
+import { toLocalISOString } from "../../../../../helper/FormatDate";
 
 const DetailInbound = () => {
   const navigate = useNavigate();
@@ -35,8 +36,6 @@ const DetailInbound = () => {
       fetchById(data.id);
     }
   }, [data, fetchById]);
-
-  console.log("Detail Inbound Data:", detail);
 
   const {
     id,
@@ -152,7 +151,7 @@ const DetailInbound = () => {
       notes: formData.notes,
       supplier_id: detail?.supplier_id ?? "",
       warehouse_id: detail?.warehouse_id ?? "",
-      plan_delivery_date: formData.plan_delivery_date,
+      plan_delivery_date: toLocalISOString(formData.plan_delivery_date),
       plan_status: detail?.plan_status ?? "",
       plan_type: detail?.plan_type ?? "",
       items: itemDetails,
@@ -172,25 +171,19 @@ const DetailInbound = () => {
         ]}
       />
 
-      <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
-        <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
-          <div className="flex flex-col items-center w-full gap-6 xl:flex-row">
-            <DynamicForm
-              fields={InboundFields}
-              onSubmit={() => {}}
-              defaultValues={defaultValues}
-              control={methods.control}
-              register={methods.register}
-              setValue={methods.setValue}
-              handleSubmit={methods.handleSubmit}
-              isEditMode={isEditMode}
-              onEditToggle={handleEditToggle}
-            />
-          </div>
-        </div>
-      </div>
+      <DynamicForm
+        fields={InboundFields}
+        onSubmit={() => {}}
+        defaultValues={defaultValues}
+        control={methods.control}
+        register={methods.register}
+        setValue={methods.setValue}
+        handleSubmit={methods.handleSubmit}
+        isEditMode={isEditMode}
+        onEditToggle={handleEditToggle}
+      />
 
-      <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6 mt-3">
+      {/* <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6 mt-3">
         <div className="flex flex-col items-center w-full gap-6 xl:flex-row">
           <div className="flex items-center order-2 gap-2 grow xl:order-3 xl:justify-end">
             {plan_status === "IN_PROGRESS" && (
@@ -238,7 +231,7 @@ const DetailInbound = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <ModalAssign
         isOpen={openMdlTab}
@@ -288,7 +281,7 @@ const DetailInbound = () => {
         parmeters={{ id }}
       />
 
-      <div className="mt-6 mb-4">
+      <div className="mt-8 mb-4">
         {isLoading || !detail ? (
           <>
             <ActIndicator />
@@ -299,20 +292,76 @@ const DetailInbound = () => {
               {
                 label: "Item Details",
                 content: (
-                  <DetailInboundItem
-                    data={simplifiedItems}
-                    isEditMode={isEditMode}
-                    onItemsChange={setItemDetails}
-                  />
+                  <>
+                    <div className="flex items-center order-2 gap-2 grow xl:order-3 xl:justify-end mb-4">
+                      {plan_status === "IN_PROGRESS" && (
+                        <Button
+                          type="button"
+                          variant="primary"
+                          size="md"
+                          onClick={handleEditToggle}
+                          startIcon={<FaEdit size={18} />}
+                          disabled={isEditMode}
+                        >
+                          Update Inbound
+                        </Button>
+                      )}
+                      {isEditMode && (
+                        <>
+                          <Button
+                            type="button"
+                            variant="danger"
+                            size="md"
+                            onClick={handleEditToggle}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            size="md"
+                            onClick={handleSubmitUpdate}
+                          >
+                            Save Changes
+                          </Button>
+                        </>
+                      )}
+                    </div>
+
+                    <DetailInboundItem
+                      data={simplifiedItems}
+                      isEditMode={isEditMode}
+                      onItemsChange={setItemDetails}
+                    />
+                  </>
                 ),
               },
               {
                 label: "Transport & Loading",
                 content: <TransporterDetail data={data} />,
               },
+              { label: "Surat Jalan", content: <>Surat Jalan</> },
               { label: "Scan History", content: <>Transport & Loading</> },
               { label: "Attachments", content: <>Transport & Loading</> },
-              { label: "View Checker", content: <ViewChecker data={data} /> },
+              {
+                label: "View Checker",
+                content: (
+                  <>
+                    <div className="flex items-center order-2 gap-2 grow xl:order-3 xl:justify-end mb-4">
+                      <Button
+                        type="button"
+                        variant="primary"
+                        size="md"
+                        onClick={() => setOpenMdlTab(true)}
+                        startIcon={<FaUserPlus size={18} />}
+                      >
+                        Assign Checker
+                      </Button>
+                    </div>
+                    <ViewChecker data={data} />{" "}
+                  </>
+                ),
+              },
             ]}
             activeTab={activeTab}
             onTabChange={setActiveTab}
