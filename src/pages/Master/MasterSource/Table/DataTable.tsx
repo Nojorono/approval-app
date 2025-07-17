@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { FaPlus } from "react-icons/fa";
 import Input from "../../../../components/form/input/InputField";
 import Label from "../../../../components/form/Label";
@@ -6,7 +6,7 @@ import Button from "../../../../components/ui/button/Button";
 import { useDebounce } from "../../../../helper/useDebounce";
 import DynamicTable from "../../../../components/wms-components/DynamicTable";
 import {
-  useStoreItem,
+  useStoreSource,
   useStoreIo,
 } from "../../../../DynamicAPI/stores/Store/MasterStore";
 
@@ -17,7 +17,8 @@ const DataTable = () => {
     updateData,
     deleteData,
     fetchAll,
-  } = useStoreItem();
+  } = useStoreSource();
+
   const { fetchAll: fetchAllIo, list: ioList } = useStoreIo();
 
   const [search, setSearch] = useState("");
@@ -34,12 +35,10 @@ const DataTable = () => {
     const formattedData = {
       ...data,
       organization_id: Number(data.organization_id),
-      inventory_item_id: String(data.inventory_item_id),
-      dus_per_stack: Number(data.dus_per_stack),
-      bal_per_dus: Number(data.bal_per_dus),
-      press_per_bal: Number(data.press_per_bal),
-      bks_per_press: Number(data.bks_per_press),
-      btg_per_bks: Number(data.btg_per_bks),
+      name: String(data.name),
+      code: String(data.code),
+      type: String(data.type),
+      url: String(data.url),
     };
     return createData(formattedData);
   };
@@ -48,24 +47,16 @@ const DataTable = () => {
   const handleUpdate = (data: any) => {
     const { id, ...rest } = data;
     return updateData(id, {
-      sku: String(rest.sku),
-      item_number: String(rest.item_number),
-      description: String(rest.description),
       organization_id: Number(rest.organization_id),
-      inventory_item_id: Number(rest.inventory_item_id),
-      dus_per_stack: Number(rest.dus_per_stack),
-      bal_per_dus: Number(rest.bal_per_dus),
-      press_per_bal: Number(rest.press_per_bal),
-      bks_per_press: Number(rest.bks_per_press),
-      btg_per_bks: Number(rest.btg_per_bks),
+      name: String(rest.name),
+      code: String(rest.code),
+      type: String(rest.type),
+      url: String(rest.url),
     });
   };
 
   const columns = useMemo(
     () => [
-      { accessorKey: "sku", header: "SKU" },
-      { accessorKey: "item_number", header: "Item Number" },
-      { accessorKey: "description", header: "Description" },
       {
         accessorKey: "organization_id",
         header: "Organization",
@@ -76,79 +67,59 @@ const DataTable = () => {
           return org ? org.organization_name : row.original.organization_id;
         },
       },
-      { accessorKey: "inventory_item_id", header: "Inventory Item ID" },
-      { accessorKey: "dus_per_stack", header: "Dus/Stack" },
-      { accessorKey: "bal_per_dus", header: "Bal/Dus" },
-      { accessorKey: "press_per_bal", header: "Press/Bal" },
-      { accessorKey: "bks_per_press", header: "Bks/Press" },
-      { accessorKey: "btg_per_bks", header: "Btg/Bks" },
+      {
+        accessorKey: "name",
+        header: "Name",
+      },
+      {
+        accessorKey: "code",
+        header: "Code",
+      },
+      {
+        accessorKey: "type",
+        header: "Type",
+      },
+      {
+        accessorKey: "url",
+        header: "URL",
+      },
     ],
     []
   );
 
   const formFields = [
     {
-      name: "sku",
-      label: "SKU",
-      type: "text",
-      validation: { required: "Required" },
-    },
-    {
-      name: "item_number",
-      label: "Item Number",
-      type: "text",
-      validation: { required: "Required" },
-    },
-    {
-      name: "description",
-      label: "Description",
-      type: "text",
-      validation: { required: "Required" },
-    },
-    {
       name: "organization_id",
-      label: "Organization",
+      label: "Organization Id",
       type: "select",
       options: ioList.map((item: any) => ({
-        label: item.organization_name,
         value: item.organization_id,
+        label: item.organization_name,
       })),
       validation: { required: "Required" },
     },
     {
-      name: "inventory_item_id",
-      label: "Inventory Item ID",
-      type: "number",
+      name: "name",
+      label: "Name",
+      type: "text",
       validation: { required: "Required" },
     },
     {
-      name: "dus_per_stack",
-      label: "Dus per Stack",
-      type: "number",
+      name: "code",
+      label: "Code",
+      type: "text",
       validation: { required: "Required" },
     },
     {
-      name: "bal_per_dus",
-      label: "Bal per Dus",
-      type: "number",
+      name: "type",
+      label: "Type",
+      type: "text",
       validation: { required: "Required" },
     },
     {
-      name: "press_per_bal",
-      label: "Press per Bal",
-      type: "number",
-      validation: { required: "Required" },
-    },
-    {
-      name: "bks_per_press",
-      label: "Bks per Press",
-      type: "number",
-      validation: { required: "Required" },
-    },
-    {
-      name: "btg_per_bks",
-      label: "Btg per Bks",
-      type: "number",
+      name: "url",
+      label: "URL",
+      type: "text",
       validation: { required: "Required" },
     },
   ];

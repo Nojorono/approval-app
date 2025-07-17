@@ -20,7 +20,8 @@ const DetailInbound = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { data } = location.state || {};
-  const { fetchById, detail, isLoading } = useStoreInboundPlanning();
+  const { fetchById, detail, isLoading, updateData } =
+    useStoreInboundPlanning();
 
   const [openMdlTab, setOpenMdlTab] = useState(false);
   const [openMdlDialog, setOpnMdlDialog] = useState(false);
@@ -154,12 +155,22 @@ const DetailInbound = () => {
       plan_delivery_date: toLocalISOString(formData.plan_delivery_date),
       plan_status: detail?.plan_status ?? "",
       plan_type: detail?.plan_type ?? "",
-      items: itemDetails,
+      items: itemDetails.map((item: any) => ({
+        sku: item.sku,
+        item_id: item.id,
+        expired_date: item.expired_date,
+        qty_plan: item.qty_plan,
+        uom: item.uom,
+        classification_item_id: item.classification_item_id,
+      })),
     };
 
     // Submit ke API update inbound planning
+    console.log("Inb Plan ID:", id);
     console.log("Update Payload:", payload);
-    setIsEditMode(false);
+
+    // updateData(id, payload)
+    // setIsEditMode(false);
   };
 
   return (

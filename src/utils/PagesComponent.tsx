@@ -18,6 +18,7 @@ import MasterClassification from "../pages/Master/MasterClassification";
 import MasterVehicle from "../pages/Master/MasterVehicle";
 import MasterSubWarehouse from "../pages/Master/MasterSubWarehouse";
 import MasterBin from "../pages/Master/MasterBin";
+import MasterSource from '../pages/Master/MasterSource';
 
 export {
   // PAGE MASTER
@@ -32,6 +33,7 @@ export {
   MasterVehicle,
   MasterSubWarehouse,
   MasterBin,
+  MasterSource,
 
   // MASTER ROLES PAGE
   MasterRole,

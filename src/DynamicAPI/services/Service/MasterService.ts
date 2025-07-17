@@ -15,6 +15,8 @@ import { Vehicle, CreateVehicle, UpdateVehicle } from "../../types/VehicleTypes"
 import { Transporter, CreateTransporter, UpdateTransporter } from "../../types/TransporterTypes";
 import { SubWarehouse, CreateSubWarehouse, UpdateSubWarehouse } from "../../types/SubWarehouseTypes";
 import { Bin, CreateBin, UpdateBin } from "../../types/MasterBinTypes";
+import { Source, CreateSource, UpdateSource } from "../../types/MasterSourceTypes";
+
 
 
 
@@ -34,7 +36,6 @@ export const ClassificationService = createCrudService<Classification, CreateCla
 export const VehicleService = createCrudService<Vehicle, CreateVehicle, UpdateVehicle>("/master-vehicle");
 export const TransporterService = createCrudService<Transporter, CreateTransporter, UpdateTransporter>("/inbound-transporter");
 export const subWarehouseService = createCrudService<SubWarehouse, CreateSubWarehouse, UpdateSubWarehouse>("/master-warehouse-sub");
-
 export const binService = createCrudService<Bin, CreateBin, UpdateBin>("/master-warehouse-bin");
 
-
+export const sourceService = createCrudService<Source, CreateSource, UpdateSource>("/master-source");

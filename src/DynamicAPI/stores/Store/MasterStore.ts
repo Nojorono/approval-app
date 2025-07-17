@@ -15,7 +15,8 @@ import {
     VehicleService,
     TransporterService,
     subWarehouseService,
-    binService
+    binService,
+    sourceService
 } from "../../services/Service/MasterService";
 
 import { Uom, CreateUom, UpdateUom } from "../../types/UomTypes";
@@ -33,6 +34,7 @@ import { CreateVehicle, Vehicle, UpdateVehicle } from "../../types/VehicleTypes.
 import { CreateTransporter, Transporter, UpdateTransporter } from "../../types/TransporterTypes.tsx";
 import { SubWarehouse, CreateSubWarehouse, UpdateSubWarehouse } from "../../types/SubWarehouseTypes";
 import { Bin, CreateBin, UpdateBin } from "../../types/MasterBinTypes";
+import { Source, CreateSource, UpdateSource } from "../../types/MasterSourceTypes";
 
 
 
@@ -114,4 +116,9 @@ export const useStoreSubWarehouse = createCrudStore<SubWarehouse, CreateSubWareh
 export const useStoreBin = createCrudStore<Bin, CreateBin, UpdateBin>({
     name: "Bin",
     service: binService,
+});
+
+export const useStoreSource = createCrudStore<Source, CreateSource, UpdateSource>({
+    name: "Source",
+    service: sourceService,
 });

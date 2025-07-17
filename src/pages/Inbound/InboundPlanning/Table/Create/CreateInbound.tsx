@@ -10,7 +10,6 @@ import { useForm } from "react-hook-form";
 import DynamicForm, {
   FieldConfig,
 } from "../../../../../components/wms-components/inbound-component/form/DynamicForm";
-import DatePicker from "../../../../../components/form/date-picker";
 import Button from "../../../../../components/ui/button/Button";
 import {
   showErrorToast,
@@ -25,9 +24,7 @@ import {
   CreateInboundPlanning,
 } from "../../../../../DynamicAPI/types/InboundPlanningTypes";
 import ActIndicator from "../../../../../components/ui/activityIndicator";
-
 import { ModalForm } from "../../../../../components/modal/type";
-
 import { toLocalISOString } from "../../../../../helper/FormatDate";
 
 const skuOptions = [
@@ -138,7 +135,6 @@ const InboundPlanningAdd = () => {
     };
 
     console.log("Submitting Inbound Planning:", payload);
-    
 
     createData(payload);
     navigate("/inbound_planning");
@@ -184,7 +180,9 @@ const InboundPlanningAdd = () => {
       showErrorToast("Please select SKU and input Qty.");
       return;
     }
+
     const selected = skuOptions.find((s) => s.sku === data.sku);
+
     if (!selected) {
       showErrorToast("Invalid SKU selected.");
       return;

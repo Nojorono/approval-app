@@ -5,6 +5,10 @@ import { showErrorToast } from "../../../../../../components/toast";
 import { ModalForm } from "../../../../../../components/modal/type";
 import Badge from "../../../../../../components/ui/badge/Badge";
 import { FaTrash } from "react-icons/fa";
+import {
+  useStoreClassification,
+  useStoreItem,
+} from "../../../../../../DynamicAPI/stores/Store/MasterStore";
 
 interface DetailInboundItemProps {
   data: any;
@@ -17,6 +21,16 @@ const DetailInboundItem: React.FC<DetailInboundItemProps> = ({
   isEditMode,
   onItemsChange,
 }) => {
+  const { fetchAll, list: clsfData } = useStoreClassification();
+  const { fetchAll: fetchItem, list: itemData } = useStoreItem();
+
+  useEffect(() => {
+    fetchAll();
+    fetchItem();
+  }, []);
+
+  console.log("itemData:", itemData);
+
   const [editableItems, setEditableItems] = useState<any[]>(data || []);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [showManualModal, setShowManualModal] = useState(false);
@@ -25,23 +39,6 @@ const DetailInboundItem: React.FC<DetailInboundItemProps> = ({
   const [editItemIndex, setEditItemIndex] = useState<number | null>(null);
   const [editItemData, setEditItemData] = useState<any>(null);
 
-
-
-  const skuOptions = [
-    {
-      id: "f7b2a026-3c4e-45a6-8db9-21022044b9b6",
-      sku: "NIKI16",
-      name: "RK.NKI.160000",
-      description: "NIKKI SUPER 16",
-    },
-    {
-      id: "72a6a831-dc00-418a-9a61-c46602a516bf",
-      sku: "JZB20",
-      name: "RK.JZB.200000",
-      description: "JAZY BOLD - 20",
-    },
-  ];
-
   const manualFormFields = [
     {
       name: "sku",
@@ -49,7 +46,7 @@ const DetailInboundItem: React.FC<DetailInboundItemProps> = ({
       type: "select",
       options: [
         { label: "-- Select SKU --", value: "" },
-        ...skuOptions.map((sku) => ({
+        ...itemData.map((sku) => ({
           label: `${sku.sku}`,
           value: sku.sku,
         })),
@@ -68,7 +65,6 @@ const DetailInboundItem: React.FC<DetailInboundItemProps> = ({
         { label: "-- Select UOM --", value: "" },
         { label: "DUS", value: "DUS" },
         { label: "PCS", value: "PCS" },
-        // Tambahkan opsi lain jika diperlukan
       ],
     },
     {
@@ -77,19 +73,19 @@ const DetailInboundItem: React.FC<DetailInboundItemProps> = ({
       type: "select",
       options: [
         { label: "-- Select Classification --", value: "" },
-        { label: "A", value: "A" },
-        { label: "B", value: "B" },
-        { label: "C", value: "C" },
-        // Tambahkan opsi lain jika diperlukan
+        ...clsfData.map((cls: any) => ({
+          label: cls.classification_name,
+          value: cls.id,
+        })),
       ],
     },
   ];
 
-  const handleDeleteRow = (index: number) => {
-    const newItems = [...editableItems];
-    newItems.splice(index, 1);
-    setEditableItems(newItems);
-  };
+  // const handleDeleteRow = (index: number) => {
+  //   const newItems = [...editableItems];
+  //   newItems.splice(index, 1);
+  //   setEditableItems(newItems);
+  // };
 
   const handleEditRow = (index: number) => {
     setEditItemIndex(index);
@@ -111,11 +107,28 @@ const DetailInboundItem: React.FC<DetailInboundItemProps> = ({
   };
 
   const handleEditModalSubmit = (formData: any) => {
+    // Find item_id and classification_item_id based on selected sku and classification
+    const selectedItem = itemData.find(
+      (item: any) => item.sku === formData.sku
+    );
+
+    const selectedClassification = clsfData.find(
+      (cls: any) => cls.id === formData.classification_name
+    );
+
+    const submitData = {
+      sku: formData.sku || "",
+      item_id: selectedItem?.id || "",
+      qty_plan: Number(formData.qty_plan) || 0,
+      uom: formData.uom || "",
+      classification_item_id: selectedClassification?.id || "",
+    };
+
     if (editItemIndex !== null) {
       const newItems = [...editableItems];
       newItems[editItemIndex] = {
         ...newItems[editItemIndex],
-        ...formData,
+        ...submitData,
       };
       setEditableItems(newItems);
       setEditModalOpen(false);

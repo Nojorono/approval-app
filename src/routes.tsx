@@ -25,6 +25,7 @@ import {
   MasterVehicle,
   MasterSubWarehouse,
   MasterBin,
+  MasterSource
 } from "./utils/PagesComponent";
 import MasterSupplier from "./pages/Master/MasterSupplier";
 import DetailInbound from "./pages/Inbound/InboundPlanning/Table/Detail/DetailInbound";
@@ -100,6 +101,7 @@ export function AppRoutes() {
       "/master_vehicle": <MasterVehicle />,
       "/master_sub_warehouse": <MasterSubWarehouse />,
       "/master_bin": <MasterBin />,
+      "/master_source": <MasterSource />,
     };
     return map[path] || <DefaultPage />;
   };
