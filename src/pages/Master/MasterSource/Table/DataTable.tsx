@@ -21,14 +21,14 @@ const DataTable = () => {
 
   const { fetchAll: fetchAllIo, list: ioList } = useStoreIo();
 
-  const [search, setSearch] = useState("");
-  const debouncedSearch = useDebounce(search, 500);
-  const [isCreateModalOpen, setCreateModalOpen] = useState(false);
-
   useEffect(() => {
     fetchAll();
     fetchAllIo();
   }, []);
+
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500);
+  const [isCreateModalOpen, setCreateModalOpen] = useState(false);
 
   // Fungsi untuk format payload create
   const handleCreate = (data: any) => {
@@ -57,6 +57,10 @@ const DataTable = () => {
 
   const columns = useMemo(
     () => [
+      {
+        accessorKey: "id",
+        header: "Id",
+      },
       {
         accessorKey: "organization_id",
         header: "Organization",

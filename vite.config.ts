@@ -17,7 +17,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://10.0.29.49:8000',
+        target: 'http://10.0.29.49:9000',
         changeOrigin: true,
         secure: false, // jika backend tidak menggunakan HTTPS
       },

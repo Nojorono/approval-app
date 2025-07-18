@@ -55,14 +55,6 @@ const TableMasterMenu = () => {
           </div>
 
           <div className="space-x-4">
-            {/* <Button variant="outline" size="sm">
-                <FaFileDownload className="mr-2" /> Unduh Data
-              </Button>
-
-              <Button variant="outline" size="sm">
-                <FaFileImport className="mr-2" /> Unggah Data
-              </Button> */}
-
             <Button
               size="sm"
               variant="primary"

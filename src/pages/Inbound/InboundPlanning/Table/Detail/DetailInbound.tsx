@@ -15,6 +15,7 @@ import DynamicForm, {
 } from "../../../../../components/wms-components/inbound-component/form/DynamicForm";
 import ActIndicator from "../../../../../components/ui/activityIndicator";
 import { toLocalISOString } from "../../../../../helper/FormatDate";
+import Swal from "sweetalert2";
 
 const DetailInbound = () => {
   const navigate = useNavigate();
@@ -52,6 +53,9 @@ const DetailInbound = () => {
     plan_type,
     items = [],
   } = detail || {};
+
+  console.log("detail", detail);
+  
 
   const InboundFields: FieldConfig[] = [
     {
@@ -140,7 +144,6 @@ const DetailInbound = () => {
   // Submit update (form + detail items)
   const handleSubmitUpdate = () => {
     const formData = methods.getValues();
-
     const payload = {
       inbound_planning_no: formData.inbound_planning_no,
       organization_id: detail?.organization_id,
@@ -156,9 +159,9 @@ const DetailInbound = () => {
       plan_status: detail?.plan_status ?? "",
       plan_type: detail?.plan_type ?? "",
       items: itemDetails.map((item: any) => ({
+        inbound_plan_id: id,
         sku: item.sku,
         item_id: item.id,
-        expired_date: item.expired_date,
         qty_plan: item.qty_plan,
         uom: item.uom,
         classification_item_id: item.classification_item_id,
@@ -168,8 +171,23 @@ const DetailInbound = () => {
     // Submit ke API update inbound planning
     console.log("Inb Plan ID:", id);
     console.log("Update Payload:", payload);
+    updateData(id, payload).then((res: any) => {
+      if (res?.success) {
+        // Swal.fire({
+        //   icon: "success",
+        //   title: "Success",
+        //   text: "Inbound Planning updated successfully!",
+        // });
+        setIsEditMode(false);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: res?.message || "Failed to update Inbound Planning.",
+        });
+      }
+    });
 
-    // updateData(id, payload)
     // setIsEditMode(false);
   };
 
@@ -192,6 +210,7 @@ const DetailInbound = () => {
         handleSubmit={methods.handleSubmit}
         isEditMode={isEditMode}
         onEditToggle={handleEditToggle}
+        watch={methods.watch}
       />
 
       {/* <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6 mt-3">

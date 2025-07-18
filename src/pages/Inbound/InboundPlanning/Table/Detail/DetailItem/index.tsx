@@ -29,8 +29,6 @@ const DetailInboundItem: React.FC<DetailInboundItemProps> = ({
     fetchItem();
   }, []);
 
-  console.log("itemData:", itemData);
-
   const [editableItems, setEditableItems] = useState<any[]>(data || []);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [showManualModal, setShowManualModal] = useState(false);
@@ -38,6 +36,9 @@ const DetailInboundItem: React.FC<DetailInboundItemProps> = ({
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editItemIndex, setEditItemIndex] = useState<number | null>(null);
   const [editItemData, setEditItemData] = useState<any>(null);
+
+  console.log("clsfData", clsfData);
+  console.log("data", data);
 
   const manualFormFields = [
     {
@@ -65,17 +66,18 @@ const DetailInboundItem: React.FC<DetailInboundItemProps> = ({
         { label: "-- Select UOM --", value: "" },
         { label: "DUS", value: "DUS" },
         { label: "PCS", value: "PCS" },
+        { label: "BAL", value: "BAL" },
       ],
     },
     {
-      name: "classification_name",
+      name: "classification_code",
       label: "Classification",
       type: "select",
       options: [
         { label: "-- Select Classification --", value: "" },
         ...clsfData.map((cls: any) => ({
           label: cls.classification_name,
-          value: cls.id,
+          value: cls.classification_code,
         })),
       ],
     },
@@ -113,7 +115,7 @@ const DetailInboundItem: React.FC<DetailInboundItemProps> = ({
     );
 
     const selectedClassification = clsfData.find(
-      (cls: any) => cls.id === formData.classification_name
+      (cls: any) => cls.classification_code === formData.classification_code
     );
 
     const submitData = {

@@ -5,6 +5,7 @@
 export interface InboundPlanningBase {
   inbound_planning_no: string;
   organization_id: number;
+  source_id: number;
   delivery_no: string;
   po_no: string;
   client_name: string;
@@ -25,7 +26,7 @@ export interface InboundPlanningBase {
 export interface InboundPlanningItemCreate {
   inbound_plan_id: string;
   sku: string;
-  expired_date: string;
+  expired_date?: string;
   qty_plan: number;
   uom: string;
   classification_item_id: string;
@@ -65,7 +66,7 @@ export interface ClassificationItem {
 export interface InboundPlanningItemRead {
   id?: any;
   item: ItemDetail | null;
-  expired_date: string;
+  expired_date?: string;
   qty_plan: string;
   uom: string;
   classification_item: ClassificationItem | null;

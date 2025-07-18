@@ -34,7 +34,7 @@ const DataTable = () => {
     const formattedData = {
       ...data,
       organization_id: Number(data.organization_id),
-      inventory_item_id: String(data.inventory_item_id),
+      inventory_item_id: Number(data.inventory_item_id),
       dus_per_stack: Number(data.dus_per_stack),
       bal_per_dus: Number(data.bal_per_dus),
       press_per_bal: Number(data.press_per_bal),
