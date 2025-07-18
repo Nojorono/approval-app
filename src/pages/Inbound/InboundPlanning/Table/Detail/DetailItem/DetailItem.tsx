@@ -40,6 +40,7 @@ const DetailInboundItem: React.FC<DetailInboundItemProps> = ({
   console.log("clsfData", clsfData);
   console.log("data", data);
 
+  // Form fields for manual entry
   const manualFormFields = [
     {
       name: "sku",
@@ -124,6 +125,7 @@ const DetailInboundItem: React.FC<DetailInboundItemProps> = ({
       qty_plan: Number(formData.qty_plan) || 0,
       uom: formData.uom || "",
       classification_item_id: selectedClassification?.id || "",
+      classification_name: selectedClassification?.classification_name || "",
     };
 
     if (editItemIndex !== null) {
@@ -151,6 +153,7 @@ const DetailInboundItem: React.FC<DetailInboundItemProps> = ({
     }
   }, [editableItems, onItemsChange]);
 
+  // ITEM DETAILS COLUMNS
   const itemDetailsColumns: ColumnDef<any>[] = [
     {
       header: "SKU",

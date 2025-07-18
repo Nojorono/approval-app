@@ -7,7 +7,7 @@ import Button from "../../../../../components/ui/button/Button";
 import { useStoreInboundPlanning } from "../../../../../DynamicAPI/stores/Store/MasterStore";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ModalAssign, ModalDialog } from "../../../../../components/modal/type";
-import DetailInboundItem from "./DetailItem";
+import DetailInboundItem from "./DetailItem/DetailItem";
 import ViewChecker from "./ViewChecker";
 import TransporterDetail from "./TransportAndLoading";
 import DynamicForm, {
@@ -16,6 +16,24 @@ import DynamicForm, {
 import ActIndicator from "../../../../../components/ui/activityIndicator";
 import { toLocalISOString } from "../../../../../helper/FormatDate";
 import Swal from "sweetalert2";
+
+const orderTypeOptions = [
+  { label: "-- Order Type --", value: "" },
+  { label: "Regular", value: "regular" },
+  { label: "Transfer Warehouse", value: "transfer_warehouse" },
+];
+
+const taskTypeOptions = [
+  { label: "-- Select Type --", value: "" },
+  { label: "Single Receive", value: "single_receive" },
+  { label: "Partial Receive", value: "partial_receive" },
+];
+
+// Helper untuk mencari option yang cocok berdasarkan value string
+const getOption = (
+  options: { label: string; value: string }[],
+  value: string
+) => options.find((opt) => opt.value === value) || options[0];
 
 const DetailInbound = () => {
   const navigate = useNavigate();
@@ -45,19 +63,21 @@ const DetailInbound = () => {
     delivery_no,
     po_no,
     client_name,
-    order_type,
-    task_type,
-    notes,
+    order_type = "",
+    task_type = "",
     plan_delivery_date,
     plan_status,
     plan_type,
     items = [],
   } = detail || {};
 
-  console.log("detail", detail);
-  
-
   const InboundFields: FieldConfig[] = [
+    {
+      name: "id",
+      label: "ID",
+      type: "text",
+      disabled: true,
+    },
     {
       name: "inbound_planning_no",
       label: "Inbound Planning No",
@@ -70,21 +90,13 @@ const DetailInbound = () => {
       name: "order_type",
       label: "Order Type*",
       type: "select",
-      options: [
-        { label: "-- Order Type --", value: "" },
-        { label: "Regular", value: "regular" },
-        { label: "Transfer Warehouse", value: "transfer_warehouse" },
-      ],
+      options: orderTypeOptions,
     },
     {
       name: "task_type",
       label: "Task Type*",
       type: "select",
-      options: [
-        { label: "-- Select Type --", value: "" },
-        { value: "single_receive", label: "Single Receive" },
-        { value: "partial_receive", label: "Partial Receive" },
-      ],
+      options: taskTypeOptions,
     },
     { name: "plan_delivery_date", label: "Plan Delivery Date*", type: "date" },
   ];
@@ -95,10 +107,11 @@ const DetailInbound = () => {
     delivery_no,
     po_no,
     client_name,
-    order_type,
-    task_type,
-    notes,
-    plan_delivery_date,
+    order_type: getOption(orderTypeOptions, order_type),
+    task_type: getOption(taskTypeOptions, task_type),
+    plan_delivery_date: plan_delivery_date
+      ? new Date(plan_delivery_date)
+      : null,
     plan_status,
     plan_type,
     plan_date: plan_delivery_date ? new Date(plan_delivery_date) : null,
@@ -171,24 +184,18 @@ const DetailInbound = () => {
     // Submit ke API update inbound planning
     console.log("Inb Plan ID:", id);
     console.log("Update Payload:", payload);
-    updateData(id, payload).then((res: any) => {
-      if (res?.success) {
-        // Swal.fire({
-        //   icon: "success",
-        //   title: "Success",
-        //   text: "Inbound Planning updated successfully!",
-        // });
-        setIsEditMode(false);
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: res?.message || "Failed to update Inbound Planning.",
-        });
-      }
-    });
 
-    // setIsEditMode(false);
+    // updateData(id, payload).then((res: any) => {
+    //   if (res?.success) {
+    //     setIsEditMode(false);
+    //   } else {
+    //     Swal.fire({
+    //       icon: "error",
+    //       title: "Error",
+    //       text: res?.message || "Failed to update Inbound Planning.",
+    //     });
+    //   }
+    // });
   };
 
   return (

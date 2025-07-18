@@ -8,7 +8,7 @@ import { useStoreInboundPlanning } from "../../../../DynamicAPI/stores/Store/Mas
 import { useLocation } from "react-router-dom";
 import { ModalAssign, ModalDialog } from "../../../../components/modal/type";
 
-import DetailInboundItem from "../../InboundPlanning/Table/Detail/DetailItem";
+import DetailInboundItem from "../../InboundPlanning/Table/Detail/DetailItem/DetailItem";
 import ViewChecker from "../../InboundPlanning/Table/Detail/ViewChecker";
 import TransporterDetail from "../../InboundPlanning/Table/Detail/TransportAndLoading";
 import DynamicForm, {

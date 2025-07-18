@@ -175,9 +175,6 @@ const InboundPlanningAdd = () => {
     setEditableItems(newItems);
   };
 
-  console.log("sourceList", sourceList);
-  
-
   const handleManualSkuSubmit = (data: any) => {
     if (!data.sku || !data.qty_plan) {
       showErrorToast("Please select SKU and input Qty.");
@@ -202,6 +199,13 @@ const InboundPlanningAdd = () => {
     setShowManualModal(false);
   };
 
+  const sourceOptions = sourceList.map((src: any) => ({
+    label: src.name, // tampil di select
+    value: src.id, // dikirim ke API
+    type: src.type, // untuk manipulasi inputan (PO/SO)
+    code: src.code, // jika butuh
+  }));
+
   // HEADER FIELDS
   const headerFields: FieldConfig[] = [
     {
@@ -218,16 +222,9 @@ const InboundPlanningAdd = () => {
     },
     {
       name: "selected_source",
-      label: "Selected Source",
+      label: "Inbound Type",
       type: "select",
-      options: [
-        { label: "-- Source --", value: "" },
-        ...sourceList.map((src: any) => ({
-          label: src.name,
-          value: src.id,
-        })),
-      ],
-      validation: { required: "Required" },
+      options: [{ label: "-- Source --", value: "" }, ...sourceOptions],
     },
     {
       name: "po_no",

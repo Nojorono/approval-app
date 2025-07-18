@@ -52,13 +52,15 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   const formContext = useFormContext();
   const effectiveWatch = watch || formContext?.watch;
   const effectiveErrors = errors || formContext?.formState?.errors || {};
-  const selectedSource = effectiveWatch?.("selected_source") || { label: "" };
+  const selectedSource = effectiveWatch?.("selected_source") || { type: "" };
 
   useEffect(() => {
     Object.entries(defaultValues).forEach(([key, value]) => {
       setValue(key, value);
     });
   }, [defaultValues, setValue]);
+
+  console.log("defaultValues:", defaultValues);
 
   const commonClasses =
     "w-full px-3 py-[6px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm";
@@ -67,15 +69,15 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   const disabledClasses = "bg-gray-100 text-gray-500 cursor-not-allowed";
 
   const shouldRenderField = (fieldName: string) => {
-    if (fieldName === "po_no") return selectedSource.label === "PO";
+    if (fieldName === "po_no") return selectedSource.type === "PO";
     if (fieldName === "so_no" || fieldName === "so_type")
-      return selectedSource.label === "SO";
+      return selectedSource.type === "SO";
     return true;
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
+      <form
+        onSubmit={handleSubmit(onSubmit)}
       className="grid grid-cols-1 md:grid-cols-4 gap-4"
     >
       {fields.map((field) => {
