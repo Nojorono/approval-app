@@ -5,7 +5,10 @@ import Label from "../../../components/form/Label";
 import Button from "../../../components/ui/button/Button";
 import { useDebounce } from "../../../helper/useDebounce";
 import DynamicTable from "../../../components/wms-components/DynamicTable";
-import { useStoreApprovalRequest } from "../../../DynamicAPI/stores/Store/MasterStore";
+import {
+  useStoreApprovalRequest,
+  useStoreUser,
+} from "../../../DynamicAPI/stores/Store/MasterStore";
 
 const DataTable = () => {
   const {
@@ -16,13 +19,17 @@ const DataTable = () => {
     deleteData,
   } = useStoreApprovalRequest();
 
+  const { list: userList, fetchAll: fetchUsers } = useStoreUser();
+
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
 
   useEffect(() => {
     fetchApproval();
+    fetchUsers();
   }, []);
+
   // Fungsi untuk format payload create
   const handleCreate = (data: any) => {
     const formattedData = {
@@ -38,7 +45,10 @@ const DataTable = () => {
         ? [data.attachments]
         : [],
     };
-    return createData(formattedData);
+
+    console.log("Formatted Create Data:", formattedData);
+
+    // return createData(formattedData);
   };
 
   // Fungsi untuk format payload update
@@ -101,10 +111,15 @@ const DataTable = () => {
     {
       name: "approverIds",
       label: "To",
-      type: "text", // You may want to use a multi-select in real implementation
+      type: "multiselect",
+      options: userList.map((user: any) => ({
+        label: user.username,
+        value: user.id,
+      })),
       validation: { required: "Required" },
-      helperText: "Comma separated user IDs",
-      parseValue: (value: string) => value.split(",").map((v) => v.trim()),
+      helperText: "Pilih satu atau lebih user sebagai approver",
+      parseValue: (value: string[] | string) =>
+        Array.isArray(value) ? value : value ? [value] : [],
     },
     {
       name: "description",
@@ -115,9 +130,9 @@ const DataTable = () => {
     {
       name: "attachments",
       label: "Attachments",
-      type: "file", // You may want to use a file input or multi-select
-      helperText: "Comma separated URLs or file names",
-      parseValue: (value: string) => value.split(",").map((v) => v.trim()),
+      type: "multifile",
+      parseValue: (value: FileList | File[] | null) =>
+        value ? Array.from(value as FileList) : [],
     },
   ];
 
@@ -126,24 +141,23 @@ const DataTable = () => {
       <div className="p-4 bg-white shadow rounded-md mb-5">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:space-x-4">
-        {/* <Label htmlFor="search" className="mb-1 sm:mb-0">Search</Label> */}
-        <Input
-          onChange={(e) => setSearch(e.target.value)}
-          type="text"
-          id="search"
-          placeholder="🔍 Search..."
-          className="w-full sm:w-auto"
-        />
+            <Input
+              onChange={(e) => setSearch(e.target.value)}
+              type="text"
+              id="search"
+              placeholder="🔍 Search..."
+              className="w-full sm:w-auto"
+            />
           </div>
           <div className="flex justify-end">
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={() => setCreateModalOpen(true)}
-          className="w-full sm:w-auto flex items-center justify-center"
-        >
-          <FaPlus className="mr-2" /> Tambah Data
-        </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => setCreateModalOpen(true)}
+              className="w-full sm:w-auto flex items-center justify-center"
+            >
+              <FaPlus className="mr-2" /> Tambah Data
+            </Button>
           </div>
         </div>
       </div>

@@ -18,8 +18,8 @@ import {
   ApprovalProcess,
   Dashboard,
 } from "./utils/PagesComponent";
-
 import dummyRoutes from "./helper/dummyRoutes";
+import NotFound from "./pages/OtherPage/NotFound";
 
 const DefaultPage = () => (
   <div style={{ textAlign: "center", marginTop: "50px" }}>
@@ -76,7 +76,7 @@ export function AppRoutes() {
       "/user": <MasterUser />,
       "/menu": <MasterMenu />,
       "/role": <MasterRole />,
-      "/approval_request": <ApprovalRequest />,
+      "/approval-request": <ApprovalRequest />,
       "/dashboard": <Dashboard />,
     };
     return map[path] || <DefaultPage />;

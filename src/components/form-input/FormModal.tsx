@@ -4,6 +4,8 @@ import Select from "react-select";
 import DatePicker from "../form/date-picker";
 import Button from "../ui/button/Button";
 import Checkbox from "../form/input/Checkbox";
+import MultiFileUploader from "../file-upload";
+import axios from "axios";
 
 type FormField = {
   placeholder: string;
@@ -13,8 +15,10 @@ type FormField = {
     | "text"
     | "textarea"
     | "select"
+    | "multiselect"
     | "number"
     | "file"
+    | "multifile"
     | "date"
     | "checkbox"
     | "radio";
@@ -49,6 +53,7 @@ const ModalForm: React.FC<FormInputProps> = ({
     control,
     formState: { errors },
     reset,
+    getValues,
   } = useForm<FormValues>({
     defaultValues,
   });
@@ -62,7 +67,56 @@ const ModalForm: React.FC<FormInputProps> = ({
   }, [defaultValues, reset]);
 
   const handleSubmit = (data: FormValues) => {
+
+    // console.log("Form submitted with data:", data);
+    
+    // const files = (data.attachments || []).map((f: File) => ({
+    //   name: f.name,
+    //   size: f.size,
+    //   type: f.type,
+    // }));
+
+    // const payload = {
+    //   ...data,
+    //   attachments: files, // sekarang JSON friendly
+    // };
+
+    // console.log("Form submitted with data:", payload);
+
     onSubmit(data); // Kirim data ke parent
+  };
+
+  // === helper delete file dari S3 ===
+  const deleteFileFromS3 = async (fileUrl: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      const url = new URL(fileUrl);
+      const pathname = url.pathname; // contoh: /approval-app/uploads/file.pdf
+      const parts = pathname.split("/");
+      const bucket = parts[1];
+      const path = parts.slice(2).join("/");
+
+      await axios.delete(`http://10.0.29.47:9007/s3/${bucket}/${path}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    } catch (err) {
+      console.error("Gagal hapus file:", err);
+    }
+  };
+
+  // === ketika modal diclose ===
+  const handleClose = async () => {
+    const values = getValues();
+
+    for (const field of formFields) {
+      if (field.type === "multifile" && Array.isArray(values[field.name])) {
+        for (const fileUrl of values[field.name]) {
+          await deleteFileFromS3(fileUrl);
+        }
+      }
+    }
+
+    onClose();
   };
 
   const renderField = (field: FormField) => {
@@ -121,6 +175,47 @@ const ModalForm: React.FC<FormInputProps> = ({
             )}
           />
         );
+      case "multiselect":
+        return (
+          <Controller
+            name={field.name}
+            control={control}
+            rules={{
+              ...field.validation,
+              required: field.validation?.required ?? false,
+            }}
+            render={({ field: controllerField }) => (
+              <Select
+                {...controllerField}
+                options={field.options}
+                placeholder={field.placeholder || "Select options"}
+                className={isDisabled ? errorClasses : "react-select-container"}
+                classNamePrefix="react-select"
+                isMulti
+                value={field.options?.filter((option) =>
+                  Array.isArray(controllerField.value)
+                    ? controllerField.value.includes(option.value)
+                    : false
+                )}
+                onChange={(selectedOptions) => {
+                  const values = Array.isArray(selectedOptions)
+                    ? selectedOptions.map((opt) => opt.value)
+                    : [];
+                  controllerField.onChange(values);
+                }}
+                menuPlacement="auto"
+                isDisabled={isDisabled}
+                styles={{
+                  menuPortal: (base) => ({
+                    ...base,
+                    zIndex: 9999,
+                  }),
+                }}
+              />
+            )}
+          />
+        );
+
       case "file":
         return (
           <input
@@ -130,6 +225,7 @@ const ModalForm: React.FC<FormInputProps> = ({
             disabled={isDisabled}
           />
         );
+
       case "date":
         return (
           <Controller
@@ -177,6 +273,22 @@ const ModalForm: React.FC<FormInputProps> = ({
             disabled={isDisabled}
           />
         );
+      case "multifile":
+        return (
+          <Controller
+            name={field.name}
+            control={control}
+            rules={field.validation}
+            render={({ field: controllerField }) => (
+              <MultiFileUploader
+                value={controllerField.value || []}
+                onChange={controllerField.onChange}
+                disabled={isDisabled}
+              />
+            )}
+          />
+        );
+
       default:
         return (
           <input
@@ -263,7 +375,12 @@ const ModalForm: React.FC<FormInputProps> = ({
             </Button>
           )}
 
-          <Button type="button" variant="danger" size="md" onClick={onClose}>
+          <Button
+            type="button"
+            variant="danger"
+            size="md"
+            onClick={handleClose}
+          >
             Close
           </Button>
         </div>

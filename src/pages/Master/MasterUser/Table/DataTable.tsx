@@ -26,21 +26,20 @@ const DataTable = () => {
     fetchRoles();
     fetchAll();
   }, []);
-  
 
   // Fungsi untuk format payload create
   const handleCreate = (data: any) => {
-    console.log("Data to create:", data);
-
     const formattedData = {
       username: data.username,
-      organizationId: Number(data.organizationId),
+      email: data.email,
       password: data.password,
-      firstName: data.firstName,
-      lastName: data.lastName,
+      phone: data.phone,
+      pin: data.pin,
       isActive: data.isActive,
-      roleId: Number(data.roleId),
+      roleId: data.roleId,
     };
+    console.log("Formatted data for create:", formattedData);
+
     return createData(formattedData);
   };
 
@@ -49,12 +48,12 @@ const DataTable = () => {
     const { id, ...rest } = data;
     return updateData(id, {
       username: rest.username,
-      organizationId: Number(rest.organizationId),
+      email: rest.email,
       password: rest.password,
-      firstName: rest.firstName,
-      lastName: rest.lastName,
+      phone: rest.phone,
+      pin: rest.pin,
       isActive: rest.isActive,
-      roleId: Number(rest.roleId),
+      roleId: rest.roleId,
     });
   };
 
@@ -63,6 +62,18 @@ const DataTable = () => {
       {
         accessorKey: "username",
         header: "Username",
+      },
+      {
+        accessorKey: "email",
+        header: "Email",
+      },
+      {
+        accessorKey: "phone",
+        header: "Phone",
+      },
+      {
+        accessorKey: "pin",
+        header: "PIN",
       },
       {
         accessorKey: "roleId",
@@ -89,20 +100,26 @@ const DataTable = () => {
       validation: { required: "Required" },
     },
     {
+      name: "email",
+      label: "Email",
+      type: "email",
+      validation: { required: "Required" },
+    },
+    {
       name: "password",
       label: "Password",
       type: "password",
       validation: { required: "Required" },
     },
     {
-      name: "firstName",
-      label: "First Name",
+      name: "phone",
+      label: "Phone",
       type: "text",
       validation: { required: "Required" },
     },
     {
-      name: "lastName",
-      label: "Last Name",
+      name: "pin",
+      label: "PIN",
       type: "text",
       validation: { required: "Required" },
     },
@@ -127,6 +144,9 @@ const DataTable = () => {
       ],
     },
   ];
+
+  console.log("User Data:", userData);
+  
 
   return (
     <>
