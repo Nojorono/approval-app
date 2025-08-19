@@ -5,15 +5,15 @@ export interface Role {
   id: number;
   name: string;
   description: string;
-  permissions: { menu_id: number; permission_type: string }[];
-  menus?: { menu_id: number; permission_type: string }[];
+  permissions: { menu_id: string; permission_type: string }[];
+  menus?: { menu_id: string; permission_type: string }[];
 }
 
 export interface RolePayload {
   name: string;
   description: string;
-  permissions: { menu_id: number; action: string }[];
-  menus?: { menu_id: number; permission_type: string }[];
+  permissions: { menu_id: string; action: string }[];
+  menus?: { menu_id: string; permission_type: string }[];
 }
 
 /* ---------- helpers ---------- */
@@ -24,7 +24,6 @@ const assert200 = (statusCode: number, message = "Request failed") => {
 /* ---------- queries ---------- */
 export const fetchAllRole = async (): Promise<Role[]> => {
   const { data } = await axiosInstance.get("/roles");
-
   assert200(data.success === true ? 200 : 500, data.message);
 
   return data.data.map((r: any) => ({

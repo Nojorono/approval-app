@@ -34,7 +34,6 @@ export const useRoleStore = create<RoleStore>((set) => ({
         set({ loading: true, error: null });
         try {
             const roles = await fetchAllRole();
-
             set({ roles, loading: false });
         } catch (e: any) {
             set({ error: e.message, loading: false });
@@ -55,6 +54,9 @@ export const useRoleStore = create<RoleStore>((set) => ({
 
     /* ---------- commands ---------- */
     createRole: async (payload) => {
+
+        console.log("Creating role with payload:", payload);
+        
         set({ loading: true, error: null });
         try {
             await createRoleSvc(payload);

@@ -6,6 +6,11 @@ export interface User {
   lastName: string;
   isActive: string;
   roleId: number;
+  role?: string;
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: string;
 }
 
 export type CreateUser = Omit<User, "id">;

@@ -4,53 +4,22 @@ import DynamicForm, {
   FieldConfig,
 } from "../../../../components/form-input/DynamicForm";
 import TableMenuPermission from "../Table/CreatePermission";
-import { useRoleStore } from "../../../../API/store/MasterStore/MasterRoleStore";
-import { useStoreMenu } from "../../../../DynamicAPI/stores/Store/MasterStore";
+// import { useRoleStore } from "../../../../API/store/MasterStore/MasterRoleStore";
+import {
+  useStoreMenu,
+  useStoreRole,
+} from "../../../../DynamicAPI/stores/Store/MasterStore";
 import { useNavigate } from "react-router-dom";
-import { showErrorToast, showSuccessToast } from "../../../../components/toast";
 
 const fields: FieldConfig[] = [
   { name: "name", label: "Name", type: "text" },
   { name: "description", label: "Description", type: "textarea" },
-  {
-    name: "status",
-    label: "Status",
-    type: "select",
-    options: [
-      { value: "active", label: "Active" },
-      { value: "inactive", label: "Inactive" },
-    ],
-  },
-  {
-    name: "accessMobile",
-    label: "Akses Mobile",
-    type: "select",
-    options: [
-      { value: "yes", label: "Yes" },
-      { value: "no", label: "No" },
-    ],
-  },
-  {
-    name: "accessDashboard",
-    label: "Akses Dashboard",
-    type: "select",
-    options: [
-      { value: "admin", label: "Admin" },
-      { value: "user", label: "User" },
-    ],
-  },
 ];
 
 function CreateRole() {
   const navigate = useNavigate();
-  const { createRole } = useRoleStore();
-  const {
-    list: menus,
-    createData,
-    updateData,
-    deleteData,
-    fetchAll: fetchMenus,
-  } = useStoreMenu();
+  const { createData: createRole } = useStoreRole();
+  const { list: menus, fetchAll: fetchMenus } = useStoreMenu();
   const tablePermissionRef = useRef<any>(null);
 
   useEffect(() => {
@@ -62,21 +31,17 @@ function CreateRole() {
       tablePermissionRef.current?.getSelectedPermissions() || [];
 
     const payload = {
-      name: formData.name.toUpperCase(),
+      name: formData.name,
       description: formData.description,
-      permissions: selectedPermissions,
+      permissions: selectedPermissions.map((perm: any) => ({
+        menu_id: String(perm.menu_id),
+        action: perm.action,
+      })),
     };
 
-    console.log("Payload to create role:", payload);
-
-    const res = await createRole(payload);
-    // if (res.ok === false) {
-    //   showErrorToast(res.message);
-    //   return;
-    // }
-    showSuccessToast("Role berhasil ditambahkan");
+    await createRole(payload);
     setTimeout(() => {
-      navigate("/master_role");
+      navigate("/role");
     }, 1000);
   };
 
@@ -102,7 +67,7 @@ function CreateRole() {
     <>
       <PageBreadcrumb
         breadcrumbs={[
-          { title: "Master Role", path: "/master_role" },
+          { title: "Master Role", path: "/role" },
           { title: "Create Role" },
         ]}
       />
@@ -116,7 +81,7 @@ function CreateRole() {
             ref={tablePermissionRef}
             menus={flattenedMenus.map((menu: any) => ({
               id: menu.id,
-              name: menu.name, // dari API-nya kamu name bukan menu_name
+              name: menu.name,
             }))}
           />
         </div>

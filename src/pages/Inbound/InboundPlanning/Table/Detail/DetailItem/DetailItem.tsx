@@ -8,6 +8,7 @@ import { FaTrash } from "react-icons/fa";
 import {
   useStoreClassification,
   useStoreItem,
+  useStoreUom,
 } from "../../../../../../DynamicAPI/stores/Store/MasterStore";
 
 interface DetailInboundItemProps {
@@ -23,22 +24,20 @@ const DetailInboundItem: React.FC<DetailInboundItemProps> = ({
 }) => {
   const { fetchAll, list: clsfData } = useStoreClassification();
   const { fetchAll: fetchItem, list: itemData } = useStoreItem();
+  const { fetchAll: fetchUom, list: uomData } = useStoreUom();
 
   useEffect(() => {
     fetchAll();
     fetchItem();
+    fetchUom();
   }, []);
 
   const [editableItems, setEditableItems] = useState<any[]>(data || []);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [showManualModal, setShowManualModal] = useState(false);
 
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editItemIndex, setEditItemIndex] = useState<number | null>(null);
-  const [editItemData, setEditItemData] = useState<any>(null);
-
-  console.log("clsfData", clsfData);
-  console.log("data", data);
+  const [editItemData, setEditItemData] = useState<any>(null);  
 
   // Form fields for manual entry
   const manualFormFields = [
@@ -65,9 +64,11 @@ const DetailInboundItem: React.FC<DetailInboundItemProps> = ({
       type: "select",
       options: [
         { label: "-- Select UOM --", value: "" },
-        { label: "DUS", value: "DUS" },
-        { label: "PCS", value: "PCS" },
-        { label: "BAL", value: "BAL" },
+        ...uomData.map((uom: any) => ({
+          label: uom.name,
+          value: uom.name,
+          id: uom.id,
+        })),
       ],
     },
     {
@@ -119,11 +120,13 @@ const DetailInboundItem: React.FC<DetailInboundItemProps> = ({
       (cls: any) => cls.classification_code === formData.classification_code
     );
 
+    const selectedUOM = uomData.find((uom: any) => uom.id === formData.uom);
+
     const submitData = {
       sku: formData.sku || "",
       item_id: selectedItem?.id || "",
       qty_plan: Number(formData.qty_plan) || 0,
-      uom: formData.uom || "",
+      uom: selectedUOM?.name || "",
       classification_item_id: selectedClassification?.id || "",
       classification_name: selectedClassification?.classification_name || "",
     };
@@ -236,7 +239,7 @@ const DetailInboundItem: React.FC<DetailInboundItemProps> = ({
         onClose={() => setEditModalOpen(false)}
         onSubmit={handleEditModalSubmit}
         formFields={manualFormFields}
-        defaultValues={editItemData || { sku: "", qty_plan: "" }}
+        defaultValues={editItemData || { sku: "", qty_plan: "", uom: "" }}
         title="Edit Item"
         key={editItemIndex}
       />

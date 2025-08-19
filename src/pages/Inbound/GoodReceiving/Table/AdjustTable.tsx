@@ -57,7 +57,7 @@ const AdjustTable = ({
       },
       {
         accessorKey: "po_no",
-        header: "Reference No",
+        header: "PO No",
       },
       {
         accessorKey: "plan_delivery_date",
@@ -77,16 +77,34 @@ const AdjustTable = ({
         id: "actions",
         header: "Action",
         cell: ({ row }) => {
-          return (
-            <Button
-              variant="outline"
-              size="xsm"
-              onClick={() => handleModalTab(row.original)}
-              startIcon={<FaEye className="size-5" />}
-            >
-              Detail
-            </Button>
-          );
+          const status = row.original.plan_status;
+          if (status === "DRAFT") {
+            return (
+              <Button
+                variant="primary"
+                size="xsm"
+                startIcon={<FaCheck className="size-2" />}
+                onClick={() => {
+                  handleConfirmInbound(row.original.id);
+                }}
+              >
+                Confirm
+              </Button>
+            );
+          }
+          if (status === "IN_PROGRESS") {
+            return (
+              <Button
+                variant="outline"
+                size="xsm"
+                onClick={() => handleModalTab(row.original)}
+                startIcon={<FaEye className="size-5" />}
+              >
+                Detail
+              </Button>
+            );
+          }
+          return null;
         },
       },
     ],

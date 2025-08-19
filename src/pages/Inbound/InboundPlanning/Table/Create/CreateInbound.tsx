@@ -20,6 +20,7 @@ import {
   useStoreClassification,
   useStoreItem,
   useStoreSource,
+  useStoreUom,
 } from "../../../../../DynamicAPI/stores/Store/MasterStore";
 import {
   InboundPlanningItemCreate,
@@ -36,6 +37,7 @@ const InboundPlanningAdd = () => {
   const { fetchAll, list: clsData } = useStoreClassification();
   const { fetchAll: fetchSKU, list: SKUList } = useStoreItem();
   const { fetchAll: fetchSource, list: sourceList } = useStoreSource();
+  const { fetchAll: fetchUom, list: uomData } = useStoreUom();
 
   const methods = useForm();
   const { setValue } = methods;
@@ -54,6 +56,7 @@ const InboundPlanningAdd = () => {
     fetchAll();
     fetchSKU();
     fetchSource();
+    fetchUom();
   }, []);
 
   // FETCH PO DETAIL
@@ -63,6 +66,7 @@ const InboundPlanningAdd = () => {
     setValue("inbound_no", "");
     setValue("supplier_name", "");
     setValue("supplier_address", "");
+    setValue("prin_group", "PRIN_GROUP Tidak Ada");
     setIsLoading(true);
 
     try {
@@ -91,6 +95,7 @@ const InboundPlanningAdd = () => {
         setValue("inbound_no", "Auto-generated-inbound-no");
         setValue("supplier_name", firstPO.NAMA_VENDOR || "");
         setValue("supplier_address", firstPO.ALAMAT_VENDOR || "");
+        setValue("prin_group", firstPO.PRIN_GROUP || "PRIN_GROUP Tidak Ada");
 
         setEditableItems(
           (firstPO.ITEM || []).map((item: any) => ({
@@ -114,6 +119,7 @@ const InboundPlanningAdd = () => {
     setValue("supplier_name", "");
     setValue("supplier_address", "");
     setValue("so_type", "");
+    setValue("prin_group", "PRIN_GROUP Tidak Ada");
     setIsLoading(true);
 
     try {
@@ -130,6 +136,7 @@ const InboundPlanningAdd = () => {
           ? json
           : [];
 
+
       if (!res.ok || !soData || soData.length === 0) {
         showErrorToast("SO tidak ditemukan atau terjadi kesalahan.");
         return;
@@ -143,6 +150,7 @@ const InboundPlanningAdd = () => {
         setValue("supplier_name", firstSO.SUBINVENTORY_TO || "");
         setValue("supplier_address", firstSO.INVOICE_TO_ADDRESS1 || "");
         setValue("so_type", firstSO.SO_TYPE || "");
+        setValue("prin_group", firstSO.PRIN_GROUP || "PRIN_GROUP Tidak Ada");
 
         setEditableItems(
           (firstSO.ITEM || []).map((item: any) => ({
@@ -176,23 +184,27 @@ const InboundPlanningAdd = () => {
   };
 
   const handleManualSkuSubmit = (data: any) => {
-    if (!data.sku || !data.qty_plan) {
-      showErrorToast("Please select SKU and input Qty.");
+    if (!data.sku || !data.qty_plan || !data.uom || !data.classification) {
+      showErrorToast("Please select SKU, input Qty, UOM, and Classification.");
       return;
     }
 
-    const selected = SKUList.find((s) => s.sku === data.sku);
+    const selectedSKU = SKUList.find((s) => s.sku === data.sku);
+    const selectedUom = uomData.find((uom: any) => uom.id === data.uom);
+    const selectedClassification = clsData.find(
+      (cls: any) => cls.id === data.classification
+    );
 
-    if (!selected) {
-      showErrorToast("Invalid SKU selected.");
+    if (!selectedSKU || !selectedUom || !selectedClassification) {
+      showErrorToast("Invalid SKU or UOM or Classification selected.");
       return;
     }
     const newItem = {
-      SKU: selected.sku,
-      KODE_ITEM: selected.item_number,
-      UOM: "DUS",
+      SKU: selectedSKU.sku,
+      KODE_ITEM: selectedSKU.item_number,
+      UOM: selectedUom.name,
       expired_date: null,
-      classification: "",
+      classification: selectedClassification.id,
       PO_LINE_QUANTITY: data.qty_plan,
     };
     setEditableItems((prev) => [...prev, newItem]);
@@ -337,14 +349,37 @@ const InboundPlanningAdd = () => {
       type: "text",
       disabled: true,
     },
+    {
+      name: "prin_group",
+      label: "GROUP",
+      type: "text",
+      disabled: true,
+    },
   ];
 
   // DETAIL ITEM COLUMNS
-  const columns: ColumnDef<any>[] = useMemo(
+  const itemColumns: ColumnDef<any>[] = useMemo(
     () => [
       { accessorKey: "SKU", header: "SKU" },
       { accessorKey: "KODE_ITEM", header: "KODE ITEM" },
-      { accessorKey: "UOM", header: "UOM" },
+      {
+        accessorKey: "UOM",
+        header: "UOM",
+        cell: ({ row }) => (
+          <select
+            value={editableItems[row.index]?.UOM ?? ""}
+            onChange={(e) => updateItemField(row.index, "UOM", e.target.value)}
+            className="border px-2 py-1 rounded"
+          >
+            <option value="">-- Select UOM --</option>
+            {uomData.map((uom: any) => (
+              <option key={uom.name} value={uom.name}>
+                {uom.name}
+              </option>
+            ))}
+          </select>
+        ),
+      },
       {
         accessorKey: "PO_LINE_QUANTITY",
         header: "QTY Plan",
@@ -376,22 +411,42 @@ const InboundPlanningAdd = () => {
       {
         accessorKey: "classification",
         header: "Classification",
-        cell: ({ row }) => (
-          <select
-            value={editableItems[row.index]?.classification ?? ""}
-            onChange={(e) =>
-              updateItemField(row.index, "classification", e.target.value)
+        cell: ({ row }) => {
+          // Default value logic
+          const defaultClassificationId =
+            "e2e00121-de2b-48f7-bf7d-72993fa5516f";
+          const value =
+            editableItems[row.index]?.classification ?? defaultClassificationId;
+
+          useEffect(() => {
+            // If not set, set default classification
+            if (!editableItems[row.index]?.classification) {
+              updateItemField(
+                row.index,
+                "classification",
+                defaultClassificationId
+              );
             }
-            className="border px-2 py-1 rounded"
-          >
-            <option value="">-- Select --</option>
-            {clsData.map((item: any) => (
-              <option key={item.id} value={item.id}>
-                {item.classification_name}
-              </option>
-            ))}
-          </select>
-        ),
+            // eslint-disable-next-line
+          }, []);
+
+          return (
+            <select
+              value={value}
+              onChange={(e) =>
+                updateItemField(row.index, "classification", e.target.value)
+              }
+              className="border px-2 py-1 rounded"
+            >
+              <option value="">-- Select --</option>
+              {clsData.map((item: any) => (
+                <option key={item.id} value={item.id}>
+                  {item.classification_name}
+                </option>
+              ))}
+            </select>
+          );
+        },
       },
       {
         id: "actions",
@@ -405,7 +460,7 @@ const InboundPlanningAdd = () => {
         ),
       },
     ],
-    [editableItems]
+    [editableItems, uomData, clsData]
   );
 
   // Manual SKU Form Fields
@@ -414,6 +469,7 @@ const InboundPlanningAdd = () => {
       name: "sku",
       label: "SKU",
       type: "select",
+      validation: { required: "Required" },
       options: [
         { label: "-- Select SKU --", value: "" },
         ...SKUList.map((sku) => ({
@@ -423,9 +479,36 @@ const InboundPlanningAdd = () => {
       ],
     },
     {
+      name: "uom",
+      label: "UOM",
+      type: "select",
+      validation: { required: "Required" },
+      options: [
+        { label: "-- Select UOM --", value: "" },
+        ...uomData.map((uom: any) => ({
+          label: uom.name,
+          value: uom.id,
+        })),
+      ],
+    },
+    {
       name: "qty_plan",
       label: "Qty Plan",
       type: "number",
+      validation: { required: "Required" },
+    },
+    {
+      name: "classification",
+      label: "Classification",
+      type: "select",
+      validation: { required: "Required" },
+      options: [
+        { label: "-- Select Classification --", value: "" },
+        ...clsData.map((cls: any) => ({
+          label: cls.classification_name,
+          value: cls.id,
+        })),
+      ],
     },
   ];
 
@@ -454,34 +537,64 @@ const InboundPlanningAdd = () => {
 
   // SUMBIT INBOUND PLANNING
   const onSubmit = (formData: any) => {
+    // Validate items
+    // Validasi field kosong pada setiap item
+    const requiredFields = [
+      { key: "SKU", label: "SKU" },
+      { key: "PO_LINE_QUANTITY", label: "Qty Plan" },
+      { key: "UOM", label: "UOM" },
+      { key: "classification", label: "Classification" },
+    ];
+
+    const emptyFields: string[] = editableItems
+      .map((item, idx) => {
+        const missing = requiredFields
+          .filter((f) => !item[f.key])
+          .map((f) => f.label);
+        return missing.length > 0
+          ? `Item ${idx + 1}: ${missing.join(", ")}`
+          : null;
+      })
+      .filter(Boolean) as string[];
+
+    if (emptyFields.length > 0) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Item(s)",
+        html: `Beberapa item memiliki field kosong:<br><ul style="text-align:left">${emptyFields
+          .map((f) => `<li>${f}</li>`)
+          .join("")}</ul>`,
+      });
+      return;
+    }
+
     const payload: CreateInboundPlanning = {
       inbound_planning_no: "",
       organization_id: 1,
-      source_id: formData.selected_source.value,
-      delivery_no: formData.receipt_no,
-      po_no: poNoInput,
+      source_id: formData.selected_source?.value || "",
+      delivery_no: formData.receipt_no || "",
+      po_no: poNoInput || soNoInput,
       client_name: formData.supplier_name,
-      order_type: formData.order_type.value,
-      task_type: formData.receive_type.value,
-      notes: formData.notes,
-      supplier_id: String(selectedPO.ID_VENDOR),
-      warehouse_id: formData.warehouse_id.value,
+      order_type: formData.order_type?.value || "",
+      task_type: formData.receive_type?.value || "",
+      notes: formData.notes || "",
+      supplier_id: String(
+        selectedPO.ID_VENDOR || selectedPO.ORGANIZATION_ID_TO || ""
+      ),
+      warehouse_id: formData.warehouse_id?.value || "",
       plan_delivery_date: toLocalISOString(formData.plan_date),
       plan_status: "DRAFT",
       plan_type: "single",
-      items: editableItems.map(
-        (item): InboundPlanningItemCreate => ({
-          inbound_plan_id: "",
-          sku: item.SKU,
-          qty_plan: Number(item.PO_LINE_QUANTITY),
-          uom: item.UOM,
-          classification_item_id: item.classification,
-        })
-      ),
+      items: editableItems.map((item) => ({
+        inbound_plan_id: "",
+        sku: item.SKU,
+        qty_plan: Number(item.PO_LINE_QUANTITY),
+        uom: item.UOM,
+        classification_item_id: item.classification,
+      })),
     };
 
-    console.log("Submitting Inbound Planning:", payload);
-    console.log("error inbound", error);
+    console.log("Payload to create Inbound Planning:", payload);
 
     createData(payload).then((result) => {
       if (result?.success) {
@@ -546,7 +659,9 @@ const InboundPlanningAdd = () => {
               tabs={[
                 {
                   label: "Item Details",
-                  content: <ItemTable data={editableItems} columns={columns} />,
+                  content: (
+                    <ItemTable data={editableItems} columns={itemColumns} />
+                  ),
                 },
               ]}
               activeTab={activeTab}
@@ -570,7 +685,12 @@ const InboundPlanningAdd = () => {
             onClose={() => setShowManualModal(false)}
             onSubmit={handleManualSkuSubmit}
             formFields={manualFormFields}
-            defaultValues={{ sku: "", qty_plan: "" }}
+            defaultValues={{
+              sku: "",
+              qty_plan: "",
+              uom: "",
+              classification: "",
+            }}
             title="Add SKU Manually"
           />
         </div>

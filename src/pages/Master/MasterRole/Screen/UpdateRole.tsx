@@ -23,7 +23,7 @@ export default function NewUpdateRole() {
     <>
       <PageBreadcrumb
         breadcrumbs={[
-          { title: "Master Role", path: "/master_role" },
+          { title: "Master Role", path: "/role" },
           { title: "Update Role" },
         ]}
       />

@@ -18,10 +18,10 @@ export default function AuthLayout({
             <GridShape />
             <div className="flex flex-col items-center max-w-xs">
               <Link to="/" className="block mb-4">
-                <img src={LogoNNA} alt="Logo" />
+                {/* <img src={LogoNNA} alt="Logo" /> */}
               </Link>
               <p className="text-center text-gray-400 dark:text-white/60">
-                Warehouse Management System
+                {/* Aprroval Tracker */}
               </p>
             </div>
           </div>

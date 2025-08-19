@@ -29,7 +29,7 @@ export default function UserDropdown() {
     return storedUserLogin && storedUserLogin !== "undefined"
       ? JSON.parse(storedUserLogin).user
       : null;
-  })();  
+  })();
 
   return (
     <div className="relative">
@@ -70,7 +70,7 @@ export default function UserDropdown() {
       <Dropdown
         isOpen={isOpen}
         onClose={closeDropdown}
-        className="absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark"
+        className="fixed right-3 top-[70px] w-[260px] flex flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark z-[9999]"
       >
         <div>
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">

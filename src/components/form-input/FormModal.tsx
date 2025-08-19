@@ -6,6 +6,7 @@ import Button from "../ui/button/Button";
 import Checkbox from "../form/input/Checkbox";
 
 type FormField = {
+  placeholder: string;
   name: string;
   label: string;
   type:
@@ -88,15 +89,14 @@ const ModalForm: React.FC<FormInputProps> = ({
             name={field.name}
             control={control}
             rules={{
-              validate: (value) =>
-                (value !== undefined && value !== null) ||
-                field.validation?.required,
+              ...field.validation,
+              required: field.validation?.required ?? false,
             }}
             render={({ field: controllerField }) => (
               <Select
                 {...controllerField}
                 options={field.options}
-                placeholder="Select an option"
+                placeholder={field.placeholder || "Select an option"}
                 className={isDisabled ? errorClasses : "react-select-container"}
                 classNamePrefix="react-select"
                 value={field.options?.find(
@@ -114,7 +114,7 @@ const ModalForm: React.FC<FormInputProps> = ({
                 styles={{
                   menuPortal: (base) => ({
                     ...base,
-                    zIndex: 9999, // ⬅️ pastikan dropdown berada di atas modal
+                    zIndex: 9999,
                   }),
                 }}
               />

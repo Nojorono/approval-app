@@ -1,10 +1,10 @@
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import ViewTable from "./Table/DataTable";
 
-export default function InboundPlanning() {
+export default function GoodReceive() {
   return (
     <div>
-      <PageBreadcrumb breadcrumbs={[{ title: "Inbound Planning List" }]} />
+      <PageBreadcrumb breadcrumbs={[{ title: "Good Receive List" }]} />
       <ViewTable />
     </div>
   );

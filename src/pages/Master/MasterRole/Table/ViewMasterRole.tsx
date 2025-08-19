@@ -2,37 +2,37 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 
-import { useRoleStore } from "../../../../API/store/MasterStore";
+// import { useRoleStore } from "../../../../API/store/MasterStore";
 import Input from "../../../../components/form/input/InputField";
 import Button from "../../../../components/ui/button/Button";
 import AdjustTableRole from "./AdjustTableRole";
 import { usePagePermissions } from "../../../../utils/UserPermission/UserPagePermissions";
 
+import { useStoreRole } from "../../../../DynamicAPI/stores/Store/MasterStore";
+
 const TableMasterRole = () => {
   const navigate = useNavigate();
   const { canCreate, canManage } = usePagePermissions();
 
-  console.log("Permissions for this page:", { canCreate, canManage });
-  
+  const {
+    fetchAll: fetchRoles,
+    list: roles,
+    deleteData: deleteRole,
+  } = useStoreRole();
 
-  const { fetchRoles, roles, deleteRole } = useRoleStore();
   const [globalFilter, setGlobalFilter] = useState<string>("");
 
   useEffect(() => {
     fetchRoles();
   }, []);
 
-  const handleDetail = (id: number) => {
+  const handleDetail = (id: string) => {
     console.log(`Detail role with ID: ${id}`);
   };
 
-  const handleDelete = async (id: number) => {
-    try {
-      await deleteRole(id);
-      console.log(`Role with ID: ${id} has been deleted.`);
-      fetchRoles(); // Refresh the roles list after deletion
-    } catch (error) {
-      console.error(`Failed to delete role with ID: ${id}`, error);
+  const handleDelete = async (id?: string) => {
+    if (id !== undefined) {
+      deleteRole(String(id));
     }
   };
 
@@ -51,7 +51,7 @@ const TableMasterRole = () => {
             <Button
               variant="primary"
               size="sm"
-              onClick={() => navigate("/master_role/create")}
+              onClick={() => navigate("/role/create")}
             >
               <FaPlus className="mr-2" /> Tambah Role
             </Button>

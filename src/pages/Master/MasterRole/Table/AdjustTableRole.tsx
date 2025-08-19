@@ -4,10 +4,9 @@ import Badge from "../../../../components/ui/badge/Badge";
 import { ColumnDef } from "@tanstack/react-table";
 import TableComponent from "../../../../components/tables/MasterDataTable/TableComponent";
 import { useNavigate } from "react-router-dom";
-// import { usePagePermissions } from "../../../../utils/UserPermission/UserPagePermissions";
 
 type Role = {
-  id: number;
+  id: string;
   name: string;
   description: string;
 };
@@ -16,8 +15,8 @@ type RoleTableProps = {
   data: Role[];
   globalFilter: string;
   setGlobalFilter: (value: string) => void;
-  onDetail: (id: number) => void;
-  onDelete: (id: number) => void;
+  onDetail: (id: string) => void;
+  onDelete: (id: string) => void;
   onEdit?: (data: Role) => void;
 };
 
@@ -29,11 +28,10 @@ const AdjustTableRole = ({
   onDelete,
 }: RoleTableProps) => {
   const navigate = useNavigate();
-  // const { canUpdate, canDelete, canManage } = usePagePermissions();
 
   function navigateToUpdateRole(roleData: Role) {
     const { id } = roleData;
-    navigate(`/master_role/update`, { state: { id } });
+    navigate(`/role/update`, { state: { id } });
   }
 
   const columns: ColumnDef<Role>[] = useMemo(

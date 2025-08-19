@@ -9,13 +9,20 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ModalAssign, ModalDialog } from "../../../../../components/modal/type";
 import DetailInboundItem from "./DetailItem/DetailItem";
 import ViewChecker from "./ViewChecker";
-import TransporterDetail from "./TransportAndLoading";
+import TransporterDetail from "./TransportAndLoading/TransportAndLoading";
 import DynamicForm, {
   FieldConfig,
 } from "../../../../../components/wms-components/inbound-component/form/DynamicForm";
 import ActIndicator from "../../../../../components/ui/activityIndicator";
 import { toLocalISOString } from "../../../../../helper/FormatDate";
 import Swal from "sweetalert2";
+import DeliveryOrder from "./DeliveryOrder/DeliverOrder";
+import Attachment from "./Attachment/Attachment";
+import CheckerScan from "./ScanHistory/CheckerScan";
+import {
+  showErrorToast,
+  showSuccessToast,
+} from "../../../../../components/toast";
 
 const orderTypeOptions = [
   { label: "-- Order Type --", value: "" },
@@ -58,7 +65,7 @@ const DetailInbound = () => {
   }, [data, fetchById]);
 
   const {
-    id,
+    id: inbound_planning_id,
     inbound_planning_no,
     delivery_no,
     po_no,
@@ -70,6 +77,8 @@ const DetailInbound = () => {
     plan_type,
     items = [],
   } = detail || {};
+
+  console.log("Plan Status:", plan_status);
 
   const InboundFields: FieldConfig[] = [
     {
@@ -102,7 +111,7 @@ const DetailInbound = () => {
   ];
 
   const defaultValues = {
-    id,
+    id: inbound_planning_id,
     inbound_planning_no,
     delivery_no,
     po_no,
@@ -172,7 +181,7 @@ const DetailInbound = () => {
       plan_status: detail?.plan_status ?? "",
       plan_type: detail?.plan_type ?? "",
       items: itemDetails.map((item: any) => ({
-        inbound_plan_id: id,
+        inbound_plan_id: inbound_planning_id,
         sku: item.sku,
         item_id: item.id,
         qty_plan: item.qty_plan,
@@ -182,7 +191,7 @@ const DetailInbound = () => {
     };
 
     // Submit ke API update inbound planning
-    console.log("Inb Plan ID:", id);
+    console.log("Inb Plan ID:", inbound_planning_id);
     console.log("Update Payload:", payload);
 
     // updateData(id, payload).then((res: any) => {
@@ -196,6 +205,36 @@ const DetailInbound = () => {
     //     });
     //   }
     // });
+  };
+
+  const handleConfirmInbound = async (id: number) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://10.0.29.47:9005/inbound-plan/status-in-progress/${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Failed to update status");
+      }
+
+      fetchById(id); // Refresh data after update
+      showSuccessToast("Inbound confirmed successfully!");
+      // Optionally, show success message or refresh data here
+    } catch (error: any) {
+      // Handle error, e.g., show notification
+      console.error("Error confirming inbound:", error.message || error);
+      showErrorToast(
+        error.message || "Failed to confirm inbound. Please try again."
+      );
+    }
   };
 
   return (
@@ -315,9 +354,10 @@ const DetailInbound = () => {
           },
         ]}
         title="Assign Checker"
-        parmeters={{ id }}
+        parmeters={{ inbound_planning_id }}
       />
 
+      {/* TAB CONTENT */}
       <div className="mt-8 mb-4">
         {isLoading || !detail ? (
           <>
@@ -330,11 +370,24 @@ const DetailInbound = () => {
                 label: "Item Details",
                 content: (
                   <>
-                    <div className="flex items-center order-2 gap-2 grow xl:order-3 xl:justify-end mb-4">
-                      {plan_status === "IN_PROGRESS" && (
+                    <div className="flex items-center order-2 gap-2 grow xl:order-3 xl:justify-center mb-4">
+                      {plan_status === "DRAFT" && (
                         <Button
                           type="button"
                           variant="primary"
+                          size="md"
+                          startIcon={<FaCheck size={18} />}
+                          onClick={() => {
+                            handleConfirmInbound(inbound_planning_id);
+                          }}
+                        >
+                          Confirm Inbound
+                        </Button>
+                      )}
+                      {plan_status === "IN_PROGRESS" && (
+                        <Button
+                          type="button"
+                          variant="outline"
                           size="md"
                           onClick={handleEditToggle}
                           startIcon={<FaEdit size={18} />}
@@ -373,32 +426,45 @@ const DetailInbound = () => {
                   </>
                 ),
               },
-              {
-                label: "Transport & Loading",
-                content: <TransporterDetail data={data} />,
-              },
-              { label: "Surat Jalan", content: <>Surat Jalan</> },
-              { label: "Scan History", content: <>Transport & Loading</> },
-              { label: "Attachments", content: <>Transport & Loading</> },
-              {
-                label: "View Checker",
-                content: (
-                  <>
-                    <div className="flex items-center order-2 gap-2 grow xl:order-3 xl:justify-end mb-4">
-                      <Button
-                        type="button"
-                        variant="primary"
-                        size="md"
-                        onClick={() => setOpenMdlTab(true)}
-                        startIcon={<FaUserPlus size={18} />}
-                      >
-                        Assign Checker
-                      </Button>
-                    </div>
-                    <ViewChecker data={data} />{" "}
-                  </>
-                ),
-              },
+              ...(plan_status !== "DRAFT"
+                ? [
+                    {
+                      label: "Transport & Loading",
+                      content: <TransporterDetail data={data} />,
+                    },
+                    {
+                      label: "Surat Jalan",
+                      content: <DeliveryOrder data={data} />,
+                    },
+                    {
+                      label: "Scan History",
+                      content: <CheckerScan data={data} />,
+                    },
+                    {
+                      label: "Attachments",
+                      content: <Attachment data={data} />,
+                    },
+                    {
+                      label: "View Checker",
+                      content: (
+                        <>
+                          <div className="flex items-center order-2 gap-2 grow xl:order-3 xl:justify-center mb-4">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="md"
+                              onClick={() => setOpenMdlTab(true)}
+                              startIcon={<FaUserPlus size={18} />}
+                            >
+                              Assign Checker
+                            </Button>
+                          </div>
+                          <ViewChecker data={data} />{" "}
+                        </>
+                      ),
+                    },
+                  ]
+                : []),
             ]}
             activeTab={activeTab}
             onTabChange={setActiveTab}
@@ -408,7 +474,7 @@ const DetailInbound = () => {
 
       <div className="flex justify-start mt-6">
         <div className="flex gap-3">
-          <Button
+          {/* <Button
             type="submit"
             variant="secondary"
             size="md"
@@ -416,7 +482,7 @@ const DetailInbound = () => {
             startIcon={<FaCheck size={18} />}
           >
             Confirm Inbound
-          </Button>
+          </Button> */}
         </div>
 
         <ModalDialog

@@ -60,8 +60,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     });
   }, [defaultValues, setValue]);
 
-  console.log("defaultValues:", defaultValues);
-
   const commonClasses =
     "w-full px-3 py-[6px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm";
   const errorClasses =

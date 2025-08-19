@@ -104,6 +104,7 @@ const DataTable = () => {
         value: menu.id,
       })),
       placeholder: "Pilih Parent Menu (opsional)",
+      validation: { required: false },
     },
   ];
 

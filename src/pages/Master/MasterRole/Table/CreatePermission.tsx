@@ -4,7 +4,7 @@ import Checkbox from "../../../../components/form/input/Checkbox";
 type PermissionType = "Create" | "View" | "Update" | "Delete" | "Manage";
 
 type MenuItem = {
-  id: number;
+  id: any;
   name: string;
 };
 
@@ -23,11 +23,11 @@ const TableMenuPermission = forwardRef(
     ref
   ) => {
     const [checkedItems, setCheckedItems] = useState<
-      Record<number, Record<PermissionType, boolean>>
+      Record<any, Record<PermissionType, boolean>>
     >({});
 
     const handleCheckboxChange = (
-      menuId: number,
+      menuId: any,
       permission: PermissionType
     ) => {
       setCheckedItems((prev) => ({
@@ -41,13 +41,13 @@ const TableMenuPermission = forwardRef(
 
     useImperativeHandle(ref, () => ({
       getSelectedPermissions: () => {
-        const result: { menu_id: number; action: PermissionType }[] = [];
+        const result: { menu_id: any; action: PermissionType }[] = [];
 
         Object.entries(checkedItems).forEach(([menuId, perms]) => {
           Object.entries(perms).forEach(([permType, isChecked]) => {
             if (isChecked) {
               result.push({
-                menu_id: parseInt(menuId, 10),
+                menu_id: menuId,
                 action: permType as PermissionType,
               });
             }

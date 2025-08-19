@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useCallback } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import TableComponent from "../../components/tables/MasterDataTable/TableComponent";
-import Badge from "../../components/ui/badge/Badge";
 import { FaEye, FaTrash } from "react-icons/fa";
 import DynamicFormModal from "./DynamicFormModal";
 

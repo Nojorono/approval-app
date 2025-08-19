@@ -16,8 +16,12 @@ import { Transporter, CreateTransporter, UpdateTransporter } from "../../types/T
 import { SubWarehouse, CreateSubWarehouse, UpdateSubWarehouse } from "../../types/SubWarehouseTypes";
 import { Bin, CreateBin, UpdateBin } from "../../types/MasterBinTypes";
 import { Source, CreateSource, UpdateSource } from "../../types/MasterSourceTypes";
+import { InboundDeliveryOrder, CreateInboundDeliveryOrder, UpdateInboundDeliveryOrder } from "../../types/InboundDeliveryOrderTypes";
+import { InboundAttachment, CreateInboundAttachment, UpdateInboundAttachment } from "../../types/InboundAttachmentTypes";
+import { CheckerScan, CreateCheckerScan, UpdateCheckerScan } from '../../types/CheckerScanTypes'
+import { RoleRead, CreateRolePayload, UpdateRolePayload } from '../../types/MasterRoleTypes';
 
-
+import { ApprovalRequest, CreateApprovalRequest, UpdateApprovalRequest } from '../../types/ApprovalRequestTypes'
 
 
 // Daftar semua entitas service di sini
@@ -37,5 +41,10 @@ export const VehicleService = createCrudService<Vehicle, CreateVehicle, UpdateVe
 export const TransporterService = createCrudService<Transporter, CreateTransporter, UpdateTransporter>("/inbound-transporter");
 export const subWarehouseService = createCrudService<SubWarehouse, CreateSubWarehouse, UpdateSubWarehouse>("/master-warehouse-sub");
 export const binService = createCrudService<Bin, CreateBin, UpdateBin>("/master-warehouse-bin");
-
 export const sourceService = createCrudService<Source, CreateSource, UpdateSource>("/master-source");
+export const inboundDeliveryOrderService = createCrudService<InboundDeliveryOrder, CreateInboundDeliveryOrder, UpdateInboundDeliveryOrder>("/inbound-delivery-order");
+export const inboundAttachmentService = createCrudService<InboundAttachment, CreateInboundAttachment, UpdateInboundAttachment>("/inbound-attachment");
+export const checkerScanService = createCrudService<CheckerScan, CreateCheckerScan, UpdateCheckerScan>("/checker-scanning/inbound-plan");
+export const roleService = createCrudService<RoleRead, CreateRolePayload, UpdateRolePayload>("/roles");
+
+export const approvalRequestService = createCrudService<ApprovalRequest, CreateApprovalRequest, UpdateApprovalRequest>("/approval-requests");

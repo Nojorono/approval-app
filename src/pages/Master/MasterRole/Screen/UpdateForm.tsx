@@ -4,11 +4,14 @@ import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import Checkbox from "../../../../components/form/input/Checkbox";
 
-import { useRoleStore } from "../../../../API/store/MasterStore";
+// import { useRoleStore } from "../../../../API/store/MasterStore";
 import { showErrorToast, showSuccessToast } from "../../../../components/toast";
 import Button from "../../../../components/ui/button/Button";
 import { signOut } from "../../../../utils/SignOut";
-import { useStoreMenu } from "../../../../DynamicAPI/stores/Store/MasterStore";
+import {
+  useStoreMenu,
+  useStoreRole,
+} from "../../../../DynamicAPI/stores/Store/MasterStore";
 
 // Constants for options
 const STATUS_OPTIONS = [
@@ -80,7 +83,8 @@ export default function UpdateFormWithTable(paramRole: any) {
     deleteData,
     fetchAll: fetchMenus,
   } = useStoreMenu();
-  const { updateRole } = useRoleStore();
+
+  const { updateData: updateRole } = useStoreRole();
 
   type StatusOption = { value: boolean | ""; label: string } | null;
 
@@ -170,7 +174,7 @@ export default function UpdateFormWithTable(paramRole: any) {
         Object.entries(permissions)
           .filter(([_, isChecked]) => isChecked)
           .map(([permissionType]) => ({
-            menu_id: Number(menuId),
+            menu_id: menuId,
             action: permissionType,
           }))
     );
@@ -189,7 +193,6 @@ export default function UpdateFormWithTable(paramRole: any) {
     const finalPayload = {
       name: formData.nama,
       description: formData.deskripsi,
-      // isActive: formData.status?.value ?? formData.status,
       permissions: tableData,
     };
 
@@ -198,20 +201,13 @@ export default function UpdateFormWithTable(paramRole: any) {
       return;
     }
 
-    console.log("Final Payload:", finalPayload);
-
     const res = await updateRole(updateId, finalPayload);
-    if (!res.ok) {
-      showErrorToast(res.message);
-      return;
-    }
 
-    showSuccessToast(
-      "Role berhasil diupdate. Dan silahkan sign in kembali untuk update state"
-    );
-    setTimeout(() => {
-      signOut(navigate);
-    }, 800);
+    if (res && res.success) {
+      setTimeout(() => {
+        signOut(navigate);
+      }, 800);
+    }
   };
 
   return (

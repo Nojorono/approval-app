@@ -16,7 +16,12 @@ import {
     TransporterService,
     subWarehouseService,
     binService,
-    sourceService
+    sourceService,
+    inboundDeliveryOrderService,
+    inboundAttachmentService,
+    checkerScanService,
+    roleService,
+    approvalRequestService,
 } from "../../services/Service/MasterService";
 
 import { Uom, CreateUom, UpdateUom } from "../../types/UomTypes";
@@ -35,7 +40,12 @@ import { CreateTransporter, Transporter, UpdateTransporter } from "../../types/T
 import { SubWarehouse, CreateSubWarehouse, UpdateSubWarehouse } from "../../types/SubWarehouseTypes";
 import { Bin, CreateBin, UpdateBin } from "../../types/MasterBinTypes";
 import { Source, CreateSource, UpdateSource } from "../../types/MasterSourceTypes";
+import { InboundDeliveryOrder, CreateInboundDeliveryOrder, UpdateInboundDeliveryOrder } from "../../types/InboundDeliveryOrderTypes";
+import { InboundAttachment, CreateInboundAttachment, UpdateInboundAttachment } from "../../types/InboundAttachmentTypes";
+import { CheckerScan, CreateCheckerScan, UpdateCheckerScan } from '../../types/CheckerScanTypes'
+import { RoleRead, CreateRolePayload, UpdateRolePayload } from '../../types/MasterRoleTypes';
 
+import { ApprovalRequest, CreateApprovalRequest, UpdateApprovalRequest } from '../../types/ApprovalRequestTypes';
 
 
 export const useStoreUom = createCrudStore<Uom, CreateUom, UpdateUom>({
@@ -121,4 +131,29 @@ export const useStoreBin = createCrudStore<Bin, CreateBin, UpdateBin>({
 export const useStoreSource = createCrudStore<Source, CreateSource, UpdateSource>({
     name: "Source",
     service: sourceService,
+});
+
+export const useStoreInboundDeliveryOrder = createCrudStore<InboundDeliveryOrder, CreateInboundDeliveryOrder, UpdateInboundDeliveryOrder>({
+    name: "InboundDeliveryOrder",
+    service: inboundDeliveryOrderService,
+});
+
+export const useStoreInboundAttachment = createCrudStore<InboundAttachment, CreateInboundAttachment, UpdateInboundAttachment>({
+    name: "InboundAttachment",
+    service: inboundAttachmentService,
+});
+
+export const useStoreCheckerScan = createCrudStore<CheckerScan, CreateCheckerScan, UpdateCheckerScan>({
+    name: "CheckerScan",
+    service: checkerScanService,
+});
+
+export const useStoreRole = createCrudStore<RoleRead, CreateRolePayload, UpdateRolePayload>({
+    name: "Role",
+    service: roleService,
+});
+
+export const useStoreApprovalRequest = createCrudStore<ApprovalRequest, CreateApprovalRequest, UpdateApprovalRequest>({
+    name: "ApprovalRequest",
+    service: approvalRequestService,
 });

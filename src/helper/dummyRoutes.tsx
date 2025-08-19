@@ -22,7 +22,7 @@ const dummyRoutes = [
   {
     id: 4,
     name: "Master Role",
-    path: "/master_role",
+    path: "/role",
     icon: "FaRegFileAlt",
     parentId: 2,
     order: 3,
@@ -119,7 +119,6 @@ const dummyRoutes = [
     created_at: "2025-05-06T01:03:15.036Z",
     updated_at: "2025-05-06T01:14:04.189Z",
   },
-
   {
     id: 14,
     name: "Master User",
@@ -127,6 +126,16 @@ const dummyRoutes = [
     icon: "FaRegFileAlt",
     parentId: 2,
     order: 10,
+    created_at: "2025-05-06T01:03:15.036Z",
+    updated_at: "2025-05-06T01:14:04.189Z",
+  },
+    {
+    id: 15,
+    name: "Approval",
+    path: "/approval_tracker",
+    icon: "FaRegFileAlt",
+    parentId: 2,
+    order: 11,
     created_at: "2025-05-06T01:03:15.036Z",
     updated_at: "2025-05-06T01:14:04.189Z",
   },

@@ -7,8 +7,8 @@ interface CrudStoreOptions<TData, TCreate, TUpdate> {
         fetchAll: () => Promise<TData[]>;
         fetchById: (id: any) => Promise<TData>;
         create: (payload: TCreate) => Promise<TData>;
-        update: (id: number, payload: TUpdate) => Promise<TData>;
-        delete: (id: number) => Promise<boolean>;
+        update: (id: any, payload: TUpdate) => Promise<TData>;
+        delete: (id: any) => Promise<boolean>;
     };
 }
 
@@ -26,8 +26,8 @@ export const createCrudStore = <TData, TCreate, TUpdate>({
         fetchAll: () => Promise<{ success: boolean; message?: string }>;
         fetchById: (id: any) => Promise<void>;
         createData: (payload: TCreate) => Promise<{ success: boolean; message?: string }>;
-        updateData: (id: number, payload: TUpdate) => Promise<{ success: boolean; message?: string }>;
-        deleteData: (id: number) => Promise<void>;
+        updateData: (id: any, payload: TUpdate) => Promise<{ success: boolean; message?: string }>;
+        deleteData: (id: any) => Promise<void>;
         resetDetail: () => void;
         setCurrentId: (id: any) => void;
         loadDetail: (id: any) => Promise<void>;
@@ -42,6 +42,8 @@ export const createCrudStore = <TData, TCreate, TUpdate>({
             set({ isLoading: true, error: null });
             try {
                 const data = await service.fetchAll();
+                console.log(`Fetched ${name}:`, data);
+
                 set({ list: data });
                 return { success: true };
             } catch (err: any) {

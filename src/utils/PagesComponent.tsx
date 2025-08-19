@@ -18,7 +18,14 @@ import MasterClassification from "../pages/Master/MasterClassification";
 import MasterVehicle from "../pages/Master/MasterVehicle";
 import MasterSubWarehouse from "../pages/Master/MasterSubWarehouse";
 import MasterBin from "../pages/Master/MasterBin";
-import MasterSource from '../pages/Master/MasterSource';
+import MasterSource from "../pages/Master/MasterSource";
+import MasterSupplier from "../pages/Master/MasterSupplier";
+import DetailInbound from "../pages/Inbound/InboundPlanning/Table/Detail/DetailInbound";
+import GoodReceiving from "../pages/Inbound/GoodReceiving";
+
+
+import AprrovalTracker from '../pages/AprrovalTracker'
+import Dashboard from '../pages/Dashboard'
 
 export {
   // PAGE MASTER
@@ -34,6 +41,7 @@ export {
   MasterSubWarehouse,
   MasterBin,
   MasterSource,
+  MasterSupplier,
 
   // MASTER ROLES PAGE
   MasterRole,
@@ -43,4 +51,11 @@ export {
   // INBOUND PLANNING
   Inbound,
   CreateInbound,
+  DetailInbound,
+
+  // GOOD RECEIVING
+  GoodReceiving,
+  
+  AprrovalTracker,
+  Dashboard
 };

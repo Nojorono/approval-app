@@ -5,10 +5,7 @@ import Label from "../../../../components/form/Label";
 import Button from "../../../../components/ui/button/Button";
 import { useDebounce } from "../../../../helper/useDebounce";
 import DynamicTable from "../../../../components/wms-components/DynamicTable";
-import {
-  useStoreUser,
-  useStoreIo,
-} from "../../../../DynamicAPI/stores/Store/MasterStore";
+import { useStoreUser } from "../../../../DynamicAPI/stores/Store/MasterStore";
 import { useRoleStore } from "../../../../API/store/MasterStore";
 
 const DataTable = () => {
@@ -20,19 +17,16 @@ const DataTable = () => {
     fetchAll,
   } = useStoreUser();
 
-  const { list: IoList, fetchAll: fetchIO } = useStoreIo();
-
   const { fetchRoles, roles } = useRoleStore();
-
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
 
   useEffect(() => {
-    fetchAll();
     fetchRoles();
-    fetchIO();
+    fetchAll();
   }, []);
+  
 
   // Fungsi untuk format payload create
   const handleCreate = (data: any) => {
@@ -62,36 +56,13 @@ const DataTable = () => {
       isActive: rest.isActive,
       roleId: Number(rest.roleId),
     });
-  };  
+  };
 
   const columns = useMemo(
     () => [
-      // {
-      //   accessorKey: "rowNumber",
-      //   header: "No",
-      //   cell: (info: any) => info.row.index + 1,
-      // },
       {
         accessorKey: "username",
         header: "Username",
-      },
-      {
-        accessorKey: "firstName",
-        header: "First Name",
-      },
-      {
-        accessorKey: "lastName",
-        header: "Last Name",
-      },
-      {
-        accessorKey: "organizationId",
-        header: "Organization",
-        cell: (info: any) => {
-          const org = IoList?.find(
-            (org: any) => org.organization_id === info.getValue()
-          );
-          return org ? org.organization_name : "-";
-        },
       },
       {
         accessorKey: "roleId",
@@ -107,7 +78,7 @@ const DataTable = () => {
         cell: (info: any) => (info.getValue() ? "Active" : "Inactive"),
       },
     ],
-    [IoList, roles]
+    [roles]
   );
 
   const formFields = [
@@ -133,17 +104,6 @@ const DataTable = () => {
       name: "lastName",
       label: "Last Name",
       type: "text",
-      validation: { required: "Required" },
-    },
-    {
-      name: "organizationId",
-      label: "Organization",
-      type: "select",
-      options:
-        IoList?.map((org: any) => ({
-          label: org.organization_name,
-          value: org.organization_id,
-        })) || [],
       validation: { required: "Required" },
     },
     {
