@@ -8,7 +8,9 @@ import CreateRole from "../pages/Master/MasterRole/Screen/CreateRole";
 import UpdateRole from "../pages/Master/MasterRole/Screen/UpdateRole";
 
 // APPROVAL REQUEST
-import ApprovalRequest from '../pages/AprrovalRequest'
+import ApprovalRequest from '../pages/ApprovalRequest'
+import ApprovalProcess from '../pages/ApprovalProcess'
+
 import Dashboard from '../pages/Dashboard'
 
 export {
@@ -22,5 +24,6 @@ export {
   UpdateRole,
   
   ApprovalRequest,
+  ApprovalProcess,
   Dashboard
 };

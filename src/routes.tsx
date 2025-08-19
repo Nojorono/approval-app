@@ -15,6 +15,7 @@ import {
   CreateRole,
   UpdateRole,
   ApprovalRequest,
+  ApprovalProcess,
   Dashboard,
 } from "./utils/PagesComponent";
 
@@ -144,6 +145,9 @@ export function AppRoutes() {
         )}
 
         <Route path="/signin" element={<SignIn />} />
+
+        <Route path="/approval-process" element={<ApprovalProcess />} />
+
       </Routes>
     </>
   );
