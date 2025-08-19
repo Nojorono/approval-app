@@ -19,7 +19,7 @@ const DataTable = () => {
     deleteData,
   } = useStoreApprovalRequest();
 
-  const { list: userList, fetchAll: fetchUsers } = useStoreUser();
+  const { list: userList, fetchAll: fetchUsers, fetchById, detail } = useStoreUser();
 
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
