@@ -19,7 +19,12 @@ const DataTable = () => {
     deleteData,
   } = useStoreApprovalRequest();
 
-  const { list: userList, fetchAll: fetchUsers, fetchById, detail } = useStoreUser();
+  const {
+    list: userList,
+    fetchAll: fetchUsers,
+    fetchById,
+    detail,
+  } = useStoreUser();
 
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
@@ -33,20 +38,24 @@ const DataTable = () => {
   // Fungsi untuk format payload create
   const handleCreate = (data: any) => {
     const formattedData = {
-      ...data,
+      subject: data.subject,
       approverIds: Array.isArray(data.approverIds)
         ? data.approverIds
         : data.approverIds
         ? [data.approverIds]
         : [],
+      description: data.description,
       attachments: Array.isArray(data.attachments)
         ? data.attachments
         : data.attachments
         ? [data.attachments]
         : [],
+      status: "pending",
+      createdBy: "",
     };
 
-    console.log("Formatted Create Data:", formattedData);
+    console.log("Creating data with payload:", formattedData);
+
     return createData(formattedData);
   };
 
