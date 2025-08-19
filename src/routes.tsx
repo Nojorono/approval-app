@@ -14,7 +14,7 @@ import {
   MasterRole,
   CreateRole,
   UpdateRole,
-  AprrovalTracker,
+  ApprovalRequest,
   Dashboard,
 } from "./utils/PagesComponent";
 
@@ -75,7 +75,7 @@ export function AppRoutes() {
       "/user": <MasterUser />,
       "/menu": <MasterMenu />,
       "/role": <MasterRole />,
-      "/approval_tracker": <AprrovalTracker />,
+      "/approval_request": <ApprovalRequest />,
       "/dashboard": <Dashboard />,
     };
     return map[path] || <DefaultPage />;
@@ -144,7 +144,6 @@ export function AppRoutes() {
         )}
 
         <Route path="/signin" element={<SignIn />} />
-        <Route path="/approval_tracker" element={<AprrovalTracker />} />
       </Routes>
     </>
   );
