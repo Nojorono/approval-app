@@ -38,8 +38,6 @@ const DataTable = () => {
       isActive: data.isActive,
       roleId: data.roleId,
     };
-    console.log("Formatted data for create:", formattedData);
-
     return createData(formattedData);
   };
 
@@ -146,14 +144,12 @@ const DataTable = () => {
   ];
 
   console.log("User Data:", userData);
-  
 
   return (
     <>
       <div className="p-4 bg-white shadow rounded-md mb-5">
-        <div className="flex justify-between items-center">
-          <div className="space-x-4">
-            <Label htmlFor="search">Search</Label>
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:space-x-4">
             <Input
               onChange={(e) => setSearch(e.target.value)}
               type="text"
@@ -166,6 +162,7 @@ const DataTable = () => {
               variant="primary"
               size="sm"
               onClick={() => setCreateModalOpen(true)}
+              className="w-full sm:w-auto flex items-center justify-center"
             >
               <FaPlus className="mr-2" /> Tambah Data
             </Button>
