@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import TableComponent from "../../components/tables/MasterDataTable/TableComponent";
+import TableComponent from "../../components/tables/MasterDataTable/TableApprovalRequest";
 import { FaEye, FaTrash } from "react-icons/fa";
 import DynamicFormModal from "./DynamicFormModal";
 
@@ -44,12 +44,12 @@ const DynamicTable = ({
         cell: ({ row }) => (
           <div className="flex gap-2">
 
-            <button
+            {/* <button
               className="text-green-600"
               onClick={() => setSelectedItem(row.original)}
             >
               <FaEye />
-            </button>
+            </button> */}
 
             <button
               onClick={() => handleDelete(getRowId(row.original))}

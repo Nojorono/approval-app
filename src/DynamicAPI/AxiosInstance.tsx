@@ -5,7 +5,7 @@ const baseURL = EnPoint;
 
 const axiosInstance = axios.create({
   baseURL: baseURL,
-  timeout: 50000,
+  timeout: 90000,
 });
 
 axiosInstance.interceptors.request.use(

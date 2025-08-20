@@ -21,7 +21,9 @@ import { InboundAttachment, CreateInboundAttachment, UpdateInboundAttachment } f
 import { CheckerScan, CreateCheckerScan, UpdateCheckerScan } from '../../types/CheckerScanTypes'
 import { RoleRead, CreateRolePayload, UpdateRolePayload } from '../../types/MasterRoleTypes';
 
-import { ApprovalRequest, CreateApprovalRequest, UpdateApprovalRequest } from '../../types/ApprovalRequestTypes'
+import { ApprovalRequest, CreateApprovalRequest, UpdateApprovalRequest, ApprovalRequestListResponse } from '../../types/ApprovalRequestTypes'
+
+
 
 
 // Daftar semua entitas service di sini
@@ -48,3 +50,4 @@ export const checkerScanService = createCrudService<CheckerScan, CreateCheckerSc
 export const roleService = createCrudService<RoleRead, CreateRolePayload, UpdateRolePayload>("/roles");
 
 export const approvalRequestService = createCrudService<ApprovalRequest, CreateApprovalRequest, UpdateApprovalRequest>("/approval-requests");
+export const approvalRequestWithRelationsService = createCrudService<ApprovalRequestListResponse, CreateApprovalRequest, UpdateApprovalRequest>("/approval-requests/with-relations");

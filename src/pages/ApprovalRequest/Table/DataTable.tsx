@@ -8,8 +8,10 @@ import DynamicTable from "../../../components/wms-components/DynamicTable";
 import {
   useStoreApprovalRequest,
   useStoreUser,
+  useStoreApprovalRequestWithRelations,
 } from "../../../DynamicAPI/stores/Store/MasterStore";
 import ActIndicator from "../../../components/ui/activityIndicator";
+import { ApprovalRequestWithRelations } from "../../../DynamicAPI/types/ApprovalRequestTypes";
 
 const DataTable = () => {
   const {
@@ -21,12 +23,10 @@ const DataTable = () => {
     isLoading,
   } = useStoreApprovalRequest();
 
-  const {
-    list: userList,
-    fetchAll: fetchUsers,
-    fetchById,
-    detail,
-  } = useStoreUser();
+  const { list: userList, fetchAll: fetchUsers } = useStoreUser();
+
+  const { list: approvalListRaw, fetchAll: fetchApprovalRaw } =
+    useStoreApprovalRequestWithRelations();
 
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
@@ -35,6 +35,7 @@ const DataTable = () => {
   useEffect(() => {
     fetchApproval();
     fetchUsers();
+    fetchApprovalRaw();
   }, []);
 
   // Fungsi untuk format payload create
@@ -77,6 +78,13 @@ const DataTable = () => {
     });
   };
 
+  const [selectedApprovers, setSelectedApprovers] = useState<string[] | null>(
+    null
+  );
+  const [isApproverModalOpen, setApproverModalOpen] = useState(false);
+
+  const [expandedRow, setExpandedRow] = useState<string | null>(null);
+
   const columns = useMemo(
     () => [
       {
@@ -88,9 +96,33 @@ const DataTable = () => {
         header: "Subject",
       },
       {
+        header: "Status",
+        accessorKey: "status",
+        cell: ({ row }: { row: { original: { status: string } } }) => (
+          <span
+            className={`px-2 py-1 rounded text-xs font-medium ${
+              row.original.status === "approved"
+                ? "bg-green-100 text-green-700"
+                : row.original.status === "rejected"
+                ? "bg-red-100 text-red-700"
+                : "bg-yellow-100 text-yellow-700"
+            }`}
+          >
+            {row.original.status}
+          </span>
+        ),
+      },
+      {
         accessorKey: "approverIds",
         header: "Approvers",
-        cell: (info: any) => (info.getValue() as string[]).join(", "),
+        cell: ({ row }: any) => (
+          <Button
+            size="sm"
+            variant="secondary"
+          >
+            Detail
+          </Button>
+        ),
       },
       {
         accessorKey: "description",
@@ -101,13 +133,47 @@ const DataTable = () => {
         header: "Attachments",
         cell: (info: any) => (info.getValue() as string[]).join(", "),
       },
-      {
-        accessorKey: "status",
-        header: "Status",
-      },
     ],
-    []
+    [expandedRow]
   );
+
+  // Modal Approver
+  const ApproverModal = () =>
+    isApproverModalOpen && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+        <div className="bg-white rounded shadow-lg p-6 min-w-[300px]">
+          <h3 className="text-lg font-semibold mb-4">Daftar Approver</h3>
+          <ul className="mb-4">
+            {(selectedApprovers || []).length === 0 ? (
+              <li className="text-gray-500">Tidak ada approver</li>
+            ) : (
+              (selectedApprovers || []).map((approver: any, idx: number) => (
+                <li key={idx} className="mb-2">
+                  <span className="font-medium">
+                    {approver.name || approver}
+                  </span>
+                  {approver.status && (
+                    <span
+                      className="ml-2 text-xs px-2 py-1 rounded 
+                      bg-gray-100 text-gray-700"
+                    >
+                      {approver.status}
+                    </span>
+                  )}
+                </li>
+              ))
+            )}
+          </ul>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => setApproverModalOpen(false)}
+          >
+            Tutup
+          </Button>
+        </div>
+      </div>
+    );
 
   const formFields = [
     {
@@ -144,6 +210,29 @@ const DataTable = () => {
     },
   ];
 
+  const approvalRaw = useMemo(() => {
+    const raw = approvalListRaw as any;
+
+    if (!raw || !Array.isArray(raw.data)) return [];
+
+    return raw.data.map((item: any) => {
+      const approval = item.approvalRequest;
+
+      return {
+        ...approval,
+        notificationTracks: item.notificationTracks || [],
+        approvalProcess: item.approvalProcess || null,
+        approvers: (item.notificationTracks || []).map((track: any) => ({
+          name: track.user?.username || "Unknown User",
+          channel: track.channel || "-",
+          status: track.status || "pending",
+          note: track.note || "", // misalnya ada catatan
+          updatedAt: track.updatedAt, // bisa buat timestamp approval
+        })),
+      };
+    });
+  }, [approvalListRaw]);
+
   return (
     <>
       <div className="p-4 bg-white shadow rounded-md mb-5">
@@ -174,7 +263,7 @@ const DataTable = () => {
         <ActIndicator />
       ) : (
         <DynamicTable
-          data={approvalList}
+          data={approvalRaw}
           globalFilter={debouncedSearch}
           isCreateModalOpen={isCreateModalOpen}
           onCloseCreateModal={() => setCreateModalOpen(false)}
