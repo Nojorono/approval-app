@@ -67,22 +67,6 @@ const ModalForm: React.FC<FormInputProps> = ({
   }, [defaultValues, reset]);
 
   const handleSubmit = (data: FormValues) => {
-
-    // console.log("Form submitted with data:", data);
-    
-    // const files = (data.attachments || []).map((f: File) => ({
-    //   name: f.name,
-    //   size: f.size,
-    //   type: f.type,
-    // }));
-
-    // const payload = {
-    //   ...data,
-    //   attachments: files, // sekarang JSON friendly
-    // };
-
-    // console.log("Form submitted with data:", payload);
-
     onSubmit(data); // Kirim data ke parent
   };
 

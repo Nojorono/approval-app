@@ -9,6 +9,7 @@ import {
   useStoreApprovalRequest,
   useStoreUser,
 } from "../../../DynamicAPI/stores/Store/MasterStore";
+import ActIndicator from "../../../components/ui/activityIndicator";
 
 const DataTable = () => {
   const {
@@ -17,6 +18,7 @@ const DataTable = () => {
     createData,
     updateData,
     deleteData,
+    isLoading,
   } = useStoreApprovalRequest();
 
   const {
@@ -53,8 +55,6 @@ const DataTable = () => {
       status: "pending",
       createdBy: "",
     };
-
-    console.log("Creating data with payload:", formattedData);
 
     return createData(formattedData);
   };
@@ -125,7 +125,7 @@ const DataTable = () => {
         value: user.id,
       })),
       validation: { required: "Required" },
-      helperText: "Pilih satu atau lebih user sebagai approver",
+      placeholder: "Select one or more user as approver",
       parseValue: (value: string[] | string) =>
         Array.isArray(value) ? value : value ? [value] : [],
     },
@@ -170,22 +170,26 @@ const DataTable = () => {
         </div>
       </div>
 
-      <DynamicTable
-        data={approvalList}
-        globalFilter={debouncedSearch}
-        isCreateModalOpen={isCreateModalOpen}
-        onCloseCreateModal={() => setCreateModalOpen(false)}
-        columns={columns}
-        formFields={formFields}
-        onSubmit={handleCreate}
-        onUpdate={handleUpdate}
-        onDelete={async (id) => {
-          await deleteData(id);
-        }}
-        onRefresh={fetchApproval}
-        getRowId={(row) => row.id}
-        title="Form Data"
-      />
+      {isLoading ? (
+        <ActIndicator />
+      ) : (
+        <DynamicTable
+          data={approvalList}
+          globalFilter={debouncedSearch}
+          isCreateModalOpen={isCreateModalOpen}
+          onCloseCreateModal={() => setCreateModalOpen(false)}
+          columns={columns}
+          formFields={formFields}
+          onSubmit={handleCreate}
+          onUpdate={handleUpdate}
+          onDelete={async (id) => {
+            await deleteData(id);
+          }}
+          onRefresh={fetchApproval}
+          getRowId={(row) => row.id}
+          title="Form Data"
+        />
+      )}
     </>
   );
 };
