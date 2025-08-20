@@ -22,7 +22,8 @@ import {
     checkerScanService,
     roleService,
     approvalRequestService,
-    approvalRequestWithRelationsService
+    approvalRequestWithRelationsService,
+    approvalProcessService
 } from "../../services/Service/MasterService";
 
 import { Uom, CreateUom, UpdateUom } from "../../types/UomTypes";
@@ -47,6 +48,7 @@ import { CheckerScan, CreateCheckerScan, UpdateCheckerScan } from '../../types/C
 import { RoleRead, CreateRolePayload, UpdateRolePayload } from '../../types/MasterRoleTypes';
 
 import { ApprovalRequest, CreateApprovalRequest, UpdateApprovalRequest, ApprovalRequestListResponse } from '../../types/ApprovalRequestTypes';
+import { ApprovalProcess, CreateApprovalProcess, UpdateApprovalProcess } from "../../types/ApprovalProcessTypes.tsx";
 
 
 export const useStoreUom = createCrudStore<Uom, CreateUom, UpdateUom>({
@@ -162,4 +164,9 @@ export const useStoreApprovalRequest = createCrudStore<ApprovalRequest, CreateAp
 export const useStoreApprovalRequestWithRelations = createCrudStore<ApprovalRequestListResponse, CreateApprovalRequest, UpdateApprovalRequest>({
     name: "ApprovalRequestWithRelations",
     service: approvalRequestWithRelationsService,
+});
+
+export const useStoreApprovalProcess = createCrudStore<ApprovalProcess, CreateApprovalProcess, UpdateApprovalProcess>({
+    name: "ApprovalProcess",
+    service: approvalProcessService,
 });

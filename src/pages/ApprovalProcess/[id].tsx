@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAuthStore } from "../../API/store/AuthStore/authStore";
+import ActIndicator from "../../components/ui/activityIndicator";
 
 export const ApprovalProcess: React.FC = () => {
     const navigate = useNavigate();
@@ -40,7 +41,6 @@ export const ApprovalProcess: React.FC = () => {
             body: JSON.stringify({ pin: enteredPin }),
         })
             .then(async (res) => {
-                setIsLoading(false);
                 const data = await res.json().catch(() => ({}));
                 if (!res.ok) {
                     throw new Error(data?.message || "PIN verification failed");
@@ -56,7 +56,8 @@ export const ApprovalProcess: React.FC = () => {
                 localStorage.setItem("token", accessToken);
                 // Kirim data ke halaman berikutnya via state
                 setTimeout(() => {
-                    navigate("/Approval-Process/detail", { state: { id } });
+                    setIsLoading(false);
+                    navigate("/Approval-Process/detail", { state: { id, approverId } });
                 }, 800);
             })
             .catch((err) => {
@@ -65,7 +66,10 @@ export const ApprovalProcess: React.FC = () => {
                 alert("PIN tidak valid, silahkan coba lagi");
             });
     };
-
+    if (isLoading) return (  
+    <div className="flex items-center justify-center min-h-screen">
+      <ActIndicator />
+    </div>);
     return (
         <div>
             <h1>Approval Page</h1>

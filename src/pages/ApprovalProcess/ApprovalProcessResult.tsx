@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { use, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 export default function ApprovalStatus(){
     const location = useLocation();
     const data = location.state;
+
+    useEffect(() => {
+        console.log("Data:", data);
+    }, []);
 
 
   return (
@@ -14,12 +18,12 @@ export default function ApprovalStatus(){
         </div>
 
         {/* Status Section */}
-        <div className={`p-4 rounded-lg mb-6 ${data?.status === false ? 'bg-red-50' : 'bg-green-50'}`}>
-          <span className={`text-xl font-semibold ${data?.status === false ? 'text-red-500' : 'text-green-500'}`}>
-            {data?.status === false ? 'Request Reject!' : 'Request Approved!'}
+        <div className={`p-4 rounded-lg mb-6 ${data?.status === 'rejected' ? 'bg-red-50' : 'bg-green-50'}`}>
+          <span className={`text-xl font-semibold ${data?.status === 'rejected' ? 'text-red-500' : 'text-green-500'}`}>
+            {data?.status === 'rejected' ? 'Request Reject!' : 'Request Approved!'}
           </span>
           <p className="text-gray-600">
-            {data?.status === false
+            {data?.status === 'rejected'
               ? 'Request has been rejected'
               : 'Request has been successfully approved'}
           </p>
@@ -27,22 +31,35 @@ export default function ApprovalStatus(){
 
         {/* Details Section */}
         <div className="space-y-4 text-left">
-          <div>
-            <strong className="text-gray-700">Approval Request Number</strong>
-            <p className="text-gray-600">APR-0001</p>
-          </div>
-          <div>
-            <strong className="text-gray-700">Approval Subject</strong>
-            <p className="text-gray-600">Pengadaan Device</p>
-          </div>
-          <div>
-            <strong className="text-gray-700">Approver Username</strong>
-            <p className="text-gray-600">AYU</p>
-          </div>
-          <div>
+            <div>
+            <strong className="text-gray-700">Approval Request ID</strong>
+            <p className="text-gray-600">{data?.data.approvalRequestId}</p>
+            </div>
+            <div>
+            <strong className="text-gray-700">Approver ID</strong>
+            <p className="text-gray-600">{data?.data.approverId}</p>
+            </div>
+            <div>
             <strong className="text-gray-700">Date & Time</strong>
-            <p className="text-gray-600">19 Agustus 2025, 09:30 PM</p>
-          </div>
+            <p className="text-gray-600">
+              {data?.data.createdAt
+              ? new Date(data.data.createdAt).toLocaleString('id-ID', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true,
+                })
+              : '-'}
+            </p>
+            </div>
+            {data?.data.status === 'rejected' && data?.data.reasonRejected && (
+            <div>
+              <strong className="text-gray-700">Reason Rejected</strong>
+              <p className="text-gray-600">{data.data.reasonRejected}</p>
+            </div>
+            )}
         </div>
       </div>
     </div>
