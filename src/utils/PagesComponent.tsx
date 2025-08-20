@@ -9,9 +9,11 @@ import UpdateRole from "../pages/Master/MasterRole/Screen/UpdateRole";
 
 // APPROVAL REQUEST
 import ApprovalRequest from '../pages/ApprovalRequest'
-import ApprovalProcess from '../pages/ApprovalProcess'
+import { ApprovalProcess } from '../pages/ApprovalProcess/[id].tsx'
+import ApprovalProcessDetail from '../pages/ApprovalProcess/ApprovalProcessDetail.tsx'
 
 import Dashboard from '../pages/Dashboard'
+import ApprovalProcessResult from "../pages/ApprovalProcess/ApprovalProcessResult.tsx";
 
 export {
   // PAGE MASTER
@@ -25,5 +27,7 @@ export {
   
   ApprovalRequest,
   ApprovalProcess,
+  ApprovalProcessDetail,
+  ApprovalProcessResult,
   Dashboard
 };
