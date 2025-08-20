@@ -1,11 +1,10 @@
-import { Component, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { useStoreApprovalRequest, useStoreUser } from "../../DynamicAPI/stores/Store/MasterStore";
-import { useLocation } from "react-router-dom";
-import { useAuthStore } from '../../API/store/AuthStore/authStore';
+import { useStoreApprovalRequest } from "../../DynamicAPI/stores/Store/MasterStore";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function ApprovalProcessDetail() {
-
+  const navigate = useNavigate();
   const [showApproveConfirm, setShowApproveConfirm] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectNotes, setRejectNotes] = useState('');
@@ -14,11 +13,11 @@ export default function ApprovalProcessDetail() {
   const data = location.state;
 
   useEffect(() => {
-    console.log("token",localStorage.getItem("token"))
+    console.log("token", localStorage.getItem("token"))
     if (!localStorage.getItem("token")) {
       throw new Error("Error: Access token not found");
     }
-  
+
     fetchById(data.id);
     console.log("Data fetched:", detail);
   }, [data.id, fetchById]);
@@ -49,7 +48,7 @@ export default function ApprovalProcessDetail() {
           <span style={{ color: '#888', fontSize: 13 }}>Description</span>
           <div style={{ fontSize: 15 }}>{detail?.description || '-'}</div>
         </div>
-      
+
         <div>
           <span style={{ color: '#888', fontSize: 13 }}>Attachments</span>
           <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
@@ -82,25 +81,121 @@ export default function ApprovalProcessDetail() {
       </div>
 
       {/* Approve Confirmation Popup */}
+      {/* Approve Confirmation Popup */}
       {showApproveConfirm && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-          background: 'rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
-        }}>
-          <div style={{ background: '#fff', borderRadius: 8, padding: 24, minWidth: 300, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
-            <div style={{ marginBottom: 20, fontWeight: 500, fontSize: 16 }}>Are you sure you want to approve?</div>
-            <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            background: 'rgba(0,0,0,0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              background: '#fff',
+              borderRadius: 12,
+              padding: 32,
+              minWidth: 320,
+              boxShadow: '0 4px 24px rgba(0,0,0,0.10)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 18,
+            }}
+          >
+            <div
+              style={{
+                fontWeight: 700,
+                fontSize: 20,
+                color: '#4caf50',
+                marginBottom: 6,
+                textAlign: 'center',
+              }}
+            >
+              Approve Request
+            </div>
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 48 48"
+              fill="none"
+              style={{ marginBottom: 4 }}
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="24" cy="24" r="24" fill="#E8F5E9" />
+              <path
+                d="M34 18L21.5 30.5L14 23"
+                stroke="#4caf50"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <div
+              style={{
+                color: '#4caf50',
+                fontWeight: 500,
+                fontSize: 16,
+                textAlign: 'center',
+              }}
+            >
+              Are you sure you want to approve this request?
+            </div>
+            <div
+              style={{
+                color: '#888',
+                fontSize: 13,
+                marginBottom: 10,
+                textAlign: 'center',
+              }}
+            >
+              This action cannot be undone!
+            </div>
+            <div style={{ display: 'flex', gap: 12, width: '100%', justifyContent: 'center' }}>
               <button
-                style={{ background: '#4caf50', color: '#fff', border: 'none', borderRadius: 6, padding: '8px 20px', fontWeight: 600, cursor: 'pointer' }}
-                onClick={() => { setShowApproveConfirm(false); /* handle approve logic here */ }}
-              >
-                Yes
-              </button>
-              <button
-                style={{ background: '#eee', color: '#333', border: 'none', borderRadius: 6, padding: '8px 20px', fontWeight: 600, cursor: 'pointer' }}
+                style={{
+                  background: '#eee',
+                  color: '#333',
+                  border: 'none',
+                  borderRadius: 6,
+                  padding: '8px 24px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  fontSize: 15,
+                  transition: 'background 0.2s',
+                }}
                 onClick={() => setShowApproveConfirm(false)}
               >
                 Cancel
+              </button>
+              <button
+                style={{
+                  background: '#4caf50',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 6,
+                  padding: '8px 24px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  fontSize: 15,
+                  transition: 'background 0.2s',
+                }}
+                onClick={() => {
+                  setShowApproveConfirm(false);
+                  // handle approve logic here
+                  setTimeout(() => {
+                    navigate("/Approval-Process/result", { state: { data:data, status:true } });
+                  }, 800);
+                }}
+              >
+                Approve
               </button>
             </div>
           </div>
@@ -109,31 +204,150 @@ export default function ApprovalProcessDetail() {
 
       {/* Reject Modal */}
       {showRejectModal && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-          background: 'rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
-        }}>
-          <div style={{ background: '#fff', borderRadius: 8, padding: 24, minWidth: 320, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
-            <div style={{ marginBottom: 12, fontWeight: 500, fontSize: 16 }}>Reject Notes:</div>
-            <textarea
-              value={rejectNotes}
-              onChange={e => setRejectNotes(e.target.value)}
-              rows={4}
-              style={{ width: '100%', borderRadius: 6, border: '1px solid #ccc', padding: 8, marginBottom: 20, fontSize: 15 }}
-              placeholder="Enter notes for rejection"
-            />
-            <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            background: 'rgba(0,0,0,0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              background: '#fff',
+              borderRadius: 12,
+              padding: 32,
+              minWidth: 340,
+              boxShadow: '0 4px 24px rgba(0,0,0,0.10)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 18,
+            }}
+          >
+            <div
+              style={{
+                fontWeight: 700,
+                fontSize: 20,
+                color: '#f44336',
+                marginBottom: 6,
+                textAlign: 'center',
+              }}
+            >
+              Reject Request
+            </div>
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 48 48"
+              fill="none"
+              style={{ marginBottom: 4 }}
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="24" cy="24" r="24" fill="#FFEBEE" />
+              <path
+                d="M16 16L32 32M32 16L16 32"
+                stroke="#f44336"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <div
+              style={{
+                color: '#f44336',
+                fontWeight: 500,
+                fontSize: 16,
+                textAlign: 'center',
+              }}
+            >
+              Are you sure you want to reject this request?
+            </div>
+            <div
+              style={{
+                color: '#888',
+                fontSize: 13,
+                marginBottom: 10,
+                textAlign: 'center',
+              }}
+            >
+              This action cannot be undone!
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100%',
+                gap: 6,
+                marginBottom: 10,
+              }}
+            >
+              <span style={{ color: '#888', fontSize: 14, marginBottom: 4 }}>
+                Reason for Rejection
+              </span>
+              <textarea
+                value={rejectNotes}
+                onChange={e => setRejectNotes(e.target.value)}
+                style={{
+                  borderRadius: 6,
+                  border: '1px solid #ccc',
+                  padding: 8,
+                  fontSize: 15,
+                  minHeight: 60,
+                  resize: 'vertical',
+                  width: '100%',
+                }}
+                placeholder="Enter reason for rejection"
+              />
+            </div>
+            <div style={{ display: 'flex', gap: 12, width: '100%', justifyContent: 'center' }}>
               <button
-                style={{ background: '#f44336', color: '#fff', border: 'none', borderRadius: 6, padding: '8px 20px', fontWeight: 600, cursor: 'pointer' }}
-                onClick={() => { setShowRejectModal(false); setRejectNotes(''); /* handle reject logic here */ }}
-              >
-                Submit
-              </button>
-              <button
-                style={{ background: '#eee', color: '#333', border: 'none', borderRadius: 6, padding: '8px 20px', fontWeight: 600, cursor: 'pointer' }}
-                onClick={() => { setShowRejectModal(false); setRejectNotes(''); }}
+                style={{
+                  background: '#eee',
+                  color: '#333',
+                  border: 'none',
+                  borderRadius: 6,
+                  padding: '8px 24px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  fontSize: 15,
+                  transition: 'background 0.2s',
+                }}
+                onClick={() => {
+                  setShowRejectModal(false);
+                  setRejectNotes('');
+                }}
               >
                 Cancel
+              </button>
+              <button
+                style={{
+                  background: '#f44336',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 6,
+                  padding: '8px 24px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  fontSize: 15,
+                  transition: 'background 0.2s',
+                }}
+                onClick={() => {
+                  setShowRejectModal(false);
+                  setRejectNotes('');
+                  // handle reject logic here
+                  setTimeout(() => {
+                    navigate("/Approval-Process/result", { state: { data:data, status:false } });
+                  }, 800);
+                }}
+              >
+                Reject
               </button>
             </div>
           </div>
@@ -142,19 +356,19 @@ export default function ApprovalProcessDetail() {
 
       <style>
         {`
-            @media (max-width: 600px) {
-              div[style*="max-width: 600px"] {
-                padding: 8px !important;
+              @media (max-width: 600px) {
+                div[style*="max-width: 600px"] {
+                  padding: 8px !important;
+                }
+                h1 {
+                  font-size: 18px !important;
+                }
+                div[style*="background: #fff"] {
+                  padding: 12px !important;
+                }
               }
-              h1 {
-                font-size: 18px !important;
-              }
-              div[style*="background: #fff"] {
-                padding: 12px !important;
-              }
-            }
-          `}
+            `}
       </style>
     </div>
-  )
+  );
 }

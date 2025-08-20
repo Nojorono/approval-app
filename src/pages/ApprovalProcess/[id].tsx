@@ -56,7 +56,7 @@ export const ApprovalProcess: React.FC = () => {
                 // Kirim data ke halaman berikutnya via state
                 setTimeout(() => {
                     navigate("/Approval-Process/detail", { state: { id } });
-                }, 2000);
+                }, 800);
             })
             .catch((err) => {
                 setIsLoading(false);
