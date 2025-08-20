@@ -20,8 +20,6 @@ import {
 } from "./utils/PagesComponent";
 import dummyRoutes from "./helper/dummyRoutes";
 import NotFound from "./pages/OtherPage/NotFound";
-import ApprovalProcessDetail from "./pages/ApprovalProcess/ApprovalProcessDetail";
-import ApprovalProcessResult from "./pages/ApprovalProcess/ApprovalProcessResult";
 
 const DefaultPage = () => (
   <div style={{ textAlign: "center", marginTop: "50px" }}>
@@ -57,11 +55,11 @@ export function AppRoutes() {
     return false;
   };
 
-  // useEffect(() => {
-  //   if (!isAuthenticated()) {
-  //     signOut(navigate);
-  //   }
-  // }, [navigate]);
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      signOut(navigate);
+    }
+  }, [navigate]);
 
   const manualChildRoutes: Record<
     string,
@@ -147,10 +145,8 @@ export function AppRoutes() {
         )}
 
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/approval-process" element={<ApprovalProcess />} />
 
-        <Route path="/approval-process/:id" element={<ApprovalProcess />} />
-        <Route path="/approval-process/detail" element={<ApprovalProcessDetail />} />
-        <Route path="/approval-process/result" element={<ApprovalProcessResult />} />
       </Routes>
     </>
   );
