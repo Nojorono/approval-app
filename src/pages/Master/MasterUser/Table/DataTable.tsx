@@ -118,8 +118,13 @@ const DataTable = () => {
     {
       name: "pin",
       label: "PIN",
-      type: "text",
-      validation: { required: "Required" },
+      type: "number",
+      validation: {
+        required: "Required",
+        minLength: { value: 6, message: "PIN must be 6 digits" },
+        maxLength: { value: 6, message: "PIN must be 6 digits" },
+        pattern: { value: /^\d{6}$/, message: "PIN must be 6 digits" },
+      },
     },
     {
       name: "roleId",

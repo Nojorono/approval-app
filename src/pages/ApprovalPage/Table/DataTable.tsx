@@ -152,7 +152,7 @@ const DataTable = () => {
           }}
           onRefresh={fetchApprovalProcess}
           getRowId={(row) => row.id}
-          title="Form Data"
+          title="Approval Detail"
           viewOnly={true}
         />
       )}
