@@ -11,7 +11,6 @@ import {
   useStoreApprovalRequestWithRelations,
 } from "../../../DynamicAPI/stores/Store/MasterStore";
 import ActIndicator from "../../../components/ui/activityIndicator";
-import { ApprovalRequestWithRelations } from "../../../DynamicAPI/types/ApprovalRequestTypes";
 
 const DataTable = () => {
   const {
@@ -115,14 +114,24 @@ const DataTable = () => {
       {
         accessorKey: "approverIds",
         header: "Approvers",
-        cell: ({ row }: any) => (
-          <Button
-            size="sm"
-            variant="secondary"
-          >
-            Detail
-          </Button>
-        ),
+        cell: ({ row, getValue }: any) => {
+          const value = getValue();
+          // value is now array of objects, show usernames
+          return (
+            <div className="flex items-center">
+              <button
+                onClick={() => row.toggleExpanded()}
+                className="mr-2 text-blue-600"
+                aria-label={row.getIsExpanded() ? "Collapse row" : "Expand row"}
+              >
+                {row.getIsExpanded() ? "▼" : "▶"}
+              </button>
+              {Array.isArray(value)
+                ? value.map((v: any) => v?.username).join(", ")
+                : "-"}
+            </div>
+          );
+        },
       },
       {
         accessorKey: "description",
@@ -131,49 +140,14 @@ const DataTable = () => {
       {
         accessorKey: "attachments",
         header: "Attachments",
-        cell: (info: any) => (info.getValue() as string[]).join(", "),
+        cell: (info: any) => {
+          const value = info.getValue();
+          return Array.isArray(value) ? value.join(", ") : "-";
+        },
       },
     ],
     [expandedRow]
   );
-
-  // Modal Approver
-  const ApproverModal = () =>
-    isApproverModalOpen && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
-        <div className="bg-white rounded shadow-lg p-6 min-w-[300px]">
-          <h3 className="text-lg font-semibold mb-4">Daftar Approver</h3>
-          <ul className="mb-4">
-            {(selectedApprovers || []).length === 0 ? (
-              <li className="text-gray-500">Tidak ada approver</li>
-            ) : (
-              (selectedApprovers || []).map((approver: any, idx: number) => (
-                <li key={idx} className="mb-2">
-                  <span className="font-medium">
-                    {approver.name || approver}
-                  </span>
-                  {approver.status && (
-                    <span
-                      className="ml-2 text-xs px-2 py-1 rounded 
-                      bg-gray-100 text-gray-700"
-                    >
-                      {approver.status}
-                    </span>
-                  )}
-                </li>
-              ))
-            )}
-          </ul>
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => setApproverModalOpen(false)}
-          >
-            Tutup
-          </Button>
-        </div>
-      </div>
-    );
 
   const formFields = [
     {

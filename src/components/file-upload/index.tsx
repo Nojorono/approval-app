@@ -5,20 +5,31 @@ type MultiFileUploaderProps = {
   value?: string[]; // array of uploaded URLs
   onChange: (urls: string[]) => void;
   disabled?: boolean;
+  className?: string;
+  isLoadingUpload?: (isLoading: boolean) => void; // callback untuk status upload
 };
 
 const MultiFileUploader: React.FC<MultiFileUploaderProps> = ({
   value = [],
   onChange,
   disabled,
+  className = "",
+  isLoadingUpload,
 }) => {
   const [files, setFiles] = useState<File[]>([]);
   const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
   const [removingIndex, setRemovingIndex] = useState<number | null>(null);
 
+  // Trigger isLoadingUpload saat files berubah
+  useEffect(() => {
+    if (isLoadingUpload) {
+      isLoadingUpload(files.length > 0);
+    }
+  }, [files, isLoadingUpload]);
+
   // pilih file
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
+    if (!e.target.files || disabled) return;
     setFiles((prev) => [...prev, ...Array.from(e.target.files as FileList)]);
   };
 
@@ -54,33 +65,30 @@ const MultiFileUploader: React.FC<MultiFileUploaderProps> = ({
         );
 
         const fileUrl = res.data?.data?.data?.url;
-        console.log("File uploaded successfully:", fileUrl);
-
         if (fileUrl) {
           urls.push(fileUrl);
           onChange(urls);
         }
       } catch (err) {
-        console.error("Upload gagal:", err);
         alert(`Upload gagal untuk ${file.name}`);
       } finally {
-        // hapus file dari buffer setelah selesai
         setFiles((prev) => prev.slice(1));
         setUploadingIndex(null);
       }
     };
 
     uploadNextFile();
-  }, [files]); // trigger setiap files berubah
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [files]);
 
   const handleRemove = async (index: number) => {
+    if (disabled) return;
     const fileUrl = value[index];
     if (!fileUrl) return;
 
     setRemovingIndex(index);
 
     try {
-      // Extract path dari URL
       const url = new URL(fileUrl);
       const pathname = url.pathname;
       const parts = pathname.split("/");
@@ -96,12 +104,8 @@ const MultiFileUploader: React.FC<MultiFileUploaderProps> = ({
       });
 
       const newUrls = value.filter((_, i) => i !== index);
-
-      console.log("File removed successfully:", fileUrl);
-      
       onChange(newUrls);
     } catch (err) {
-      console.error("Gagal hapus file:", err);
       alert("Gagal hapus file dari S3");
     } finally {
       setRemovingIndex(null);
@@ -109,7 +113,11 @@ const MultiFileUploader: React.FC<MultiFileUploaderProps> = ({
   };
 
   return (
-    <div className="space-y-3">
+    <div
+      className={`space-y-3 ${className} ${
+        disabled ? "pointer-events-none opacity-60 select-none" : ""
+      }`}
+    >
       {/* Input select */}
       <label className="flex flex-col items-center justify-center w-full h-24 px-4 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-400">
         <span className="text-gray-500">📎 Pilih file</span>

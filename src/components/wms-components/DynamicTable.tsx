@@ -43,7 +43,6 @@ const DynamicTable = ({
         header: "Action",
         cell: ({ row }) => (
           <div className="flex gap-2">
-
             <button
               className="text-green-600"
               onClick={() => setSelectedItem(row.original)}
