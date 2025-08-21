@@ -14,7 +14,6 @@ import ActIndicator from "../../../components/ui/activityIndicator";
 
 const DataTable = () => {
   const {
-    list: approvalList,
     fetchAll: fetchApproval,
     createData,
     updateData,
@@ -24,8 +23,11 @@ const DataTable = () => {
 
   const { list: userList, fetchAll: fetchUsers } = useStoreUser();
 
-  const { list: approvalListRaw, fetchAll: fetchApprovalRaw } =
-    useStoreApprovalRequestWithRelations();
+  const {
+    list: approvalListRaw,
+    fetchAll: fetchApprovalRaw,
+    isLoading: isLoadingApprovalRaw,
+  } = useStoreApprovalRequestWithRelations();
 
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
@@ -38,7 +40,7 @@ const DataTable = () => {
   }, []);
 
   // Fungsi untuk format payload create
-  const handleCreate = (data: any) => {
+  const handleCreate = async (data: any) => {
     const formattedData = {
       subject: data.subject,
       approverIds: Array.isArray(data.approverIds)
@@ -56,36 +58,38 @@ const DataTable = () => {
       createdBy: "",
     };
 
-    return createData(formattedData);
+    await createData(formattedData);
+    setCreateModalOpen(false);
+    handleRefreshAPI();
   };
 
   // Fungsi untuk format payload update
-  const handleUpdate = (data: any) => {
-    const { id, ...rest } = data;
-    return updateData(id, {
-      ...rest,
-      approverIds: Array.isArray(rest.approverIds)
-        ? rest.approverIds
-        : rest.approverIds
-        ? [rest.approverIds]
-        : [],
-      attachments: Array.isArray(rest.attachments)
-        ? rest.attachments
-        : rest.attachments
-        ? [rest.attachments]
-        : [],
-    });
+  const handleUpdate = async (_data: any): Promise<any> => {
+    alert("tidak di-Izinkan update");
+    return Promise.resolve();
   };
-
-  const [selectedApprovers, setSelectedApprovers] = useState<string[] | null>(
-    null
-  );
-  const [isApproverModalOpen, setApproverModalOpen] = useState(false);
 
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
 
   const columns = useMemo(
     () => [
+      {
+        accessorKey: "expand",
+        header: "",
+        cell: ({ row }: any) => {
+          return (
+            <div className="flex items-center">
+              <button
+                onClick={() => row.toggleExpanded()}
+                className="mr-2 text-blue-600"
+                aria-label={row.getIsExpanded() ? "Collapse row" : "Expand row"}
+              >
+                {row.getIsExpanded() ? "▼" : "▶"}
+              </button>
+            </div>
+          );
+        },
+      },
       {
         accessorKey: "code",
         header: "Code",
@@ -119,13 +123,6 @@ const DataTable = () => {
           // value is now array of objects, show usernames
           return (
             <div className="flex items-center">
-              <button
-                onClick={() => row.toggleExpanded()}
-                className="mr-2 text-blue-600"
-                aria-label={row.getIsExpanded() ? "Collapse row" : "Expand row"}
-              >
-                {row.getIsExpanded() ? "▼" : "▶"}
-              </button>
               {Array.isArray(value)
                 ? value.map((v: any) => v?.username).join(", ")
                 : "-"}
@@ -207,6 +204,13 @@ const DataTable = () => {
     });
   }, [approvalListRaw]);
 
+  const handleRefreshAPI = () => {
+    console.log("Refresh API called");
+
+    fetchApproval();
+    fetchApprovalRaw();
+  };
+
   return (
     <>
       <div className="p-4 bg-white shadow rounded-md mb-5">
@@ -233,7 +237,7 @@ const DataTable = () => {
         </div>
       </div>
 
-      {isLoading ? (
+      {isLoading && isLoadingApprovalRaw ? (
         <ActIndicator />
       ) : (
         <DynamicTable
@@ -248,7 +252,7 @@ const DataTable = () => {
           onDelete={async (id) => {
             await deleteData(id);
           }}
-          onRefresh={fetchApproval}
+          onRefresh={handleRefreshAPI}
           getRowId={(row) => row.id}
           title="Form Data"
         />

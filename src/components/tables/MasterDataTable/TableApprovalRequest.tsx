@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -9,10 +9,14 @@ import {
   ColumnDef,
   ExpandedState,
 } from "@tanstack/react-table";
+import {
+  useStoreApprovalNotification,
+  useStoreApprovalRequestWithRelations,
+} from "../../../DynamicAPI/stores/Store/MasterStore";
 
 import PaginationControls from "./Pagination";
-import Button from "../../ui/button/Button";
-import ModalApproval from "../../modal/type/ModalApproval";
+import ExtraMiniIndicator from "../../ui/miniActivityIndicator/extraMiniIndicator";
+import NotificationTracks from "./NotificationTracks";
 
 interface TableComponentProps<T> {
   data: T[];
@@ -46,6 +50,13 @@ const TableComponent = <
   // State untuk track row yang di-expand
   const [expandedRowIds, setExpandedRowIds] = useState<ExpandedState>({});
 
+  const { fetchById, detail, isLoading } = useStoreApprovalNotification();
+
+  const { fetchAll: fetchApprovalRaw, isLoading: isLoadingApprovalRaw } =
+    useStoreApprovalRequestWithRelations();
+
+  const [activeTrackId, setActiveTrackId] = useState<string | null>(null);
+
   const table = useReactTable<T>({
     data,
     columns,
@@ -68,32 +79,15 @@ const TableComponent = <
     enableExpanding: true,
   });
 
-  // State for modal open/close
-  const [isModalOpen, setModalOpen] = useState(false);
-
-  // Contoh data
-  const timeline = [
-    {
-      time: "18/08/2025, 8:30 AM",
-      label: "opened",
-      desc: "by Approver 1",
-    },
-    {
-      time: "18/08/2025, 8:20 AM",
-      label: "notified",
-      desc: "by system - email/WA sent",
-    },
-    {
-      time: "18/08/2025, 8:18 AM",
-      label: "created",
-      desc: "by Rani Requestor",
-    },
-  ];
-
-  const handleModalDetail = (row: T) => {
-    console.log("row", row);
-
-    setModalOpen(true);
+  const handleCheckStatus = async (trackId: string) => {
+    setActiveTrackId(trackId);
+    try {
+      await fetchById(trackId);
+      // Setelah fetch, detail otomatis update dari Zustand
+      fetchApprovalRaw();
+    } catch (error) {
+      console.error("Error fetching by id:", error);
+    }
   };
 
   return (
@@ -144,111 +138,21 @@ const TableComponent = <
                       </td>
                     ))}
                   </tr>
-
-                  {row.getIsExpanded() && (
-                    <tr>
-                      <td colSpan={row.getVisibleCells().length}>
-                        {row.original.notificationTracks &&
-                          row.original.notificationTracks.length > 0 && (
-                            <div className="bg-white rounded shadow p-2 my-2 border border-gray-200 sm:p-4">
-                              <div className="font-semibold mb-2 text-sm sm:text-base">
-                                Notification Tracks
-                              </div>
-                              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 sm:gap-4">
-                                {Array.from(
-                                  new Map(
-                                    (row.original.notificationTracks ?? []).map(
-                                      (track: any) => [track.recipientId, track]
-                                    )
-                                  ).entries()
-                                ).map(
-                                  (
-                                    [recipientId, firstTrack]: [string, any],
-                                    idx: number
-                                  ) => {
-                                    // Ambil semua track dengan recipientId yang sama
-                                    const tracks = (
-                                      row.original.notificationTracks ?? []
-                                    ).filter(
-                                      (t: any) => t.recipientId === recipientId
-                                    );
-                                    const approver = (
-                                      Array.isArray(row.original.approverIds)
-                                        ? row.original.approverIds
-                                        : []
-                                    ).find(
-                                      (approver: any) =>
-                                        approver.id === recipientId
-                                    );
-                                    const approverLabel = approver
-                                      ? `${approver.username}`
-                                      : recipientId;
-
-                                    function stringToColor(str: string) {
-                                      let hash = 0;
-                                      for (let i = 0; i < str.length; i++) {
-                                        hash =
-                                          str.charCodeAt(i) +
-                                          ((hash << 5) - hash);
-                                      }
-                                      const c = (hash & 0x00ffffff)
-                                        .toString(16)
-                                        .toUpperCase();
-                                      return (
-                                        "#" +
-                                        "00000".substring(0, 6 - c.length) +
-                                        c
-                                      );
-                                    }
-                                    const color = stringToColor(recipientId);
-
-                                    return (
-                                      <div
-                                        key={idx}
-                                        className="bg-white border rounded shadow p-2 flex flex-col gap-2 sm:p-4"
-                                      >
-                                        <span
-                                          style={{
-                                            backgroundColor: color,
-                                            color: "#fff",
-                                            borderRadius: "4px",
-                                            padding: "2px 8px",
-                                            display: "inline-block",
-                                            minWidth: "60px",
-                                            textAlign: "center",
-                                            fontSize: "0.85rem",
-                                          }}
-                                        >
-                                          {approverLabel}
-                                        </span>
-                                        <div className="flex flex-col gap-1">
-                                          {tracks.map(
-                                            (track: any, tIdx: number) => (
-                                              <div
-                                                key={tIdx}
-                                                className="flex items-center gap-2"
-                                              >
-                                                <span className="text-gray-700 min-w-[60px] text-xs sm:text-sm">
-                                                  {track.type}
-                                                </span>
-                                                <span className="text-gray-500 text-xs sm:text-sm">
-                                                  {track.status}
-                                                </span>
-                                              </div>
-                                            )
-                                          )}
-                                        </div>
-                                    
-                                      </div>
-                                    );
-                                  }
-                                )}
-                              </div>
-                            </div>
-                          )}
-                      </td>
-                    </tr>
-                  )}
+                  {row.getIsExpanded() &&
+                    row.original.notificationTracks?.length > 0 && (
+                      <tr>
+                        <td colSpan={row.getVisibleCells().length}>
+                          <NotificationTracks
+                            notificationTracks={row.original.notificationTracks}
+                            approverIds={row.original.approverIds}
+                            activeTrackId={activeTrackId}
+                            isLoading={isLoading}
+                            detail={detail}
+                            onCheckStatus={handleCheckStatus}
+                          />
+                        </td>
+                      </tr>
+                    )}
                 </React.Fragment>
               ))}
             </tbody>
@@ -256,15 +160,6 @@ const TableComponent = <
         </div>
       </div>
 
-      <ModalApproval
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-        approverName="Approver 1"
-        requestId="R-002"
-        emailStatus="Sent"
-        waStatus="Sent"
-        timeline={timeline}
-      />
       <PaginationControls
         pageIndex={table.getState().pagination.pageIndex}
         pageSize={table.getState().pagination.pageSize}

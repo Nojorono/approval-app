@@ -44,7 +44,7 @@ const ModalComponent = ({
           >
             <div className="relative flex flex-col h-full">
               {/* Close Button */}
-              {/* <button
+              <button
                 onClick={onClose}
                 className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 focus:outline-none z-10"
                 aria-label="Close"
@@ -63,7 +63,7 @@ const ModalComponent = ({
                     d="M6 18L18 6M6 6l12 12"
                   />
                 </svg>
-              </button> */}
+              </button>
 
               {/* Header */}
               <div className="p-6 border-b">

@@ -18,8 +18,7 @@ import {
   ApprovalProcess,
   Dashboard,
 } from "./utils/PagesComponent";
-import dummyRoutes from "./helper/dummyRoutes";
-import NotFound from "./pages/OtherPage/NotFound";
+
 import ApprovalProcessDetail from "./pages/ApprovalProcess/ApprovalProcessDetail";
 import ApprovalProcessResult from "./pages/ApprovalProcess/ApprovalProcessResult";
 import ApprovalPage from "./pages/ApprovalPage";

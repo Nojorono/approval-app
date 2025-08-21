@@ -6,6 +6,7 @@ import Button from "../ui/button/Button";
 import Checkbox from "../form/input/Checkbox";
 import MultiFileUploader from "../file-upload";
 import axios from "axios";
+import MiniActivityIndicator from "../ui/miniActivityIndicator";
 
 type FormField = {
   placeholder: string;
@@ -310,31 +311,7 @@ const ModalForm: React.FC<FormInputProps> = ({
 
   return (
     <div className="mx-auto mt-5 p-6 rounded-md bg-red relative">
-      {isLoading && (
-        <div className="absolute inset-0 bg-white bg-opacity-70 flex flex-col items-center justify-center z-50">
-          <svg
-            className="animate-spin h-10 w-10 text-blue-600 mb-2"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-            ></path>
-          </svg>
-          <span className="text-blue-700 font-semibold">Removing files...</span>
-        </div>
-      )}
+      {isLoading && <MiniActivityIndicator />}
       <form
         onSubmit={handleFormSubmit(handleSubmit)}
         className="space-y-4 mb-5"

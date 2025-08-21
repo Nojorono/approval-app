@@ -23,7 +23,8 @@ import {
     roleService,
     approvalRequestService,
     approvalRequestWithRelationsService,
-    approvalProcessService
+    approvalProcessService,
+    approvalNotificationService
 } from "../../services/Service/MasterService";
 
 import { Uom, CreateUom, UpdateUom } from "../../types/UomTypes";
@@ -49,6 +50,7 @@ import { RoleRead, CreateRolePayload, UpdateRolePayload } from '../../types/Mast
 
 import { ApprovalRequest, CreateApprovalRequest, UpdateApprovalRequest, ApprovalRequestListResponse } from '../../types/ApprovalRequestTypes';
 import { ApprovalProcess, CreateApprovalProcess, UpdateApprovalProcess } from "../../types/ApprovalProcessTypes.tsx";
+import { ApprovalNotification, CreateApprovalNotification, UpdateApprovalNotification } from '../../types/AprrovalNotification.tsx';
 
 
 export const useStoreUom = createCrudStore<Uom, CreateUom, UpdateUom>({
@@ -169,4 +171,9 @@ export const useStoreApprovalRequestWithRelations = createCrudStore<ApprovalRequ
 export const useStoreApprovalProcess = createCrudStore<ApprovalProcess, CreateApprovalProcess, UpdateApprovalProcess>({
     name: "ApprovalProcess",
     service: approvalProcessService,
+});
+
+export const useStoreApprovalNotification = createCrudStore<ApprovalNotification, CreateApprovalNotification, UpdateApprovalNotification>({
+    name: "ApprovalNotification",
+    service: approvalNotificationService,
 });

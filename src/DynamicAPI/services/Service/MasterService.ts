@@ -23,6 +23,7 @@ import { RoleRead, CreateRolePayload, UpdateRolePayload } from '../../types/Mast
 
 import { ApprovalRequest, CreateApprovalRequest, UpdateApprovalRequest, ApprovalRequestListResponse } from '../../types/ApprovalRequestTypes'
 import { ApprovalProcess, CreateApprovalProcess, UpdateApprovalProcess } from "../../types/ApprovalProcessTypes";
+import { ApprovalNotification, CreateApprovalNotification, UpdateApprovalNotification } from '../../types/AprrovalNotification'
 
 
 
@@ -53,3 +54,5 @@ export const roleService = createCrudService<RoleRead, CreateRolePayload, Update
 export const approvalRequestService = createCrudService<ApprovalRequest, CreateApprovalRequest, UpdateApprovalRequest>("/approval-requests");
 export const approvalRequestWithRelationsService = createCrudService<ApprovalRequestListResponse, CreateApprovalRequest, UpdateApprovalRequest>("/approval-requests/with-relations");
 export const approvalProcessService = createCrudService<ApprovalProcess, CreateApprovalProcess, UpdateApprovalProcess>("/approval-process");
+
+export const approvalNotificationService = createCrudService<ApprovalNotification, CreateApprovalNotification, UpdateApprovalNotification>("/approval-requests/notifications/check-status");

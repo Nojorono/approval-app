@@ -41,9 +41,9 @@ const Button: React.FC<ButtonProps> = ({
     rounded:
       "bg-orange-500 text-white shadow-theme-xs hover:bg-orange-600 disabled:bg-orange-300",
     primary:
-      "bg-orange-500 text-white shadow-theme-xs hover:bg-orange-600 disabled:bg-orange-300",
+      "bg-[#0d775b] text-white shadow-theme-xs hover:bg-orange-600 disabled:bg-orange-300",
     secondary:
-      "bg-green-500 text-white shadow-theme-xs hover:bg-green-600 disabled:bg-green-300",
+      "bg-[#98c9b7] text-white shadow-theme-xs hover:bg-green-600 disabled:bg-green-300",
     danger:
       "bg-red-500 text-white shadow-theme-xs hover:bg-red-600 disabled:bg-red-300",
     action:
