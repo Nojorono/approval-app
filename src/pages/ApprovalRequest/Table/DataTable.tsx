@@ -139,7 +139,39 @@ const DataTable = () => {
         header: "Attachments",
         cell: (info: any) => {
           const value = info.getValue();
-          return Array.isArray(value) ? value.join(", ") : "-";
+          if (Array.isArray(value) && value.length > 0) {
+            return (
+              <div className="flex flex-col gap-1">
+                {value.map((att: any, idx: number) => {
+                  // If att is a URL, render as link, otherwise just show text
+                  const isUrl = typeof att === "string" && /^https?:\/\//.test(att);
+                  // Get the display name (last 15 chars, ellipsis if longer)
+                  const getDisplayName = (str: string) => {
+                    if (str.length <= 20) return str;
+                    return "..." + str.slice(-20);
+                  };
+                  const displayText = getDisplayName(att);
+                  return isUrl ? (
+                    <a
+                      key={idx}
+                      href={att}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 underline break-all"
+                      title={att}
+                    >
+                      {displayText}
+                    </a>
+                  ) : (
+                    <span key={idx} className="break-all" title={att}>
+                      {displayText}
+                    </span>
+                  );
+                })}
+              </div>
+            );
+          }
+          return "-";
         },
       },
     ],

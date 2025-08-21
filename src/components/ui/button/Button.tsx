@@ -39,9 +39,9 @@ const Button: React.FC<ButtonProps> = ({
   // Variant Classes
   const variantClasses = {
     rounded:
-      "bg-orange-500 text-white shadow-theme-xs hover:bg-orange-600 disabled:bg-orange-300",
+      "bg-green-500 text-white shadow-theme-xs hover:bg-green-600 disabled:bg-green-300",
     primary:
-      "bg-[#0d775b] text-white shadow-theme-xs hover:bg-orange-600 disabled:bg-orange-300",
+      "bg-[#0d775b] text-white shadow-theme-xs hover:bg-green-600 disabled:bg-green-300",
     secondary:
       "bg-[#98c9b7] text-white shadow-theme-xs hover:bg-green-600 disabled:bg-green-300",
     danger:
@@ -49,7 +49,7 @@ const Button: React.FC<ButtonProps> = ({
     action:
       "bg-blue-500 text-white shadow-theme-xs hover:bg-blue-600 disabled:bg-blue-300",
     outline:
-      "bg-white text-orange-700 ring-1 ring-inset ring-orange-300 hover:bg-orange-50 dark:bg-gray-800 dark:text-orange-400 dark:ring-orange-700 dark:hover:bg-white/[0.03] dark:hover:text-orange-300",
+      "bg-white text-green-700 ring-1 ring-inset ring-green-300 hover:bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:ring-green-700 dark:hover:bg-white/[0.03] dark:hover:text-green-300",
   };
 
   return (
