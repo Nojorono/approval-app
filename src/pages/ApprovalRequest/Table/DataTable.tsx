@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { FaPlus } from "react-icons/fa";
 import Input from "../../../components/form/input/InputField";
-import Label from "../../../components/form/Label";
 import Button from "../../../components/ui/button/Button";
 import { useDebounce } from "../../../helper/useDebounce";
 import DynamicTable from "../../../components/wms-components/DynamicTable";
@@ -11,6 +10,7 @@ import {
   useStoreApprovalRequestWithRelations,
 } from "../../../DynamicAPI/stores/Store/MasterStore";
 import ActIndicator from "../../../components/ui/activityIndicator";
+import { showErrorToast } from "../../../components/toast";
 
 const DataTable = () => {
   const {
@@ -65,7 +65,7 @@ const DataTable = () => {
 
   // Fungsi untuk format payload update
   const handleUpdate = async (_data: any): Promise<any> => {
-    alert("tidak di-Izinkan update");
+    showErrorToast("tidak di-Izinkan update");
     return Promise.resolve();
   };
 
@@ -144,7 +144,8 @@ const DataTable = () => {
               <div className="flex flex-col gap-1">
                 {value.map((att: any, idx: number) => {
                   // If att is a URL, render as link, otherwise just show text
-                  const isUrl = typeof att === "string" && /^https?:\/\//.test(att);
+                  const isUrl =
+                    typeof att === "string" && /^https?:\/\//.test(att);
                   // Get the display name (last 15 chars, ellipsis if longer)
                   const getDisplayName = (str: string) => {
                     if (str.length <= 20) return str;
