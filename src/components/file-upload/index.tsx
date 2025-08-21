@@ -1,6 +1,25 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ExtraMiniIndicator from "../ui/miniActivityIndicator/extraMiniIndicator";
+import { S3EndPoint } from "../../utils/EndPoint";
+
+export async function deleteFileFromS3(fileUrl: string) {
+  try {
+    const token = localStorage.getItem("token");
+    const url = new URL(fileUrl);
+    const pathname = url.pathname; // contoh: /approval-app/uploads/file.pdf
+    const parts = pathname.split("/");
+    const bucket = parts[1];
+    const path = parts.slice(2).join("/");
+
+    await axios.delete(`${S3EndPoint}/${bucket}/${path}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  } catch (err) {
+    console.error("Gagal hapus file:", err);
+    throw err;
+  }
+}
 
 type MultiFileUploaderProps = {
   value?: string[]; // array of uploaded URLs
@@ -21,12 +40,12 @@ const MultiFileUploader: React.FC<MultiFileUploaderProps> = ({
   const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
   const [removingIndex, setRemovingIndex] = useState<number | null>(null);
 
-  // Trigger isLoadingUpload saat files berubah
+  // Trigger isLoadingUpload saat files berubah (indikasi ada proses antrian upload)
   useEffect(() => {
     if (isLoadingUpload) {
-      isLoadingUpload(files.length > 0);
+      isLoadingUpload(files.length > 0 || uploadingIndex !== null);
     }
-  }, [files, isLoadingUpload]);
+  }, [files, uploadingIndex, isLoadingUpload]);
 
   // pilih file
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,12 +53,12 @@ const MultiFileUploader: React.FC<MultiFileUploaderProps> = ({
     setFiles((prev) => [...prev, ...Array.from(e.target.files as FileList)]);
   };
 
-  // upload file otomatis
+  // upload file otomatis berurutan
   useEffect(() => {
     if (files.length === 0) return;
 
     const uploadNextFile = async () => {
-      const file = files[0]; // ambil file pertama
+      const file = files[0];
       if (!file) return;
 
       setUploadingIndex(0);
@@ -54,16 +73,12 @@ const MultiFileUploader: React.FC<MultiFileUploaderProps> = ({
       formData.append("acl", "public-read");
 
       try {
-        const res = await axios.post(
-          "http://10.0.29.47:9007/s3/upload",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            },
-          }
-        );
+        const res = await axios.post(`${S3EndPoint}/upload`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        });
 
         const fileUrl = res.data?.data?.data?.url;
         if (fileUrl) {
@@ -73,7 +88,7 @@ const MultiFileUploader: React.FC<MultiFileUploaderProps> = ({
       } catch (err) {
         alert(`Upload gagal untuk ${file.name}`);
       } finally {
-        setFiles((prev) => prev.slice(1));
+        setFiles((prev) => prev.slice(1)); // pop file pertama
         setUploadingIndex(null);
       }
     };
@@ -90,23 +105,10 @@ const MultiFileUploader: React.FC<MultiFileUploaderProps> = ({
     setRemovingIndex(index);
 
     try {
-      const url = new URL(fileUrl);
-      const pathname = url.pathname;
-      const parts = pathname.split("/");
-      const bucket = parts[1];
-      const path = parts.slice(2).join("/");
-
-      const token = localStorage.getItem("token");
-
-      await axios.delete(`http://10.0.29.47:9007/s3/${bucket}/${path}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      await deleteFileFromS3(fileUrl); // 🔸 pakai helper yang diexport
       const newUrls = value.filter((_, i) => i !== index);
       onChange(newUrls);
-    } catch (err) {
+    } catch {
       alert("Gagal hapus file dari S3");
     } finally {
       setRemovingIndex(null);

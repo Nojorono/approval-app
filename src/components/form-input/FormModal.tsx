@@ -4,8 +4,7 @@ import Select from "react-select";
 import DatePicker from "../form/date-picker";
 import Button from "../ui/button/Button";
 import Checkbox from "../form/input/Checkbox";
-import MultiFileUploader from "../file-upload";
-import axios from "axios";
+import MultiFileUploader, { deleteFileFromS3 } from "../file-upload";
 import MiniActivityIndicator from "../ui/miniActivityIndicator";
 
 type FormField = {
@@ -75,24 +74,6 @@ const ModalForm: React.FC<FormInputProps> = ({
     onSubmit(data); // Kirim data ke parent
   };
 
-  // === helper delete file dari S3 ===
-  const deleteFileFromS3 = async (fileUrl: string) => {
-    try {
-      const token = localStorage.getItem("token");
-      const url = new URL(fileUrl);
-      const pathname = url.pathname; // contoh: /approval-app/uploads/file.pdf
-      const parts = pathname.split("/");
-      const bucket = parts[1];
-      const path = parts.slice(2).join("/");
-
-      await axios.delete(`http://10.0.29.47:9007/s3/${bucket}/${path}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-    } catch (err) {
-      console.error("Gagal hapus file:", err);
-    }
-  };
-
   // === ketika modal diclose ===
   const handleClose = async () => {
     setIsLoading(true);
@@ -104,7 +85,7 @@ const ModalForm: React.FC<FormInputProps> = ({
         for (const field of formFields) {
           if (field.type === "multifile" && Array.isArray(values[field.name])) {
             for (const fileUrl of values[field.name]) {
-              await deleteFileFromS3(fileUrl);
+              await deleteFileFromS3(fileUrl); // 🔸 pakai helper dari uploader
             }
           }
         }
@@ -120,7 +101,6 @@ const ModalForm: React.FC<FormInputProps> = ({
   const renderField = (field: FormField) => {
     const commonClasses =
       "w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300";
-
     const errorClasses =
       "w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-red-300 bg-gray-100 cursor-not-allowed text-gray-500";
 
@@ -213,7 +193,6 @@ const ModalForm: React.FC<FormInputProps> = ({
             )}
           />
         );
-
       case "file":
         return (
           <input
@@ -223,7 +202,6 @@ const ModalForm: React.FC<FormInputProps> = ({
             disabled={isDisabled}
           />
         );
-
       case "date":
         return (
           <Controller
@@ -288,7 +266,6 @@ const ModalForm: React.FC<FormInputProps> = ({
             )}
           />
         );
-
       default:
         return (
           <input
@@ -373,9 +350,7 @@ const ModalForm: React.FC<FormInputProps> = ({
               type="button"
               variant="primary"
               size="md"
-              onClick={() => {
-                setIsEditing(true);
-              }}
+              onClick={() => setIsEditing(true)}
               disabled={isLoading || isUploading}
             >
               Update

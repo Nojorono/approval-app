@@ -1,4 +1,3 @@
-import React from "react";
 import ReusableFormModal from "../modal/type/ModalForm";
 
 interface Props {
@@ -37,7 +36,7 @@ const DynamicFormModal = ({
   return (
     <ReusableFormModal
       isEditMode={isEditMode}
-      title={isEditMode ? "Datail & Update Data" : "Create Data"}
+      title={title ? title : isEditMode ? "Detail & Update Data" : "Create Data"}
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
