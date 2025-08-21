@@ -2,6 +2,8 @@ import { useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAuthStore } from "../../API/store/AuthStore/authStore";
 import ActIndicator from "../../components/ui/activityIndicator";
+import { EnPoint } from "../../utils/EndPoint";
+
 
 export const ApprovalProcess: React.FC = () => {
     const navigate = useNavigate();
@@ -33,7 +35,7 @@ export const ApprovalProcess: React.FC = () => {
         setError(null);
 
         try {
-            const response = await fetch(`http://10.0.29.47:9007/user/verify-pin/${approverId}`, {
+            const response = await fetch(`${EnPoint}/user/verify-pin/${approverId}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
