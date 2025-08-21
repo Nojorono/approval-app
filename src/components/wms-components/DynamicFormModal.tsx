@@ -11,6 +11,7 @@ interface Props {
   isEditMode?: boolean;
   formFields: any[];
   title?: string;
+  viewOnly?: boolean;
 }
 
 const DynamicFormModal = ({
@@ -23,6 +24,7 @@ const DynamicFormModal = ({
   onUpdate,
   formFields,
   title,
+  viewOnly
 }: Props) => {
   const handleSubmit = async (data: any) => {
     const res = isEditMode ? await onUpdate(data) : await onSubmit(data);
@@ -31,7 +33,7 @@ const DynamicFormModal = ({
       onClose();
     }
   };
-  
+
   return (
     <ReusableFormModal
       isEditMode={isEditMode}
@@ -41,6 +43,7 @@ const DynamicFormModal = ({
       onSubmit={handleSubmit}
       formFields={formFields}
       defaultValues={defaultValues}
+      viewOnly={viewOnly}
     />
   );
 };

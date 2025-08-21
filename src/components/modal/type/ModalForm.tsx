@@ -11,6 +11,7 @@ interface ReusableFormModalProps {
   defaultValues?: any;
   isEditMode?: boolean;
   setIsEditMode?: (val: boolean) => void;
+  viewOnly?: boolean;
 }
 
 const ReusableFormModal: React.FC<ReusableFormModalProps> = ({
@@ -21,6 +22,7 @@ const ReusableFormModal: React.FC<ReusableFormModalProps> = ({
   title,
   defaultValues,
   isEditMode = false,
+  viewOnly = false,
 }) => {
   return (
     <>
@@ -38,6 +40,7 @@ const ReusableFormModal: React.FC<ReusableFormModalProps> = ({
           onClose={onClose}
           defaultValues={defaultValues}
           isEditMode={isEditMode}
+          viewOnly={viewOnly}
         />
       </ModalComponent>
     </>

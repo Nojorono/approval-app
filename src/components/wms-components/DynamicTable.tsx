@@ -17,6 +17,7 @@ interface Props {
   onRefresh: () => void;
   getRowId?: (row: any) => any;
   title?: string;
+  viewOnly?: boolean;
 }
 
 const DynamicTable = ({
@@ -32,6 +33,7 @@ const DynamicTable = ({
   onRefresh,
   getRowId = (row) => row.id,
   title,
+  viewOnly = false,
 }: Props) => {
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
 
@@ -87,6 +89,7 @@ const DynamicTable = ({
         onRefresh={onRefresh}
         formFields={formFields}
         title={title}
+        viewOnly={viewOnly}
       />
 
       <TableComponent

@@ -287,6 +287,7 @@ const DataTable = () => {
           onRefresh={handleRefreshAPI}
           getRowId={(row) => row.id}
           title="Form Data"
+          viewOnly={false}
         />
       )}
     </>

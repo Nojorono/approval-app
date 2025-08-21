@@ -39,6 +39,7 @@ type FormInputProps = {
   onClose: () => void;
   defaultValues?: FormValues;
   isEditMode?: boolean;
+  viewOnly?: boolean;
 };
 
 const ModalForm: React.FC<FormInputProps> = ({
@@ -47,6 +48,7 @@ const ModalForm: React.FC<FormInputProps> = ({
   onClose,
   defaultValues,
   isEditMode,
+  viewOnly,
 }) => {
   const {
     register,
@@ -366,7 +368,7 @@ const ModalForm: React.FC<FormInputProps> = ({
             </Button>
           )}
 
-          {isEditMode && !isEditing && (
+          {isEditMode && !isEditing && !viewOnly && (
             <Button
               type="button"
               variant="primary"
