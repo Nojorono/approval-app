@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { useAuthStore } from "../../API/store/AuthStore/authStore";
 import ActIndicator from "../../components/ui/activityIndicator";
 import { EnPoint } from "../../utils/EndPoint";
 
