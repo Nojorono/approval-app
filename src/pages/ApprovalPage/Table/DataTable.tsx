@@ -40,44 +40,14 @@ const DataTable = () => {
 
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
 
-   const handleCreate = (data: any) => {
-    // const formattedData = {
-    //   subject: data.subject,
-    //   approverIds: Array.isArray(data.approverIds)
-    //     ? data.approverIds
-    //     : data.approverIds
-    //     ? [data.approverIds]
-    //     : [],
-    //   description: data.description,
-    //   attachments: Array.isArray(data.attachments)
-    //     ? data.attachments
-    //     : data.attachments
-    //     ? [data.attachments]
-    //     : [],
-    //   status: "pending",
-    //   createdBy: "",
-    // };
-
-    return createData(data);
-    
+  const handleCreate = async (data: any): Promise<any> => {
+    // Implement create logic here if needed
+    return Promise.resolve();
   };
 
-  // Fungsi untuk format payload update
-  const handleUpdate = (data: any) => {
-    const { id, ...rest } = data;
-    return updateData(id, {
-      ...rest,
-      approverIds: Array.isArray(rest.approverIds)
-        ? rest.approverIds
-        : rest.approverIds
-        ? [rest.approverIds]
-        : [],
-      attachments: Array.isArray(rest.attachments)
-        ? rest.attachments
-        : rest.attachments
-        ? [rest.attachments]
-        : [],
-    });
+  const handleUpdate = async (data: any): Promise<any> => {
+    // Implement update logic here if needed
+    return Promise.resolve();
   };
 
   const columns = useMemo(
@@ -93,19 +63,6 @@ const DataTable = () => {
       {
         accessorKey: "requestor",
         header: "Requestor",
-        // cell: ({ row }: { row: { original: { status: string } } }) => (
-          // <span
-          //   className={`px-2 py-1 rounded text-xs font-medium ${
-          //     row.original.status === "approved"
-          //       ? "bg-green-100 text-green-700"
-          //       : row.original.status === "rejected"
-          //       ? "bg-red-100 text-red-700"
-          //       : "bg-yellow-100 text-yellow-700"
-          //   }`}
-          // >
-          //   {row.original.status}
-          // </span>
-        // ),
       },
       {
         accessorKey: "updatedAt",
@@ -115,48 +72,16 @@ const DataTable = () => {
     [expandedRow]
   );
 
-  // // Modal Approver
-  // const ApproverModal = () =>
-  //   isApproverModalOpen && (
-  //     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
-  //       <div className="bg-white rounded shadow-lg p-6 min-w-[300px]">
-  //         <h3 className="text-lg font-semibold mb-4">Daftar Approver</h3>
-  //         <ul className="mb-4">
-  //           {(selectedApprovers || []).length === 0 ? (
-  //             <li className="text-gray-500">Tidak ada approver</li>
-  //           ) : (
-  //             (selectedApprovers || []).map((approver: any, idx: number) => (
-  //               <li key={idx} className="mb-2">
-  //                 <span className="font-medium">
-  //                   {approver.name || approver}
-  //                 </span>
-  //                 {approver.status && (
-  //                   <span
-  //                     className="ml-2 text-xs px-2 py-1 rounded 
-  //                     bg-gray-100 text-gray-700"
-  //                   >
-  //                     {approver.status}
-  //                   </span>
-  //                 )}
-  //               </li>
-  //             ))
-  //           )}
-  //         </ul>
-  //         <Button
-  //           variant="primary"
-  //           size="sm"
-  //           onClick={() => setApproverModalOpen(false)}
-  //         >
-  //           Tutup
-  //         </Button>
-  //       </div>
-  //     </div>
-  //   );
-
   const formFields = [
     {
       name: "id",
       label: "ID",
+      type: "text",
+      validation: { required: "Required" },
+    },
+    {
+      name: "requestor",
+      label: "From",
       type: "text",
       validation: { required: "Required" },
     },
@@ -167,11 +92,30 @@ const DataTable = () => {
       validation: { required: "Required" },
     },
     {
-      name: "requestor",
-      label: "Requestor",
-      type: "text",
+      name: "description",
+      label: "Description",
+      type: "textarea",
       validation: { required: "Required" },
     },
+    {
+      name: "attachments",
+      label: "Attachments",
+      type: "custom",
+      render: ({ value }: { value: FileList | File[] | null | undefined }) =>
+        !value || (Array.isArray(value) && value.length === 0)
+          ? <span>There is no data</span>
+          : Array.isArray(value)
+            ? value.map((file, idx) => <span key={idx}>{file.name}</span>)
+            : Array.from(value as FileList).map((file, idx) => <span key={idx}>{file.name}</span>),
+      parseValue: (value: FileList | File[] | null) =>
+        value ? Array.from(value as FileList) : [],
+    },
+    {
+      name: "status",
+      label: "Status",
+      type: "text",
+      validation: { required: "Required" },
+    }
   ];
 
 
@@ -209,6 +153,7 @@ const DataTable = () => {
           onRefresh={fetchApprovalProcess}
           getRowId={(row) => row.id}
           title="Form Data"
+          viewOnly={true}
         />
       )}
     </>
