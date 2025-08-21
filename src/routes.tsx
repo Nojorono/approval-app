@@ -22,6 +22,7 @@ import dummyRoutes from "./helper/dummyRoutes";
 import NotFound from "./pages/OtherPage/NotFound";
 import ApprovalProcessDetail from "./pages/ApprovalProcess/ApprovalProcessDetail";
 import ApprovalProcessResult from "./pages/ApprovalProcess/ApprovalProcessResult";
+import ApprovalPage from "./pages/ApprovalPage";
 
 const DefaultPage = () => (
   <div style={{ textAlign: "center", marginTop: "50px" }}>
@@ -79,6 +80,7 @@ export function AppRoutes() {
       "/menu": <MasterMenu />,
       "/role": <MasterRole />,
       "/approval-request": <ApprovalRequest />,
+      "/approval-page": <ApprovalPage />,
       "/dashboard": <Dashboard />,
     };
     return map[path] || <DefaultPage />;

@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAuthStore } from "../../API/store/AuthStore/authStore";
+import ActIndicator from "../../components/ui/activityIndicator";
 
 export const ApprovalProcess: React.FC = () => {
     const navigate = useNavigate();
@@ -27,100 +28,107 @@ export const ApprovalProcess: React.FC = () => {
         }
     };
 
-    const handleSubmit = (enteredPin: string) => {
-
+    const handleSubmit = async (enteredPin: string) => {
         setIsLoading(true);
         setError(null);
-        
-        fetch(`http://10.0.29.47:9007/user/verify-pin/${approverId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ pin: enteredPin }),
-        })
-            .then(async (res) => {
-                setIsLoading(false);
-                const data = await res.json().catch(() => ({}));
-                if (!res.ok) {
-                    throw new Error(data?.message || "PIN verification failed");
-                }
-                console.log("Token",data.data.token);
-                
-                const accessToken = data.data.token;
-                // Simpan ke localStorage
-                localStorage.setItem(
-                    "user_login_data",
-                    JSON.stringify({ accessToken})
-                );
-                localStorage.setItem("token", accessToken);
-                // Kirim data ke halaman berikutnya via state
-                setTimeout(() => {
-                    navigate("/Approval-Process/detail", { state: { id } });
-                }, 800);
-            })
-            .catch((err) => {
-                setIsLoading(false);
-                setError(err.message || "PIN verification failed");
-                alert("PIN tidak valid, silahkan coba lagi");
+
+        try {
+            const response = await fetch(`http://10.0.29.47:9007/user/verify-pin/${approverId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ pin: enteredPin }),
             });
+
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(data?.message || "PIN verification failed");
+            }
+
+            const accessToken = data?.data?.token;
+            if (!accessToken) {
+                throw new Error("Token not found in response");
+            }
+
+            localStorage.setItem("user_login_data", JSON.stringify({ accessToken }));
+            localStorage.setItem("token", accessToken);
+
+            setTimeout(() => {
+                setIsLoading(false);
+                navigate("/Approval-Process/detail", { state: { id, approverId } });
+            }, 800);
+        } catch (err: any) {
+            setIsLoading(false);
+            setError(err?.message || "PIN verification failed");
+            alert("PIN tidak valid, silahkan coba lagi");
+        }
     };
-
+    if (isLoading) return (  
+    <div className="flex items-center justify-center min-h-screen">
+      <ActIndicator />
+    </div>);
     return (
-        <div>
-            <h1>Approval Page</h1>
-            <p><strong>ID:</strong> {id}</p>
-            <p><strong>Approver ID:</strong> {approverId}</p>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 32 }}>
-                {/* Logo */}
-                <img
-                    src="https://nna-app-s3.s3.ap-southeast-3.amazonaws.com/kcsi/logo-kcsi"
-                    alt="Logo"
-                    style={{ width: 200, height: 140, marginBottom: 24 }}
-                />
+        <div
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: "100vh",
+    padding: "16px", // memberi ruang saat di mobile
+    boxSizing: "border-box",
+  }}
+>
+  {/* Logo */}
+  <img
+    src="https://nna-app-s3.s3.ap-southeast-3.amazonaws.com/kcsi/logo-kcsi"
+    alt="Logo"
+    style={{ width: 200, height: 140, marginBottom: 24 }}
+  />
 
-                {/* PIN Input */}
-                <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
-                    {[...Array(6)].map((_, idx) => (
-                        <input
-                            key={idx}
-                            type="password"
-                            inputMode="numeric"
-                            maxLength={1}
-                            pattern="[0-9]*"
-                            style={{
-                                width: 40,
-                                height: 48,
-                                fontSize: 24,
-                                textAlign: "center",
-                                border: "1px solid #ccc",
-                                borderRadius: 6,
-                            }}
-                            value={pin[idx] || ""}
-                            onChange={e => {
-                                const value = e.target.value.replace(/[^0-9]/g, "");
-                                if (!value) return;
-                                // Update pin state
-                                const newPin = [...pin];
-                                newPin[idx] = value;
-                                setPin(newPin);
+  {/* PIN Input */}
+  <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
+    {[...Array(6)].map((_, idx) => (
+      <input
+        key={idx}
+        type="password"
+        inputMode="numeric"
+        maxLength={1}
+        pattern="[0-9]*"
+        style={{
+          width: 40,
+          height: 48,
+          fontSize: 24,
+          textAlign: "center",
+          border: "1px solid #ccc",
+          borderRadius: 6,
+        }}
+        value={pin[idx] || ""}
+        onChange={(e) => {
+          const value = e.target.value.replace(/[^0-9]/g, "");
+          if (!value) return;
 
-                                // Fokus ke input berikutnya jika belum di akhir
-                                if (idx < 5) {
-                                    pinRefs.current[idx + 1]?.focus();
-                                }
+          const newPin = [...pin];
+          newPin[idx] = value;
+          setPin(newPin);
 
-                                // Jalankan submit jika sudah 6 digit (semua terisi)
-                                if (idx === 5 && value && [...newPin].every(d => d)) {
-                                    // Pastikan state terbaru digunakan
-                                    handleSubmit(newPin.join(""));
-                                }
-                            }}
-                            onKeyDown={e => handlePinKeyDown(e, idx)}
-                            ref={el => { pinRefs.current[idx] = el; }}
-                        />
-                    ))}    </div>
-            </div>
-        </div>
+          if (idx < 5) {
+            pinRefs.current[idx + 1]?.focus();
+          }
+
+          if (idx === 5 && value && [...newPin].every((d) => d)) {
+            handleSubmit(newPin.join(""));
+          }
+        }}
+        onKeyDown={(e) => handlePinKeyDown(e, idx)}
+        ref={(el) => {
+          pinRefs.current[idx] = el;
+        }}
+      />
+    ))}
+  </div>
+</div>
+
     );
 }

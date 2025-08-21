@@ -22,6 +22,7 @@ import { CheckerScan, CreateCheckerScan, UpdateCheckerScan } from '../../types/C
 import { RoleRead, CreateRolePayload, UpdateRolePayload } from '../../types/MasterRoleTypes';
 
 import { ApprovalRequest, CreateApprovalRequest, UpdateApprovalRequest, ApprovalRequestListResponse } from '../../types/ApprovalRequestTypes'
+import { ApprovalProcess, CreateApprovalProcess, UpdateApprovalProcess } from "../../types/ApprovalProcessTypes";
 
 
 
@@ -51,3 +52,4 @@ export const roleService = createCrudService<RoleRead, CreateRolePayload, Update
 
 export const approvalRequestService = createCrudService<ApprovalRequest, CreateApprovalRequest, UpdateApprovalRequest>("/approval-requests");
 export const approvalRequestWithRelationsService = createCrudService<ApprovalRequestListResponse, CreateApprovalRequest, UpdateApprovalRequest>("/approval-requests/with-relations");
+export const approvalProcessService = createCrudService<ApprovalProcess, CreateApprovalProcess, UpdateApprovalProcess>("/approval-process");

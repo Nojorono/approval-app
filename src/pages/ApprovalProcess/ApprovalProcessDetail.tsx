@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
 
-import { useStoreApprovalRequest } from "../../DynamicAPI/stores/Store/MasterStore";
+import { useStoreApprovalProcess, useStoreApprovalRequest } from "../../DynamicAPI/stores/Store/MasterStore";
 import { useLocation, useNavigate } from "react-router-dom";
+import { ApprovalProcess } from '../../DynamicAPI/types/ApprovalProcessTypes';
+import { showSuccessToast } from '../../components/toast';
+import ActIndicator from '../../components/ui/activityIndicator';
 
 export default function ApprovalProcessDetail() {
   const navigate = useNavigate();
@@ -9,20 +12,49 @@ export default function ApprovalProcessDetail() {
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectNotes, setRejectNotes] = useState('');
   const { fetchById, detail } = useStoreApprovalRequest();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const location = useLocation();
   const data = location.state;
+  const {
+    createData: approvalProcessService,
+  } = useStoreApprovalProcess();
 
   useEffect(() => {
-    console.log("token", localStorage.getItem("token"))
     if (!localStorage.getItem("token")) {
       throw new Error("Error: Access token not found");
     }
 
     fetchById(data.id);
-    console.log("Data fetched:", detail);
+    console.log("Data :", detail);
   }, [data.id, fetchById]);
 
+  const handleSubmit = async (data: ApprovalProcess) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      let submitData = { ...data };
+      if (data.status === "approved") {
+        delete submitData.reasonRejected;
+      } else if (data.status === "rejected") {
+        submitData.reasonRejected = rejectNotes;
+      }
+      await approvalProcessService(submitData);
+      // Delay the success toast by 1 second
+      setTimeout(() => {
+        showSuccessToast("Your submit is successfully!");
+      }, 1000);
+    } catch (err: any) {
+      console.error("submit failed:", err);
+      setError(err.message || "Submit failed!");
+    } finally {
+      setIsLoading(false);
+      navigate("/Approval-Process/result", { state: { data: { ...data, createdAt: Date.now() } } });
+    }
+  };
+
   // Render form with dynamic data from detail
+  if (isLoading) return <ActIndicator />;
   return (
     <div style={{ maxWidth: 600, margin: '24px auto', padding: 16 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', marginBottom: 24 }}>
@@ -80,7 +112,6 @@ export default function ApprovalProcessDetail() {
         </div>
       </div>
 
-      {/* Approve Confirmation Popup */}
       {/* Approve Confirmation Popup */}
       {showApproveConfirm && (
         <div
@@ -190,9 +221,11 @@ export default function ApprovalProcessDetail() {
                 onClick={() => {
                   setShowApproveConfirm(false);
                   // handle approve logic here
-                  setTimeout(() => {
-                    navigate("/Approval-Process/result", { state: { data:data, status:true } });
-                  }, 800);
+                  handleSubmit({
+                    approverId: data.approverId,
+                    approvalRequestId: data.id,
+                    status: 'approved',
+                  })
                 }}
               >
                 Approve
@@ -340,11 +373,12 @@ export default function ApprovalProcessDetail() {
                 }}
                 onClick={() => {
                   setShowRejectModal(false);
-                  setRejectNotes('');
-                  // handle reject logic here
-                  setTimeout(() => {
-                    navigate("/Approval-Process/result", { state: { data:data, status:false } });
-                  }, 800);
+                  handleSubmit({
+                    approverId: data.approverId,
+                    approvalRequestId: data.id,
+                    status: 'rejected',
+                    reasonRejected: rejectNotes,
+                  })
                 }}
               >
                 Reject
@@ -370,5 +404,6 @@ export default function ApprovalProcessDetail() {
             `}
       </style>
     </div>
+
   );
 }
