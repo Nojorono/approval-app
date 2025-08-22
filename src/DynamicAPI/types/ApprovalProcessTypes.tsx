@@ -2,14 +2,14 @@
 // Base Types
 // ======================================
 export interface ApprovalProcess {
-    id: string;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt: string | null;
-    approvalRequestId: string;
-    approvalRequest: ApprovalRequest;
-    approverId: string;
-    status: string;
+    id?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    deletedAt?: string | null;
+    approvalRequestId?: string;
+    approvalRequest?: ApprovalRequest;
+    approverId?: string;
+    status?: string;
     reasonRejected?: string | null;
 }
 
