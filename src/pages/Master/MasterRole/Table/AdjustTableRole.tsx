@@ -73,8 +73,6 @@ const AdjustTableRole = ({
         header: "Actions",
         cell: ({ row }) => (
           <div className="space-x-4">
-            {/* {canUpdate && canManage && (
-            )} */}
             <button
               className="text-blue-600"
               onClick={() => {
@@ -85,21 +83,11 @@ const AdjustTableRole = ({
               <FaEdit />
             </button>
 
-            {/* {canDelete && canManage && (
-            )} */}
             <button
               className="text-red-600"
               onClick={() => onDelete(row.original.id)}
             >
               <FaTrash />
-            </button>
-            {/* {canManage && (
-            )} */}
-            <button
-              className="text-green-600"
-              onClick={() => onDetail(row.original.id)}
-            >
-              <FaEye />
             </button>
           </div>
         ),

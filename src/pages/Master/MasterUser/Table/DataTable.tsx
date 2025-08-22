@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import Input from "../../../../components/form/input/InputField";
-import Label from "../../../../components/form/Label";
 import Button from "../../../../components/ui/button/Button";
 import { useDebounce } from "../../../../helper/useDebounce";
 import DynamicTable from "../../../../components/wms-components/DynamicTable";
@@ -148,7 +147,26 @@ const DataTable = () => {
     },
   ];
 
-  console.log("User Data:", userData);
+  // Helper to ellipsis text if longer than 10 chars
+  const ellipsis = (text: string) =>
+    typeof text === "string" && text.length > 10
+      ? text.slice(0, 10) + "..."
+      : text;
+
+  // Update columns to use ellipsis for long values
+  columns.forEach((col: any) => {
+    if (["username", "email", "phone", "pin"].includes(col.accessorKey)) {
+      const prevCell = col.cell;
+      col.cell = (info: any) => {
+        const value = info.getValue();
+        const display = ellipsis(value);
+        // If there was a custom cell before, use it
+        return prevCell
+          ? prevCell({ ...info, getValue: () => display })
+          : display;
+      };
+    }
+  });
 
   return (
     <>

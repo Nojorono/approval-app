@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
-
-// import { useRoleStore } from "../../../../API/store/MasterStore";
 import Input from "../../../../components/form/input/InputField";
 import Button from "../../../../components/ui/button/Button";
 import AdjustTableRole from "./AdjustTableRole";
 import { usePagePermissions } from "../../../../utils/UserPermission/UserPagePermissions";
-
 import { useStoreRole } from "../../../../DynamicAPI/stores/Store/MasterStore";
 
 const TableMasterRole = () => {
