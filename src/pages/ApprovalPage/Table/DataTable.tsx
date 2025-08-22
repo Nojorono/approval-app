@@ -45,7 +45,6 @@ const DataTable = () => {
     if (userId) {
       fetchApprovalProcessByApprover(userId);
     }
-
   }, []);
 
   interface ApprovalProcessResponse {
@@ -95,9 +94,11 @@ const DataTable = () => {
     reasonRejected: string | null;
   }
 
-  const [approvalDataByApprover, setApprovalDataByApprover] = useState<any>();
+  const [approvalDataByApprover, setApprovalDataByApprover] = useState([]);
 
-  const fetchApprovalProcessByApprover = async (userId: string): Promise<void> => {
+  const fetchApprovalProcessByApprover = async (
+    userId: string
+  ): Promise<void> => {
     const token = localStorage.getItem("token");
     const response = await axiosInstance.get(
       `${EnPoint}approval-process/by-approver/${userId}`,
@@ -107,20 +108,13 @@ const DataTable = () => {
         },
       }
     );
-
-    // response.data bentuknya: { success, message, data, ... }
     const responseData = response.data;
-
-    // Cek apakah responseData.data ada dan array
     if (Array.isArray(responseData.data)) {
       setApprovalDataByApprover(responseData.data);
-      console.log("Approval Data By Approver:", responseData.data);
     } else {
       setApprovalDataByApprover([]);
-      console.log("Approval Data By Approver: []");
     }
   };
-
 
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
 
@@ -199,9 +193,11 @@ const DataTable = () => {
         } else if (value instanceof FileList) {
           files = Array.from(value);
         }
-        return files.length === 0
-          ? <span>There is no data</span>
-          : files.map((file, idx) => <span key={idx}>{file.name}</span>);
+        return files.length === 0 ? (
+          <span>There is no data</span>
+        ) : (
+          files.map((file, idx) => <span key={idx}>{file.name}</span>)
+        );
       },
       parseValue: (value: FileList | File[] | null | undefined) => {
         if (!value) return [];
@@ -227,6 +223,7 @@ const DataTable = () => {
     },
   ];
 
+  console.log("Approval Data By Approver:", approvalDataByApprover);
 
   return (
     <>
@@ -256,9 +253,7 @@ const DataTable = () => {
           formFields={formFields}
           onSubmit={handleCreate}
           onUpdate={handleUpdate}
-          onDelete={async (id) => {
-
-          }}
+          onDelete={async (id) => {}}
           onRefresh={fetchApprovalProcess}
           getRowId={(row) => row.id}
           title="Approval Detail"
