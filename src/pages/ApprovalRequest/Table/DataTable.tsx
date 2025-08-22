@@ -264,7 +264,7 @@ const DataTable = () => {
               onClick={() => setCreateModalOpen(true)}
               className="w-full sm:w-auto flex items-center justify-center"
             >
-              <FaPlus className="mr-2" /> Tambah Data
+              <FaPlus className="mr-2" /> Create Request
             </Button>
           </div>
         </div>
@@ -287,7 +287,7 @@ const DataTable = () => {
           }}
           onRefresh={handleRefreshAPI}
           getRowId={(row) => row.id}
-          title="Approval Request"
+          title="Create Approval Request"
           viewOnly={true}
         />
       )}
