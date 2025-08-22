@@ -87,7 +87,7 @@ const AppHeader: React.FC = () => {
             <Link to="/" className="lg:hidden">
               {/* <img
                 className="dark:hidden"
-                src="./images/logo/logo_nna.png"
+                src="https://nna-app-s3.s3.ap-southeast-3.amazonaws.com/kcsi/logo-kcsi"
                 alt="Logo"
               /> */}
               <img

@@ -63,6 +63,12 @@ const ModalForm: React.FC<FormInputProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [isMounted, setIsMounted] = useState(true);
+
+  useEffect(() => {
+    return () => setIsMounted(false); // saat unmount, false
+  }, []);
 
   useEffect(() => {
     if (defaultValues) {
@@ -74,27 +80,31 @@ const ModalForm: React.FC<FormInputProps> = ({
     onSubmit(data); // Kirim data ke parent
   };
 
-  // === ketika modal diclose ===
   const handleClose = async () => {
+    // Matikan mode edit duluan supaya tombol submit hilang
+    setIsEditing(false);
+    setIsClosing(true);
     setIsLoading(true);
+
     try {
       const values = getValues();
 
-      // Hanya hapus file dari S3 jika BUKAN edit mode
       if (!isEditMode) {
         for (const field of formFields) {
           if (field.type === "multifile" && Array.isArray(values[field.name])) {
             for (const fileUrl of values[field.name]) {
-              await deleteFileFromS3(fileUrl); // 🔸 pakai helper dari uploader
+              await deleteFileFromS3(fileUrl);
             }
           }
         }
       }
-      setIsLoading(false);
-      onClose();
+
+      onClose(); // langsung tutup modal
     } catch (err) {
-      setIsLoading(false);
       onClose();
+    } finally {
+      setIsLoading(false);
+      setIsClosing(false);
     }
   };
 
@@ -333,8 +343,9 @@ const ModalForm: React.FC<FormInputProps> = ({
             </div>
           )}
         </div>
+
         <div className="flex justify-end space-x-2 mt-6 pt-4 border-t">
-          {(!isEditMode || isEditing) && (
+          {isMounted && !isClosing && (!isEditMode || isEditing) && (
             <Button
               type="submit"
               variant="secondary"
@@ -345,7 +356,7 @@ const ModalForm: React.FC<FormInputProps> = ({
             </Button>
           )}
 
-          {isEditMode && !isEditing && !viewOnly && (
+          {isEditMode && !isEditing && !viewOnly && !isClosing && (
             <Button
               type="button"
               variant="primary"
@@ -364,7 +375,7 @@ const ModalForm: React.FC<FormInputProps> = ({
             onClick={handleClose}
             disabled={isLoading || isUploading}
           >
-            Close
+            Cancel
           </Button>
         </div>
       </form>

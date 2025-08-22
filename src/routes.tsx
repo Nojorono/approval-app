@@ -1,8 +1,7 @@
-import { JSX, useEffect, useMemo } from "react";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { JSX, useMemo } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import AppLayout from "./layout/AppLayout";
 import SignIn from "./pages/AuthPages/SignIn";
-import { signOut } from "./utils/SignOut";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import { useAuthStore } from "./API/store/AuthStore/authStore";
 import { ProtectedRoute } from "./utils/ProtectedRoute";
@@ -30,7 +29,6 @@ const DefaultPage = () => (
 );
 
 export function AppRoutes() {
-  const navigate = useNavigate();
   const token =
     useAuthStore((state) => state.accessToken) ||
     localStorage.getItem("accessToken");
@@ -56,12 +54,6 @@ export function AppRoutes() {
     }
     return false;
   };
-
-  // useEffect(() => {
-  //   if (!isAuthenticated()) {
-  //     signOut(navigate);
-  //   }
-  // }, [navigate]);
 
   const manualChildRoutes: Record<
     string,
@@ -126,6 +118,9 @@ export function AppRoutes() {
     <>
       <ScrollToTop />
       <Routes>
+        {/* ✅ Route SignIn didefinisikan langsung */}
+        <Route path="/signin" element={<SignIn />} />
+
         {isAuthenticated() ? (
           <Route
             element={
@@ -134,7 +129,6 @@ export function AppRoutes() {
               </ProtectedRoute>
             }
           >
-            <Route path="/" element={<SignIn />} />
             {userRoutes.map((route) => (
               <Route
                 key={route.id}
@@ -147,11 +141,19 @@ export function AppRoutes() {
           <Route path="*" element={<Navigate to="/signin" replace />} />
         )}
 
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/approval-process/:id" element={<ApprovalProcess />} />
-        <Route path="/approval-process/detail" element={<ApprovalProcessDetail />} />
-        <Route path="/approval-process/result" element={<ApprovalProcessResult />} />
+        {/* Default redirect ke /signin */}
+        <Route path="/" element={<Navigate to="/signin" replace />} />
 
+        {/* Approval Process routes */}
+        <Route path="/approval-process/:id" element={<ApprovalProcess />} />
+        <Route
+          path="/approval-process/detail"
+          element={<ApprovalProcessDetail />}
+        />
+        <Route
+          path="/approval-process/result"
+          element={<ApprovalProcessResult />}
+        />
       </Routes>
     </>
   );
