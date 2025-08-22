@@ -33,8 +33,6 @@ axiosInstance.interceptors.response.use(
       setTimeout(() => {
         window.location.href = "/signin";
       }, 100);
-
-      // console.log("Unauthorized access - redirecting to sign-in page");
     }
     return Promise.reject(error);
   }

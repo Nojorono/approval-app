@@ -68,8 +68,6 @@ export const fetchAllUser = async () => {
 
 // POST a new user
 export const createUser = async (payload: User) => {
-  console.log("Creating user with payload:", payload);
-
   const res = await axiosInstance.post("/admin/user", payload);
   if (res.data.statusCode !== 200) {
     throw new Error(res.data.message || "Gagal tambah user");

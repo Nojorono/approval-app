@@ -404,18 +404,20 @@ const ModalForm: React.FC<FormInputProps> = ({
               ) : (
                 // Form masih terkunci → Update + CloseModal
                 <>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="md"
-                    onClick={(e) => {
+                    {!viewOnly && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="md"
+                      onClick={(e) => {
                       e.preventDefault();
                       setIsEditing(true);
-                    }}
-                    disabled={isLoading || isUploading}
-                  >
-                    Update
-                  </Button>
+                      }}
+                      disabled={isLoading || isUploading}
+                    >
+                      Update
+                    </Button>
+                    )}
 
                   <Button
                     type="button"

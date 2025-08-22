@@ -47,11 +47,6 @@ export function AppRoutes() {
 
   const userMenus = useAuthStore((state) => state.menus) || localUserMenus;
 
-  console.log("User Menus:", userMenus);
-
-  
-  
-
   const isAuthenticated = () => {
     if (token) {
       localStorage.setItem("accessToken", token);

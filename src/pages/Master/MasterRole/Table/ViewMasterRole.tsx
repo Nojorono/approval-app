@@ -24,7 +24,7 @@ const TableMasterRole = () => {
   }, []);
 
   const handleDetail = (id: string) => {
-    console.log(`Detail role with ID: ${id}`);
+    id;
   };
 
   const handleDelete = async (id?: string) => {
