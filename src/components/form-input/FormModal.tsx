@@ -88,10 +88,6 @@ const ModalForm: React.FC<FormInputProps> = ({
     setIsEditing(false); // balik ke view mode
   };
 
-  const handleSubmit = (data: FormValues) => {
-    onSubmit(data); // Kirim data ke parent
-  };
-
   const handleClose = async () => {
     // Matikan mode edit duluan supaya tombol submit hilang
     setIsEditing(false);
