@@ -16,7 +16,6 @@ const DataTable = () => {
   const {
     fetchAll: fetchApproval,
     createData,
-    updateData,
     deleteData,
     isLoading,
   } = useStoreApprovalRequest();

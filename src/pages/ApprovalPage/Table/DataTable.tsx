@@ -30,7 +30,6 @@ const DataTable = () => {
   useEffect(() => {
     fetchApprovalProcess();
     fetchUsers();
-    console.log("Data fetched : ", approvalListProcess);
   }, []);
 
 

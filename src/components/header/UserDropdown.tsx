@@ -72,7 +72,7 @@ export default function UserDropdown() {
         onClose={closeDropdown}
         className="fixed right-3 top-[70px] w-[260px] flex flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark z-[9999]"
       >
-        <div>
+        {/* <div>
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
             {user_login ? (
               <>
@@ -100,7 +100,7 @@ export default function UserDropdown() {
               </span>
             )}
           </span>
-        </div>
+        </div> */}
 
         {/* other menu items */}
         <ul className="flex flex-col gap-1 pt-4 pb-3 border-b border-gray-200 dark:border-gray-800">
@@ -108,7 +108,7 @@ export default function UserDropdown() {
             <DropdownItem
               onItemClick={closeDropdown}
               tag="a"
-              to="/profile"
+              to=""
               className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
             >
               <svg
