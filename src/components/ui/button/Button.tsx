@@ -36,6 +36,7 @@ const Button: React.FC<ButtonProps> = ({
     md: "px-5 py-3.5 text-sm",
   };
 
+
   // Variant Classes
   const variantClasses = {
     rounded:
@@ -43,7 +44,7 @@ const Button: React.FC<ButtonProps> = ({
     primary:
       "bg-[#0d775b] text-white shadow-theme-xs hover:bg-green-600 disabled:bg-green-300",
     secondary:
-      "bg-[#0d775b] text-white shadow-theme-xs hover:bg-green-600 disabled:bg-green-300",
+      "bg-green-600 text-white shadow-theme-xs hover:bg-[#0d775b] disabled:bg-green-300",
     danger:
       "bg-red-500 text-white shadow-theme-xs hover:bg-red-600 disabled:bg-red-300",
     action:
