@@ -30,6 +30,7 @@ const DataTable = () => {
   useEffect(() => {
     fetchApprovalProcess();
     fetchUsers();
+    console.log("Data fetched : ", approvalListProcess);
   }, []);
 
 
@@ -53,16 +54,20 @@ const DataTable = () => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "approvalRequestId",
+        accessorKey: "approvalRequest.code",
         header: "ID",
       },
       {
+        accessorKey: "approvalRequest.subject",
+        header: "Subject",
+      },
+       {
+        accessorKey: "approvalRequest.createdBy",
+        header: "Requestor",
+      },
+        {
         accessorKey: "status",
         header: "Status",
-      },
-      {
-        accessorKey: "requestor",
-        header: "Requestor",
       },
       {
         accessorKey: "updatedAt",
@@ -74,48 +79,69 @@ const DataTable = () => {
 
   const formFields = [
     {
-      name: "id",
+      name: "approvalRequest.code",
       label: "ID",
       type: "text",
       validation: { required: "Required" },
     },
     {
-      name: "requestor",
+      name: "approvalRequest.creator ?? approvalRequest.createdBy",
       label: "From",
       type: "text",
       validation: { required: "Required" },
     },
     {
-      name: "subject",
+      name: "approvalRequest.subject",
       label: "Subject",
       type: "text",
       validation: { required: "Required" },
     },
     {
-      name: "description",
+      name: "approvalRequest.description",
       label: "Description",
       type: "textarea",
       validation: { required: "Required" },
     },
     {
-      name: "attachments",
+      name: "approvalRequest.attachments",
       label: "Attachments",
-      type: "custom",
-      render: ({ value }: { value: FileList | File[] | null | undefined }) =>
-        !value || (Array.isArray(value) && value.length === 0)
+      type: "multifile",
+      render: ({ value }: { value: FileList | File[] | null | undefined }) => {
+        let files: File[] = [];
+        if (!value) {
+          return <span>There is no data</span>;
+        }
+        if (Array.isArray(value)) {
+          files = value;
+        } else if (value instanceof FileList) {
+          files = Array.from(value);
+        }
+        return files.length === 0
           ? <span>There is no data</span>
-          : Array.isArray(value)
-            ? value.map((file, idx) => <span key={idx}>{file.name}</span>)
-            : Array.from(value as FileList).map((file, idx) => <span key={idx}>{file.name}</span>),
-      parseValue: (value: FileList | File[] | null) =>
-        value ? Array.from(value as FileList) : [],
+          : files.map((file, idx) => <span key={idx}>{file.name}</span>);
+      },
+      parseValue: (value: FileList | File[] | null | undefined) => {
+        if (!value) return [];
+        if (Array.isArray(value)) return value;
+        if (value instanceof FileList) return Array.from(value);
+        return [];
+      },
     },
     {
       name: "status",
       label: "Status",
       type: "text",
       validation: { required: "Required" },
-    }
+    },
+    {
+      name: "approvalRequest.reasonRejected",
+      label: "Reason Rejected",
+      type: "text",
+      validation: { required: "Required" },
+      shouldRender: (formValues: any) =>
+        formValues?.approvalRequest?.reasonRejected != null &&
+        formValues?.approvalRequest?.reasonRejected !== "",
+    },
   ];
 
 
