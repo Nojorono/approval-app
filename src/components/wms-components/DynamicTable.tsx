@@ -18,6 +18,7 @@ interface Props {
   getRowId?: (row: any) => any;
   title?: string;
   viewOnly?: boolean;
+  isDeleteDisabled?: boolean;
 }
 
 const DynamicTable = ({
@@ -34,6 +35,7 @@ const DynamicTable = ({
   getRowId = (row) => row.id,
   title,
   viewOnly = false,
+  isDeleteDisabled
 }: Props) => {
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
 
@@ -52,12 +54,14 @@ const DynamicTable = ({
               <FaEye />
             </button>
 
-            <button
+            {!isDeleteDisabled && (
+              <button
               onClick={() => handleDelete(getRowId(row.original))}
               className="text-red-500"
-            >
+              >
               <FaTrash />
-            </button>
+              </button>
+            )}
           </div>
         ),
       },

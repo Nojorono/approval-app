@@ -154,6 +154,7 @@ const DataTable = () => {
           getRowId={(row) => row.id}
           title="Approval Detail"
           viewOnly={true}
+          isDeleteDisabled={true}
         />
       )}
     </>
