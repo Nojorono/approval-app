@@ -26,7 +26,6 @@ export default function ApprovalProcessDetail() {
     }
 
     fetchById(data.id);
-    console.log("Data :", detail);
   }, [data.id, fetchById]);
 
   const handleSubmit = async (data: ApprovalProcess) => {

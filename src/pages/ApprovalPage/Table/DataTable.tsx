@@ -41,9 +41,11 @@ const DataTable = () => {
   useEffect(() => {
     fetchApprovalProcess();
     fetchUsers();
+
     if (userId) {
       fetchApprovalProcessByApprover(userId);
     }
+
   }, []);
 
   interface ApprovalProcessResponse {

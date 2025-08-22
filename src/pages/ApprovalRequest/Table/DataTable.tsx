@@ -16,7 +16,6 @@ const DataTable = () => {
   const {
     fetchAll: fetchApproval,
     createData,
-    updateData,
     deleteData,
     isLoading,
   } = useStoreApprovalRequest();
@@ -45,7 +44,6 @@ const DataTable = () => {
     try {
       const userData = JSON.parse(userDataString);
       userId = userData?.user?.id;
-      console.log("User ID:", userId);
     } catch (e) {
       console.error("Failed to parse user_login_data:", e);
     }
@@ -254,8 +252,6 @@ const DataTable = () => {
   }, [approvalListRaw]);
 
   const handleRefreshAPI = () => {
-    console.log("Refresh API called");
-
     fetchApproval();
     fetchApprovalRaw();
   };

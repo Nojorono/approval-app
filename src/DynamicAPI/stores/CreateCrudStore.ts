@@ -42,8 +42,6 @@ export const createCrudStore = <TData, TCreate, TUpdate>({
             set({ isLoading: true, error: null });
             try {
                 const data = await service.fetchAll();
-                console.log(`Fetched ${name}:`, data);
-
                 set({ list: data });
                 return { success: true };
             } catch (err: any) {

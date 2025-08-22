@@ -53,10 +53,7 @@ export const useRoleStore = create<RoleStore>((set) => ({
     },
 
     /* ---------- commands ---------- */
-    createRole: async (payload) => {
-
-        console.log("Creating role with payload:", payload);
-        
+    createRole: async (payload) => {        
         set({ loading: true, error: null });
         try {
             await createRoleSvc(payload);
