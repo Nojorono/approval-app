@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import CustomToast from "../components/toast";
-
-import { Link } from "react-router";
 import { useSidebar } from "../context/SidebarContext";
 import UserDropdown from "../components/header/UserDropdown";
 
@@ -83,19 +81,6 @@ const AppHeader: React.FC = () => {
               )}
               {/* Cross Icon */}
             </button>
-
-            <Link to="/" className="lg:hidden">
-              {/* <img
-                className="dark:hidden"
-                src="https://nna-app-s3.s3.ap-southeast-3.amazonaws.com/kcsi/logo-kcsi"
-                alt="Logo"
-              /> */}
-              <img
-                className="hidden dark:block"
-                src="./images/logo/logo-dark.svg"
-                alt="Logo"
-              />
-            </Link>
 
             <button
               onClick={toggleApplicationMenu}

@@ -35,7 +35,7 @@ export const ApprovalProcess: React.FC = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${EnPoint}/user/verify-pin/${approverId}`, {
+      const response = await fetch(`${EnPoint}user/verify-pin/${approverId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

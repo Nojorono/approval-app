@@ -215,17 +215,26 @@ const AppSidebar: React.FC = () => {
       >
         <Link to="" onClick={handleMobileClose}>
           {isExpanded || isHovered || isMobileOpen ? (
-            <img
-              className="hidden dark:block"
-              src="/images/logo/logo-dark.svg"
-              alt="Logo"
-              width={150}
-              height={40}
-            />
+            <>
+              <img
+                className="block dark:hidden"
+                src="https://nna-app-s3.s3.ap-southeast-3.amazonaws.com/kcsi/logo-kcsi"
+                alt="Logo Light"
+                width={100}
+                height={40}
+              />
+              <img
+                className="hidden dark:block"
+                src="https://nna-app-s3.s3.ap-southeast-3.amazonaws.com/kcsi/logo-kcsi"
+                alt="Logo Dark"
+                width={100}
+                height={40}
+              />
+            </>
           ) : (
             <img
-              src="/images/logo/logo-icon.svg"
-              alt="Logo"
+              src="https://nna-app-s3.s3.ap-southeast-3.amazonaws.com/kcsi/logo-kcsi"
+              alt="Logo Small"
               width={32}
               height={32}
             />

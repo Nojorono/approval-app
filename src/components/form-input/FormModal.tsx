@@ -76,6 +76,18 @@ const ModalForm: React.FC<FormInputProps> = ({
     }
   }, [defaultValues, reset]);
 
+  const onFormSubmit = (data: FormValues) => {
+    onSubmit(data);
+    if (isEditMode) {
+      setIsEditing(false); // setelah submit, kembali ke view
+    }
+  };
+
+  const handleCancelEdit = () => {
+    reset(defaultValues); // kembalikan nilai form
+    setIsEditing(false); // balik ke view mode
+  };
+
   const handleSubmit = (data: FormValues) => {
     onSubmit(data); // Kirim data ke parent
   };
@@ -302,7 +314,7 @@ const ModalForm: React.FC<FormInputProps> = ({
     <div className="mx-auto mt-5 p-6 rounded-md bg-red relative">
       {isLoading && <MiniActivityIndicator />}
       <form
-        onSubmit={handleFormSubmit(handleSubmit)}
+        onSubmit={handleFormSubmit(onFormSubmit)}
         className="space-y-4 mb-5"
       >
         <div
@@ -345,38 +357,83 @@ const ModalForm: React.FC<FormInputProps> = ({
         </div>
 
         <div className="flex justify-end space-x-2 mt-6 pt-4 border-t">
-          {isMounted && !isClosing && (!isEditMode || isEditing) && (
-            <Button
-              type="submit"
-              variant="secondary"
-              size="md"
-              disabled={isLoading || isUploading}
-            >
-              Submit
-            </Button>
+          {/* Mode Tambah */}
+          {!isEditMode && (
+            <>
+              <Button
+                type="submit"
+                variant="secondary"
+                size="md"
+                disabled={isLoading || isUploading}
+              >
+                Submit
+              </Button>
+              <Button
+                type="button"
+                variant="danger"
+                size="md"
+                onClick={handleClose}
+                disabled={isLoading || isUploading}
+              >
+                Cancel
+              </Button>
+            </>
           )}
 
-          {isEditMode && !isEditing && !viewOnly && !isClosing && (
-            <Button
-              type="button"
-              variant="primary"
-              size="md"
-              onClick={() => setIsEditing(true)}
-              disabled={isLoading || isUploading}
-            >
-              Update
-            </Button>
-          )}
+          {/* Mode Edit */}
+          {isEditMode && (
+            <>
+              {isEditing ? (
+                // Form sedang diaktifkan → Submit + CancelEdit
+                <>
+                  <Button
+                    type="submit"
+                    variant="secondary"
+                    size="md"
+                    disabled={isLoading || isUploading}
+                  >
+                    Submit
+                  </Button>
 
-          <Button
-            type="button"
-            variant="danger"
-            size="md"
-            onClick={handleClose}
-            disabled={isLoading || isUploading}
-          >
-            Cancel
-          </Button>
+                  <Button
+                    type="button"
+                    variant="danger"
+                    size="md"
+                    onClick={handleCancelEdit}
+                    disabled={isLoading || isUploading}
+                  >
+                    Cancel
+                  </Button>
+                </>
+              ) : (
+                // Form masih terkunci → Update + CloseModal
+                <>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="md"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsEditing(true);
+                    }}
+                    disabled={isLoading || isUploading}
+                  >
+                    Update
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="danger"
+                    size="md"
+                    onClick={handleClose}
+                    disabled={isLoading || isUploading}
+                  >
+                    Cancel
+                  </Button>
+                </>
+              )}
+            </>
+          )}
         </div>
       </form>
     </div>

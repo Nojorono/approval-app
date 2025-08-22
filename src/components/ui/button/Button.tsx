@@ -12,7 +12,7 @@ interface ButtonProps {
     | "action"; // Button variant
   startIcon?: ReactNode; // Icon before the text
   endIcon?: ReactNode; // Icon after the text
-  onClick?: () => void; // Click handler
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean; // Disabled state
   className?: string; // Additional class names
   type?: "button" | "submit" | "reset"; // Button type

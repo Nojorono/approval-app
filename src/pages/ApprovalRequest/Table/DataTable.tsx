@@ -39,8 +39,24 @@ const DataTable = () => {
     fetchApprovalRaw();
   }, []);
 
+  const userDataString = localStorage.getItem("user_login_data");
+  let userId: string | undefined = undefined;
+  if (userDataString) {
+    try {
+      const userData = JSON.parse(userDataString);
+      userId = userData?.user?.id;
+      console.log("User ID:", userId);
+    } catch (e) {
+      console.error("Failed to parse user_login_data:", e);
+    }
+  }
+
   // Fungsi untuk format payload create
   const handleCreate = async (data: any) => {
+    if (!userId) {
+      showErrorToast("User ID tidak ditemukan. Tidak dapat membuat request.");
+      return;
+    }
     const formattedData = {
       subject: data.subject,
       approverIds: Array.isArray(data.approverIds)
@@ -55,7 +71,7 @@ const DataTable = () => {
         ? [data.attachments]
         : [],
       status: "pending",
-      createdBy: "",
+      createdBy: userId,
     };
 
     await createData(formattedData);
