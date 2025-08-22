@@ -10,14 +10,14 @@ import {
   useStoreApprovalProcess,
 } from "../../../DynamicAPI/stores/Store/MasterStore";
 import ActIndicator from "../../../components/ui/activityIndicator";
+import axios from "axios";
+import { EnPoint } from "../../../utils/EndPoint";
+import axiosInstance from "../../../DynamicAPI/AxiosInstance";
 
 const DataTable = () => {
   const {
-    list: approvalListProcess,
     fetchAll: fetchApprovalProcess,
-    deleteData,
-    createData,
-    updateData,
+    list: testdata,
     isLoading,
   } = useStoreApprovalProcess();
 
@@ -27,16 +27,100 @@ const DataTable = () => {
   const debouncedSearch = useDebounce(search, 500);
   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
 
+  const userDataString = localStorage.getItem("user_login_data");
+  let userId: string | undefined = undefined;
+  if (userDataString) {
+    try {
+      const userData = JSON.parse(userDataString);
+      userId = userData?.user?.id;
+    } catch (e) {
+      console.error("Failed to parse user_login_data:", e);
+    }
+  }
+
   useEffect(() => {
     fetchApprovalProcess();
     fetchUsers();
+
+    if (userId) {
+      fetchApprovalProcessByApprover(userId);
+    }
+
   }, []);
 
+  interface ApprovalProcessResponse {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
+    approvalRequestId: string;
+    approvalRequest: {
+      id: string;
+      createdAt: string;
+      updatedAt: string;
+      deletedAt: string | null;
+      code: string;
+      subject: string;
+      approverIds: string[];
+      description: string;
+      attachments: string[];
+      status: string;
+      createdBy: string | null;
+      creator: null | {
+        id: string;
+        createdAt: string;
+        updatedAt: string;
+        deletedAt: string | null;
+        username: string;
+        email: string | null;
+        phone: string | null;
+        pin: string | null;
+        password: string;
+        isActive: boolean;
+        role: {
+          id: string;
+          createdAt: string;
+          updatedAt: string;
+          deletedAt: string | null;
+          name: string;
+          description: string;
+          isActive: boolean;
+        };
+        roleId: string;
+      };
+      frontendUrl: string;
+    };
+    approverId: string;
+    status: string;
+    reasonRejected: string | null;
+  }
 
-  const [selectedApprovers, setSelectedApprovers] = useState<string[] | null>(
-    null
-  );
-  const [isApproverModalOpen, setApproverModalOpen] = useState(false);
+  const [approvalDataByApprover, setApprovalDataByApprover] = useState<any>();
+
+  const fetchApprovalProcessByApprover = async (userId: string): Promise<void> => {
+    const token = localStorage.getItem("token");
+    const response = await axiosInstance.get(
+      `${EnPoint}approval-process/by-approver/${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    // response.data bentuknya: { success, message, data, ... }
+    const responseData = response.data;
+
+    // Cek apakah responseData.data ada dan array
+    if (Array.isArray(responseData.data)) {
+      setApprovalDataByApprover(responseData.data);
+      console.log("Approval Data By Approver:", responseData.data);
+    } else {
+      setApprovalDataByApprover([]);
+      console.log("Approval Data By Approver: []");
+    }
+  };
+
 
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
 
@@ -60,11 +144,11 @@ const DataTable = () => {
         accessorKey: "approvalRequest.subject",
         header: "Subject",
       },
-       {
-        accessorKey: "approvalRequest.createdBy",
+      {
+        accessorKey: "approvalRequest.creator.username",
         header: "Requestor",
       },
-        {
+      {
         accessorKey: "status",
         header: "Status",
       },
@@ -84,7 +168,7 @@ const DataTable = () => {
       validation: { required: "Required" },
     },
     {
-      name: "approvalRequest.creator ?? approvalRequest.createdBy",
+      name: "approvalRequest.creator.username",
       label: "From",
       type: "text",
       validation: { required: "Required" },
@@ -164,7 +248,7 @@ const DataTable = () => {
         <ActIndicator />
       ) : (
         <DynamicTable
-          data={approvalListProcess}
+          data={approvalDataByApprover}
           globalFilter={debouncedSearch}
           isCreateModalOpen={isCreateModalOpen}
           onCloseCreateModal={() => setCreateModalOpen(false)}
@@ -173,7 +257,7 @@ const DataTable = () => {
           onSubmit={handleCreate}
           onUpdate={handleUpdate}
           onDelete={async (id) => {
-            // await deleteData(id);
+
           }}
           onRefresh={fetchApprovalProcess}
           getRowId={(row) => row.id}
