@@ -6,7 +6,6 @@ import DynamicFormModal from "./DynamicFormModal";
 import { useStoreUserDecrypt } from "../../DynamicAPI/stores/Store/MasterStore";
 import ModalDecrypt from "../modal/type/ModalDecrypt";
 
-
 interface Props {
   data: any[];
   globalFilter?: string;
@@ -42,7 +41,6 @@ const DynamicTable = ({
 }: Props) => {
   const { fetchById, detail } = useStoreUserDecrypt();
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
-  const [decryptedData, setDecryptedData] = useState<any[] | null>(null);
 
   const enhancedColumns = useMemo(() => {
     return [

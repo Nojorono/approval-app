@@ -45,7 +45,7 @@ const DataTable = () => {
     const { id, ...rest } = data;
 
     console.log("data", data);
-    
+
     return updateData(id, {
       username: rest.username,
       email: rest.email,
@@ -170,7 +170,6 @@ const DataTable = () => {
       };
     }
   });
-
 
   return (
     <>
