@@ -18,12 +18,12 @@ export default function ApprovalStatus(){
         </div>
 
         {/* Status Section */}
-        <div className={`p-4 rounded-lg mb-6 ${data?.status === 'rejected' ? 'bg-red-50' : 'bg-green-50'}`}>
-          <span className={`text-xl font-semibold ${data?.status === 'rejected' ? 'text-red-500' : 'text-green-500'}`}>
-            {data?.status === 'rejected' ? 'Request Reject!' : 'Request Approved!'}
+        <div className={`p-4 rounded-lg mb-6 ${data?.data.status === 'rejected' ? 'bg-red-50' : 'bg-green-50'}`}>
+          <span className={`text-xl font-semibold ${data?.data.status === 'rejected' ? 'text-red-500' : 'text-green-500'}`}>
+            {data?.data.status === 'rejected' ? 'Request Reject!' : 'Request Approved!'}
           </span>
           <p className="text-gray-600">
-            {data?.status === 'rejected'
+            {data?.data.status === 'rejected'
               ? 'Request has been rejected'
               : 'Request has been successfully approved'}
           </p>
