@@ -43,12 +43,14 @@ const DataTable = () => {
   // Fungsi untuk format payload update
   const handleUpdate = (data: any) => {
     const { id, ...rest } = data;
+
+    console.log("data", data);
+    
     return updateData(id, {
       username: rest.username,
       email: rest.email,
       password: rest.password,
       phone: rest.phone,
-      pin: rest.pin,
       isActive: rest.isActive,
       roleId: rest.roleId,
     });
@@ -117,13 +119,14 @@ const DataTable = () => {
     {
       name: "pin",
       label: "PIN",
-      type: "number",
+      type: "text",
       validation: {
         required: "Required",
         minLength: { value: 6, message: "PIN must be 6 digits" },
         maxLength: { value: 6, message: "PIN must be 6 digits" },
         pattern: { value: /^\d{6}$/, message: "PIN must be 6 digits" },
       },
+      noNeedEdit: true,
     },
     {
       name: "roleId",
@@ -167,6 +170,7 @@ const DataTable = () => {
       };
     }
   });
+
 
   return (
     <>

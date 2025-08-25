@@ -12,6 +12,8 @@ import { ApprovalNotification, CreateApprovalNotification, UpdateApprovalNotific
 export const MenuService = createCrudService<Menu, CreateMenu, UpdateMenu>("/menu");
 export const ParentMenuService = createCrudService<Menu, CreateMenu, UpdateMenu>("/menu/parent");
 export const UserService = createCrudService<User, CreateUser, UpdateUser>("/user");
+export const UserDecryptService = createCrudService<User, CreateUser, UpdateUser>("/user/decrypt");
+
 export const roleService = createCrudService<RoleRead, CreateRolePayload, UpdateRolePayload>("/roles");
 export const approvalRequestService = createCrudService<ApprovalRequest, CreateApprovalRequest, UpdateApprovalRequest>("/approval-requests");
 export const approvalRequestWithRelationsService = createCrudService<ApprovalRequestListResponse, CreateApprovalRequest, UpdateApprovalRequest>("/approval-requests/with-relations");

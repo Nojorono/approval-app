@@ -3,6 +3,7 @@ import {
     MenuService,
     ParentMenuService,
     UserService,
+    UserDecryptService,
     roleService,
     approvalRequestService,
     approvalRequestWithRelationsService,
@@ -26,10 +27,14 @@ export const useStoreParentMenu = createCrudStore<Menu, CreateMenu, UpdateMenu>(
     service: ParentMenuService,
 });
 
-
 export const useStoreUser = createCrudStore<User, CreateUser, UpdateUser>({
     name: "User",
     service: UserService,
+});
+
+export const useStoreUserDecrypt = createCrudStore<User, CreateUser, UpdateUser>({
+    name: "UserDecrypt",
+    service: UserDecryptService,
 });
 
 export const useStoreRole = createCrudStore<RoleRead, CreateRolePayload, UpdateRolePayload>({

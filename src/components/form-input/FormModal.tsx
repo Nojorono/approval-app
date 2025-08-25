@@ -28,6 +28,7 @@ type FormField = {
     [key: string]: any;
   };
   info?: string;
+  noNeedEdit?: boolean;
 };
 
 type FormValues = Record<string, any>;
@@ -84,8 +85,8 @@ const ModalForm: React.FC<FormInputProps> = ({
   };
 
   const handleCancelEdit = () => {
-    reset(defaultValues); // kembalikan nilai form
-    setIsEditing(false); // balik ke view mode
+    setIsEditing(false);
+    reset(defaultValues); // Tidak perlu pakai setTimeout
   };
 
   const handleClose = async () => {
@@ -319,23 +320,13 @@ const ModalForm: React.FC<FormInputProps> = ({
           } gap-6`}
         >
           <div>
-            {leftFields.map((field) => (
-              <div key={field.name} className="mb-4">
-                <label className="block text-sm font-medium mb-1">
-                  {field.label}
-                </label>
-                {renderField(field)}
-                {errors[field.name] && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {(errors[field.name] as any).message}
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
-          {rightFields.length > 0 && (
-            <div>
-              {rightFields.map((field) => (
+            {leftFields
+              .filter(
+                (field) =>
+                  // Jika mode edit, render hanya field yang tidak noNeedEdit
+                  !(isEditMode && field.noNeedEdit)
+              )
+              .map((field) => (
                 <div key={field.name} className="mb-4">
                   <label className="block text-sm font-medium mb-1">
                     {field.label}
@@ -348,13 +339,55 @@ const ModalForm: React.FC<FormInputProps> = ({
                   )}
                 </div>
               ))}
+          </div>
+          {rightFields.length > 0 && (
+            <div>
+              {rightFields
+                .filter((field) => !(isEditMode && field.noNeedEdit))
+                .map((field) => (
+                  <div key={field.name} className="mb-4">
+                    <label className="block text-sm font-medium mb-1">
+                      {field.label}
+                    </label>
+                    {renderField(field)}
+                    {errors[field.name] && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {(errors[field.name] as any).message}
+                      </p>
+                    )}
+                  </div>
+                ))}
             </div>
           )}
         </div>
 
         <div className="flex justify-end space-x-2 mt-6 pt-4 border-t">
-          {/* Mode Tambah */}
-          {!isEditMode && (
+          {/* SUBMIT BUTTON HANYA MUNCUL SAAT BENAR-BENAR CREATE ATAU EDITING */}
+          {!isEditMode && !isClosing && (
+            <>
+              {!isEditMode && (
+                <Button
+                  type="submit"
+                  variant="secondary"
+                  size="md"
+                  disabled={isLoading || isUploading}
+                >
+                  Submit
+                </Button>
+              )}
+              <Button
+                type="button"
+                variant="danger"
+                size="md"
+                onClick={handleClose}
+                disabled={isLoading || isUploading}
+              >
+                Cancel
+              </Button>
+            </>
+          )}
+
+          {isEditMode && isEditing && !isClosing && (
             <>
               <Button
                 type="submit"
@@ -368,7 +401,7 @@ const ModalForm: React.FC<FormInputProps> = ({
                 type="button"
                 variant="danger"
                 size="md"
-                onClick={handleClose}
+                onClick={handleCancelEdit}
                 disabled={isLoading || isUploading}
               >
                 Cancel
@@ -376,60 +409,31 @@ const ModalForm: React.FC<FormInputProps> = ({
             </>
           )}
 
-          {/* Mode Edit */}
-          {isEditMode && (
+          {isEditMode && !isEditing && !isClosing && (
             <>
-              {isEditing ? (
-                // Form sedang diaktifkan → Submit + CancelEdit
-                <>
-                  <Button
-                    type="submit"
-                    variant="secondary"
-                    size="md"
-                    disabled={isLoading || isUploading}
-                  >
-                    Submit
-                  </Button>
-
-                  <Button
-                    type="button"
-                    variant="danger"
-                    size="md"
-                    onClick={handleCancelEdit}
-                    disabled={isLoading || isUploading}
-                  >
-                    Cancel
-                  </Button>
-                </>
-              ) : (
-                // Form masih terkunci → Update + CloseModal
-                <>
-                    {!viewOnly && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="md"
-                      onClick={(e) => {
-                      e.preventDefault();
-                      setIsEditing(true);
-                      }}
-                      disabled={isLoading || isUploading}
-                    >
-                      Update
-                    </Button>
-                    )}
-
-                  <Button
-                    type="button"
-                    variant="danger"
-                    size="md"
-                    onClick={handleClose}
-                    disabled={isLoading || isUploading}
-                  >
-                    Cancel
-                  </Button>
-                </>
+              {!viewOnly && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="md"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsEditing(true);
+                  }}
+                  disabled={isLoading || isUploading}
+                >
+                  Update
+                </Button>
               )}
+              <Button
+                type="button"
+                variant="danger"
+                size="md"
+                onClick={handleClose}
+                disabled={isLoading || isUploading}
+              >
+                Cancel
+              </Button>
             </>
           )}
         </div>

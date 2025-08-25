@@ -2,6 +2,8 @@ import React from "react";
 import ExtraMiniIndicator from "../../ui/miniActivityIndicator/extraMiniIndicator";
 import { FaWhatsapp, FaEnvelope } from "react-icons/fa";
 import Button from "../../ui/button/Button";
+import { FormatDate } from "../../../helper/FormatDate";
+
 
 interface Track {
   updatedAt: any;
@@ -126,13 +128,13 @@ const NotificationTracks: React.FC<NotificationTracksProps> = ({
                     {/* === Row Bawah: Detail Info === */}
                     <div className="flex flex-col gap-1 text-xs text-gray-500">
                       {track.createdAt && (
-                        <span>Created: {track.createdAt.toLocaleString()}</span>
+                        <span>Created: {FormatDate(track.createdAt)}</span>
                       )}
                       {track.updatedAt && (
-                        <span>Updated: {track.updatedAt.toLocaleString()}</span>
+                        <span>Updated: {FormatDate(track.updatedAt)}</span>
                       )}
                       {track.sentAt && (
-                        <span>Sent: {track.sentAt.toLocaleString()}</span>
+                        <span>Sent: {FormatDate(track.sentAt)}</span>
                       )}
                     </div>
 

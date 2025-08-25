@@ -25,6 +25,7 @@ const DynamicFormModal = ({
   title,
   viewOnly
 }: Props) => {
+  
   const handleSubmit = async (data: any) => {
     const res = isEditMode ? await onUpdate(data) : await onSubmit(data);
     if (res?.success) {

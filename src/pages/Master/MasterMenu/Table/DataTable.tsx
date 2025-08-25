@@ -185,7 +185,8 @@ const DataTable = () => {
         }}
         onRefresh={fetchAllMenus}
         getRowId={(row) => row.id}
-        title="Form UOM"
+        title="Form Create"
+        viewOnly={false}
       />
     </>
   );

@@ -1,8 +1,11 @@
 import React, { useState, useMemo, useCallback } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import TableComponent from "../../components/tables/MasterDataTable/TableApprovalRequest";
-import { FaEye, FaTrash } from "react-icons/fa";
+import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
 import DynamicFormModal from "./DynamicFormModal";
+import { useStoreUserDecrypt } from "../../DynamicAPI/stores/Store/MasterStore";
+import ModalDecrypt from "../modal/type/ModalDecrypt";
+
 
 interface Props {
   data: any[];
@@ -35,9 +38,11 @@ const DynamicTable = ({
   getRowId = (row) => row.id,
   title,
   viewOnly = false,
-  isDeleteDisabled
+  isDeleteDisabled,
 }: Props) => {
+  const { fetchById, detail } = useStoreUserDecrypt();
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
+  const [decryptedData, setDecryptedData] = useState<any[] | null>(null);
 
   const enhancedColumns = useMemo(() => {
     return [
@@ -48,25 +53,32 @@ const DynamicTable = ({
         cell: ({ row }) => (
           <div className="flex gap-2">
             <button
-              className="text-green-600"
-              onClick={() => setSelectedItem(row.original)}
+              className="text-blue-600"
+              onClick={() => decryptHandle(row.original.id)}
             >
               <FaEye />
             </button>
 
+            <button
+              className="text-green-600"
+              onClick={() => setSelectedItem(row.original)}
+            >
+              <FaEdit />
+            </button>
+
             {!isDeleteDisabled && (
               <button
-              onClick={() => handleDelete(getRowId(row.original))}
-              className="text-red-500"
+                onClick={() => handleDelete(getRowId(row.original))}
+                className="text-red-500"
               >
-              <FaTrash />
+                <FaTrash />
               </button>
             )}
           </div>
         ),
       },
     ];
-  }, [columns]);
+  }, [columns, isDeleteDisabled, getRowId]);
 
   const handleDelete = useCallback(
     async (id: any) => {
@@ -79,6 +91,13 @@ const DynamicTable = ({
   const handleCloseModal = () => {
     setSelectedItem(null);
     onCloseCreateModal();
+  };
+
+  const [showDecryptModal, setShowDecryptModal] = useState(false);
+
+  const decryptHandle = async (id: any) => {
+    await fetchById(id);
+    setShowDecryptModal(true);
   };
 
   return (
@@ -100,6 +119,12 @@ const DynamicTable = ({
         data={data}
         columns={enhancedColumns}
         globalFilter={globalFilter}
+      />
+
+      <ModalDecrypt
+        isOpen={showDecryptModal}
+        onClose={() => setShowDecryptModal(false)}
+        detail={detail}
       />
     </>
   );
