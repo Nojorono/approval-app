@@ -65,11 +65,6 @@ const ModalForm: React.FC<FormInputProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const [isMounted, setIsMounted] = useState(true);
-
-  useEffect(() => {
-    return () => setIsMounted(false); // saat unmount, false
-  }, []);
 
   useEffect(() => {
     if (defaultValues) {

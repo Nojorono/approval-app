@@ -135,6 +135,7 @@ const DynamicTable = ({
             columns={enhancedColumns}
             globalFilter={globalFilter}
           />
+          
           <ModalDecrypt
             isOpen={showDecryptModal}
             onClose={() => setShowDecryptModal(false)}

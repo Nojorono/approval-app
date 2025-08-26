@@ -51,14 +51,20 @@ const DataTable = () => {
 
   const columns = useMemo(
     () => [
-      { accessorKey: "id", header: "ID" },
       { accessorKey: "name", header: "Nama Menu" },
       { accessorKey: "path", header: "Path" },
       { accessorKey: "icon", header: "Icon" },
-      { accessorKey: "parentId", header: "Parent ID" },
+      {
+        accessorKey: "parentId",
+        header: "Parent Menu",
+        cell: ({ row }: { row: { original: any } }) => {
+          const parent = parentMenu.find((menu: any) => menu.id === row.original.parentId);
+          return parent ? parent.name : "-";
+        },
+      },
       { accessorKey: "order", header: "Order" },
     ],
-    []
+    [parentMenu]
   );
 
   const formFields = [

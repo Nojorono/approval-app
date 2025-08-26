@@ -15,7 +15,6 @@ import {
 } from "../../../DynamicAPI/stores/Store/MasterStore";
 
 import PaginationControls from "./Pagination";
-import ExtraMiniIndicator from "../../ui/miniActivityIndicator/extraMiniIndicator";
 import NotificationTracks from "./NotificationTracks";
 
 interface TableComponentProps<T> {
@@ -52,8 +51,7 @@ const TableComponent = <
 
   const { fetchById, detail, isLoading } = useStoreApprovalNotification();
 
-  const { fetchAll: fetchApprovalRaw, isLoading: isLoadingApprovalRaw } =
-    useStoreApprovalRequestWithRelations();
+  const { fetchAll: fetchApprovalRaw } = useStoreApprovalRequestWithRelations();
 
   const [activeTrackId, setActiveTrackId] = useState<string | null>(null);
 

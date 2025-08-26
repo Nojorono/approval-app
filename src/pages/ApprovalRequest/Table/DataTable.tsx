@@ -83,8 +83,6 @@ const DataTable = () => {
     return Promise.resolve();
   };
 
-  const [expandedRow, setExpandedRow] = useState<string | null>(null);
-
   const columns = useMemo(
     () => [
       {
@@ -165,22 +163,26 @@ const DataTable = () => {
                     if (str.length <= 20) return str;
                     return "..." + str.slice(-20);
                   };
-                  const displayText = getDisplayName(att);
-                  return isUrl ? (
-                    <a
-                      key={idx}
-                      href={att}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 underline break-all"
-                      title={att}
-                    >
-                      {displayText}
-                    </a>
-                  ) : (
-                    <span key={idx} className="break-all" title={att}>
-                      {displayText}
-                    </span>
+                  const displayText = getDisplayName(att);  
+                  return (
+                    <div key={idx} className="flex items-center gap-2">
+                      <span className="font-semibold">{idx + 1}.</span>
+                      {isUrl ? (
+                        <a
+                          href={att}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 underline break-all"
+                          title={att}
+                        >
+                          {displayText}
+                        </a>
+                      ) : (
+                        <span className="break-all" title={att}>
+                          {displayText}
+                        </span>
+                      )}
+                    </div>
                   );
                 })}
               </div>
@@ -190,7 +192,7 @@ const DataTable = () => {
         },
       },
     ],
-    [expandedRow]
+    []
   );
 
   const formFields = [
@@ -244,8 +246,8 @@ const DataTable = () => {
           name: track.user?.username || "Unknown User",
           channel: track.channel || "-",
           status: track.status || "pending",
-          note: track.note || "", // misalnya ada catatan
-          updatedAt: track.updatedAt, // bisa buat timestamp approval
+          note: track.note || "",
+          updatedAt: track.updatedAt,
         })),
       };
     });
