@@ -30,6 +30,7 @@ const handleAxios = async <T>(request: Promise<{ data: BaseResponse<T> }>): Prom
 
 
 export const createCrudService = <TData, TCreate, TUpdate>(baseUrl: string) => ({
+
     fetchAll: async (): Promise<TData[]> => {
         return handleAxios<TData[]>(axiosInstance.get(baseUrl));
     },

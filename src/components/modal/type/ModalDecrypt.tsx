@@ -215,7 +215,7 @@ const ModalDecryptView: React.FC<{
             })}
           >
             <input
-              type="number"
+              type="password"
               className="border rounded px-2 py-1"
               placeholder="Input your PIN number"
               {...registerVerify("pin", {
@@ -269,7 +269,7 @@ const ModalDecryptView: React.FC<{
       {isEditPin && verifyPinSuccess && (
         <>
           <div className="mt-4 border-t pt-4">
-            <div className="font-semibold mb-2 text-gray-700">Set PIN Baru</div>
+            <div className="font-semibold mb-2 text-gray-700">Set New PIN</div>
             <form
               className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 space-y-2 sm:space-y-0"
               onSubmit={handleSubmitSet((data) => {
@@ -277,7 +277,7 @@ const ModalDecryptView: React.FC<{
               })}
             >
               <input
-                type="number"
+                type="password"
                 className="border rounded px-2 py-1"
                 placeholder="Input your new PIN"
                 {...registerSet("newPin", {
@@ -297,7 +297,7 @@ const ModalDecryptView: React.FC<{
                 className="px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600"
                 disabled={setPinLoading || setPinSuccess}
               >
-                {setPinLoading ? "Menyimpan..." : "Set PIN Baru"}
+                {setPinLoading ? "Saved..." : "Set New PIN"}
               </button>
               <button
                 type="button"
@@ -371,12 +371,12 @@ const ModalDecrypt: React.FC<ModalDecryptProps> = ({
   };
 
   return (
-    <div className="flex items-start justify-center min-h-screen pt-15">
+    <div className="flex items-start justify-center pt-15">
       <ModalComponent
         isOpen={isOpen}
         onClose={onClose}
         title="Decrypted Detail"
-        size="large"
+        size="medium"
       >
         {detail && (
           <ModalDecryptView

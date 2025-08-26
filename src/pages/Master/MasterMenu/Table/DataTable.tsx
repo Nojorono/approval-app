@@ -3,7 +3,7 @@ import Input from "../../../../components/form/input/InputField";
 import Label from "../../../../components/form/Label";
 import Button from "../../../../components/ui/button/Button";
 import { useDebounce } from "../../../../helper/useDebounce";
-import DynamicTable from "../../../../components/wms-components/DynamicTable";
+import DynamicTable from "../../../../components/approval-component/DynamicTable";
 import {
   useStoreMenu,
   useStoreParentMenu,

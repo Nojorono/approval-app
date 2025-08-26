@@ -3,7 +3,7 @@ import { FaPlus } from "react-icons/fa";
 import Input from "../../../../components/form/input/InputField";
 import Button from "../../../../components/ui/button/Button";
 import { useDebounce } from "../../../../helper/useDebounce";
-import DynamicTable from "../../../../components/wms-components/DynamicTable";
+import DynamicTable from "../../../../components/approval-component/DynamicTable";
 import { useStoreUser } from "../../../../DynamicAPI/stores/Store/MasterStore";
 import { useRoleStore } from "../../../../API/store/MasterStore";
 

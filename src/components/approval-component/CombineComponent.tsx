@@ -1,14 +1,14 @@
 import React, { useState, useMemo, useCallback } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import TableComponent from "../../components/tables/MasterDataTable/TableApprovalRequest";
+import TableComponent from "../tables/MasterDataTable/TableApprovalRequestNew";
 import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
-import DynamicFormModal from "./DynamicFormModal";
+import DynamicFormModal from "../wms-components/DynamicFormModal";
 import { useStoreUserDecrypt } from "../../DynamicAPI/stores/Store/MasterStore";
 import ModalDecrypt from "../modal/type/ModalDecrypt";
 import ActIndicator from "../ui/activityIndicator";
 
 interface Props {
-  data: any[];
+  data?: any[];
   globalFilter?: string;
   isCreateModalOpen: boolean;
   onCloseCreateModal: () => void;
@@ -131,11 +131,11 @@ const DynamicTable = ({
           />
 
           <TableComponent
-            data={data}
             columns={enhancedColumns}
             globalFilter={globalFilter}
+            pageSize={10}
           />
-          
+
           <ModalDecrypt
             isOpen={showDecryptModal}
             onClose={() => setShowDecryptModal(false)}

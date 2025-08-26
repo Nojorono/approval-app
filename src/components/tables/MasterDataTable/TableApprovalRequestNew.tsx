@@ -1,0 +1,273 @@
+import React, { useEffect, useState } from "react";
+import {
+  useReactTable,
+  getCoreRowModel,
+  getPaginationRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
+  flexRender,
+  ColumnDef,
+  ExpandedState,
+} from "@tanstack/react-table";
+import { useStoreApprovalNotification } from "../../../DynamicAPI/stores/Store/MasterStore";
+import NotificationTracks from "./NotificationTracks";
+import PaginationServerSide from "./PaginationServerSide";
+import {
+  fetchApprovalRequests,
+  ApprovalRecord,
+} from "../../../pages/ApprovalRequest/API/approvalRequest";
+import ActIndicator from "../../ui/activityIndicator";
+
+interface TableComponentProps<T> {
+  columns: ColumnDef<T>[];
+  globalFilter?: string;
+  setGlobalFilter?: (value: string) => void;
+  onDetail?: (id?: any) => void;
+  enableSelection?: boolean;
+  pageSize?: number;
+}
+
+const TableComponent = <
+  T extends {
+    notificationTracks: never[];
+    id?: any;
+    approverIds?: { id: string; username: string }[];
+  }
+>({
+  columns,
+  globalFilter,
+  setGlobalFilter,
+  enableSelection = true,
+  pageSize = 10,
+}: TableComponentProps<T>) => {
+  const [pagination, setPagination] = useState(() => ({
+    pageIndex: 0,
+    pageSize: pageSize,
+  }));
+
+  const [expandedRowIds, setExpandedRowIds] = useState<ExpandedState>({});
+  const { fetchById, detail, isLoading } = useStoreApprovalNotification();
+
+  const [activeTrackId, setActiveTrackId] = useState<string | null>(null);
+
+  // State untuk data dari API
+  const [tableData, setTableData] = useState<T[]>([]);
+  const [pageCount, setPageCount] = useState(1);
+  const [totalDataCount, setTotalDataCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch data dari API
+  const fetchData = async (page: number, limit: number) => {
+    setLoading(true);
+    try {
+      const res = await fetchApprovalRequests(page + 1, limit);
+      const mappedData = res.data.data.map((item: any) => {
+        return {
+          ...item.approvalRequest,
+          notificationTracks: item.notificationTracks || [],
+          approverIds: item.approvalRequest.approverIds,
+        };
+      });
+      setTableData(mappedData);
+      setPageCount(res.data.pagination?.totalPages ?? 1);
+      setTotalDataCount(res.data.pagination?.total ?? 0);
+    } catch (error) {
+      setTableData([]);
+      setPageCount(1);
+      setTotalDataCount(0);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData(pagination.pageIndex, pagination.pageSize);
+  }, [pagination.pageIndex, pagination.pageSize]);
+
+  const table = useReactTable<T>({
+    data: tableData,
+    columns,
+    state: {
+      globalFilter,
+      pagination,
+      columnVisibility: {
+        select: enableSelection,
+      },
+      expanded: expandedRowIds,
+    },
+    onPaginationChange: setPagination,
+    onGlobalFilterChange: setGlobalFilter,
+    onExpandedChange: setExpandedRowIds,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    enableRowSelection: enableSelection,
+    enableExpanding: true,
+    manualPagination: true,
+    pageCount,
+  });
+
+  const handleCheckStatus = async (trackId: string) => {
+    setActiveTrackId(trackId);
+    try {
+      await fetchById(trackId);
+      fetchData(pagination.pageIndex, pagination.pageSize);
+    } catch (error) {
+      console.error("Error fetching by id:", error);
+    }
+  };
+
+  return (
+    <>
+      <div className="overflow-x-auto">
+        <div className="max-h-[600px] overflow-y-auto">
+          <table className="min-w-full table-auto border border-gray-200">
+            <thead className="sticky top-0 bg-gray-100">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id} className="text-left">
+                  {headerGroup.headers.map((header) => (
+                    <th
+                      key={header.id}
+                      className="px-4 py-2 border-b cursor-pointer"
+                      style={{ textAlign: "left" }}
+                      onClick={header.column.getToggleSortingHandler()}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                      {header.column.getIsSorted() === "asc" && " 🔼"}
+                      {header.column.getIsSorted() === "desc" && " 🔽"}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan={columns.length} className="text-center py-4">
+                    <ActIndicator />
+                  </td>
+                </tr>
+              ) : table.getRowModel().rows.length === 0 ? (
+                <tr>
+                  <td colSpan={columns.length} className="text-center py-4">
+                    No data found.
+                  </td>
+                </tr>
+              ) : (
+                table.getRowModel().rows.map((row) => (
+                  <React.Fragment key={row.id}>
+                    {/* <tr
+                      className="hover:bg-gray-50 cursor-pointer"
+                      style={{ textAlign: "left" }}
+                      onClick={() => row.toggleExpanded()}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <td
+                          key={cell.id}
+                          className="px-2 py-2 border-b text-xs sm:px-4 sm:text-sm"
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </td>
+                      ))}
+                    </tr> */}
+
+                    <tr
+                      className="hover:bg-gray-50 cursor-pointer"
+                      style={{ textAlign: "left" }}
+                    >
+                      {row.getVisibleCells().map((cell) => {
+                        // Only the cell with accessorKey "expand" should trigger row.toggleExpanded()
+                        if (cell.column.id === "expand") {
+                          return (
+                            <td
+                              key={cell.id}
+                              className="px-2 py-2 border-b text-xs sm:px-4 sm:text-sm"
+                              onClick={() => row.toggleExpanded()}
+                              style={{ cursor: "pointer" }}
+                            >
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </td>
+                          );
+                        }
+                        return (
+                          <td
+                            key={cell.id}
+                            className="px-2 py-2 border-b text-xs sm:px-4 sm:text-sm"
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </td>
+                        );
+                      })}
+                    </tr>
+
+                    {row.getIsExpanded() &&
+                      row.original.notificationTracks?.length > 0 && (
+                        <tr>
+                          <td colSpan={row.getVisibleCells().length}>
+                            <NotificationTracks
+                              notificationTracks={
+                                row.original.notificationTracks
+                              }
+                              approverIds={row.original.approverIds}
+                              activeTrackId={activeTrackId}
+                              isLoading={isLoading}
+                              detail={detail}
+                              onCheckStatus={handleCheckStatus}
+                            />
+                          </td>
+                        </tr>
+                      )}
+                  </React.Fragment>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <PaginationServerSide
+        pageIndex={pagination.pageIndex}
+        pageSize={pagination.pageSize}
+        pageCount={pageCount}
+        setPageSize={(size: number) =>
+          setPagination((prev) => ({ ...prev, pageSize: size }))
+        }
+        previousPage={() =>
+          setPagination((prev) => ({
+            ...prev,
+            pageIndex: Math.max(0, prev.pageIndex - 1),
+          }))
+        }
+        nextPage={() =>
+          setPagination((prev) => ({
+            ...prev,
+            pageIndex: Math.min(pageCount - 1, prev.pageIndex + 1),
+          }))
+        }
+        canPreviousPage={pagination.pageIndex > 0}
+        canNextPage={pagination.pageIndex < pageCount - 1}
+        selectedRowCount={0}
+        totalDataCount={totalDataCount}
+        gotoPage={(page: number) =>
+          setPagination((prev) => ({ ...prev, pageIndex: page }))
+        }
+      />
+    </>
+  );
+};
+
+export default TableComponent;

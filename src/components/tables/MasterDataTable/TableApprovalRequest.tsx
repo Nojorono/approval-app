@@ -51,7 +51,8 @@ const TableComponent = <
 
   const { fetchById, detail, isLoading } = useStoreApprovalNotification();
 
-  const { fetchAll: fetchApprovalRaw } = useStoreApprovalRequestWithRelations();
+  const { fetchAll: fetchApprovalRaw, isLoading: isLoadingApprovalRaw } =
+    useStoreApprovalRequestWithRelations();
 
   const [activeTrackId, setActiveTrackId] = useState<string | null>(null);
 

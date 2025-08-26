@@ -3,14 +3,14 @@ import { FaPlus } from "react-icons/fa";
 import Input from "../../../components/form/input/InputField";
 import Button from "../../../components/ui/button/Button";
 import { useDebounce } from "../../../helper/useDebounce";
-import DynamicTable from "../../../components/wms-components/DynamicTable";
+import DynamicTable from "../../../components/approval-component/CombineComponent";
 import {
   useStoreApprovalRequest,
   useStoreUser,
-  useStoreApprovalRequestWithRelations,
 } from "../../../DynamicAPI/stores/Store/MasterStore";
 import ActIndicator from "../../../components/ui/activityIndicator";
 import { showErrorToast } from "../../../components/toast";
+import { sortingFns } from "@tanstack/react-table";
 
 const DataTable = () => {
   const {
@@ -19,15 +19,7 @@ const DataTable = () => {
     deleteData,
     isLoading,
   } = useStoreApprovalRequest();
-
   const { list: userList, fetchAll: fetchUsers } = useStoreUser();
-
-  const {
-    list: approvalListRaw,
-    fetchAll: fetchApprovalRaw,
-    isLoading: isLoadingApprovalRaw,
-  } = useStoreApprovalRequestWithRelations();
-
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
@@ -35,7 +27,6 @@ const DataTable = () => {
   useEffect(() => {
     fetchApproval();
     fetchUsers();
-    fetchApprovalRaw();
   }, []);
 
   const userDataString = localStorage.getItem("user_login_data");
@@ -91,16 +82,13 @@ const DataTable = () => {
         cell: ({ row }: any) => {
           return (
             <div className="flex items-center">
-              <button
-                onClick={() => row.toggleExpanded()}
-                className="mr-2 text-blue-600"
-                aria-label={row.getIsExpanded() ? "Collapse row" : "Expand row"}
-              >
+              <button className="mr-2 text-blue-600">
                 {row.getIsExpanded() ? "▼" : "▶"}
               </button>
             </div>
           );
         },
+        enableSorting: false,
       },
       {
         accessorKey: "code",
@@ -163,7 +151,7 @@ const DataTable = () => {
                     if (str.length <= 20) return str;
                     return "..." + str.slice(-20);
                   };
-                  const displayText = getDisplayName(att);  
+                  const displayText = getDisplayName(att);
                   return (
                     <div key={idx} className="flex items-center gap-2">
                       <span className="font-semibold">{idx + 1}.</span>
@@ -230,32 +218,8 @@ const DataTable = () => {
     },
   ];
 
-  const approvalRaw = useMemo(() => {
-    const raw = approvalListRaw as any;
-
-    if (!raw || !Array.isArray(raw.data)) return [];
-
-    return raw.data.map((item: any) => {
-      const approval = item.approvalRequest;
-
-      return {
-        ...approval,
-        notificationTracks: item.notificationTracks || [],
-        approvalProcess: item.approvalProcess || null,
-        approvers: (item.notificationTracks || []).map((track: any) => ({
-          name: track.user?.username || "Unknown User",
-          channel: track.channel || "-",
-          status: track.status || "pending",
-          note: track.note || "",
-          updatedAt: track.updatedAt,
-        })),
-      };
-    });
-  }, [approvalListRaw]);
-
   const handleRefreshAPI = () => {
     fetchApproval();
-    fetchApprovalRaw();
   };
 
   return (
@@ -284,11 +248,10 @@ const DataTable = () => {
         </div>
       </div>
 
-      {isLoading && isLoadingApprovalRaw ? (
+      {isLoading ? (
         <ActIndicator />
       ) : (
         <DynamicTable
-          data={approvalRaw}
           globalFilter={debouncedSearch}
           isCreateModalOpen={isCreateModalOpen}
           onCloseCreateModal={() => setCreateModalOpen(false)}

@@ -4,7 +4,6 @@ import { FaWhatsapp, FaEnvelope } from "react-icons/fa";
 import Button from "../../ui/button/Button";
 import { FormatDate } from "../../../helper/FormatDate";
 
-
 interface Track {
   updatedAt: any;
   sentAt: any;
@@ -14,7 +13,6 @@ interface Track {
   recipientId: string;
   type: string;
   status: "approved" | "rejected" | string;
-  // properti lain sesuai kebutuhan
 }
 
 interface Approver {
