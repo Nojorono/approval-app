@@ -158,16 +158,22 @@ const DataTable = () => {
 
   // Update columns to use ellipsis for long values
   columns.forEach((col: any) => {
-    if (["username", "email", "phone", "pin"].includes(col.accessorKey)) {
+    if (["username", "email", "phone"].includes(col.accessorKey)) {
       const prevCell = col.cell;
       col.cell = (info: any) => {
         const value = info.getValue();
         const display = ellipsis(value);
-        // If there was a custom cell before, use it
         return prevCell
           ? prevCell({ ...info, getValue: () => display })
           : display;
       };
+    }
+    if (
+      col.accessorKey === "pin" ||
+      col.accessorKey === "email" ||
+      col.accessorKey === "phone"
+    ) {
+      col.cell = () => "******";
     }
   });
 
@@ -211,6 +217,7 @@ const DataTable = () => {
         onRefresh={fetchAll}
         getRowId={(row) => row.id}
         title="Form Data"
+        enableEye={true}
       />
     </>
   );

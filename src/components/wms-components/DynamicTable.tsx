@@ -5,6 +5,7 @@ import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
 import DynamicFormModal from "./DynamicFormModal";
 import { useStoreUserDecrypt } from "../../DynamicAPI/stores/Store/MasterStore";
 import ModalDecrypt from "../modal/type/ModalDecrypt";
+import ActIndicator from "../ui/activityIndicator";
 
 interface Props {
   data: any[];
@@ -21,6 +22,7 @@ interface Props {
   title?: string;
   viewOnly?: boolean;
   isDeleteDisabled?: boolean;
+  enableEye?: boolean;
 }
 
 const DynamicTable = ({
@@ -38,8 +40,9 @@ const DynamicTable = ({
   title,
   viewOnly = false,
   isDeleteDisabled,
+  enableEye = false,
 }: Props) => {
-  const { fetchById, detail } = useStoreUserDecrypt();
+  const { fetchById, detail, isLoading } = useStoreUserDecrypt();
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
 
   const enhancedColumns = useMemo(() => {
@@ -50,12 +53,14 @@ const DynamicTable = ({
         header: "Action",
         cell: ({ row }) => (
           <div className="flex gap-2">
-            <button
-              className="text-blue-600"
-              onClick={() => decryptHandle(row.original.id)}
-            >
-              <FaEye />
-            </button>
+            {enableEye && (
+              <button
+                className="text-blue-600"
+                onClick={() => decryptHandle(row.original.id)}
+              >
+                <FaEye />
+              </button>
+            )}
 
             <button
               className="text-green-600"
@@ -98,32 +103,45 @@ const DynamicTable = ({
     setShowDecryptModal(true);
   };
 
+  const mappedDetail = useMemo(() => {
+    if (!detail) return detail;
+    return {
+      ...detail,
+      pin: detail.pin ? "******" : detail.pin,
+    };
+  }, [detail]);
+
   return (
     <>
-      <DynamicFormModal
-        isOpen={!!selectedItem || isCreateModalOpen}
-        onClose={handleCloseModal}
-        defaultValues={selectedItem || undefined}
-        isEditMode={!!selectedItem}
-        onSubmit={onSubmit}
-        onUpdate={onUpdate}
-        onRefresh={onRefresh}
-        formFields={formFields}
-        title={title}
-        viewOnly={viewOnly}
-      />
+      {isLoading ? (
+        <ActIndicator />
+      ) : (
+        <>
+          <DynamicFormModal
+            isOpen={!!selectedItem || isCreateModalOpen}
+            onClose={handleCloseModal}
+            defaultValues={selectedItem || undefined}
+            isEditMode={!!selectedItem}
+            onSubmit={onSubmit}
+            onUpdate={onUpdate}
+            onRefresh={onRefresh}
+            formFields={formFields}
+            title={title}
+            viewOnly={viewOnly}
+          />
 
-      <TableComponent
-        data={data}
-        columns={enhancedColumns}
-        globalFilter={globalFilter}
-      />
-
-      <ModalDecrypt
-        isOpen={showDecryptModal}
-        onClose={() => setShowDecryptModal(false)}
-        detail={detail}
-      />
+          <TableComponent
+            data={data}
+            columns={enhancedColumns}
+            globalFilter={globalFilter}
+          />
+          <ModalDecrypt
+            isOpen={showDecryptModal}
+            onClose={() => setShowDecryptModal(false)}
+            detail={mappedDetail}
+          />
+        </>
+      )}
     </>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ModalComponent from "../../modal/ModalComponent";
 import { EnPoint } from "../../../utils/EndPoint";
 import { useForm } from "react-hook-form";
+import Button from "../../ui/button/Button";
 
 interface ModalDecryptProps {
   isOpen: boolean;
@@ -377,12 +378,6 @@ const ModalDecrypt: React.FC<ModalDecryptProps> = ({
         title="Decrypted Detail"
         size="large"
       >
-        <button
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-          onClick={onClose}
-        >
-          X
-        </button>
         {detail && (
           <ModalDecryptView
             detail={detail}
@@ -401,6 +396,12 @@ const ModalDecrypt: React.FC<ModalDecryptProps> = ({
             onCancelSetPin={resetAll}
           />
         )}
+
+        <div className="mt-4 flex justify-end">
+          <Button variant="danger" size="md" type="button" onClick={onClose}>
+            Close
+          </Button>
+        </div>
       </ModalComponent>
     </div>
   );
