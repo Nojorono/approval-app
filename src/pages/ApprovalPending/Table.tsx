@@ -1,40 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '../../DynamicAPI/AxiosInstance';
 import { EnPoint } from '../../utils/EndPoint';
+import HistoryTable from './HistoryTable';
+import Modal from './Modal';
 
 type ApprovalData = {
     id: string;
     code: string;
     subject: string;
     description: string;
-    attachments: string[]; // Array of attachment URLs
+    attachments: string[];
     status: string;
     createdAt: string;
     updatedAt: string;
     createdBy: string;
     approverIds: string[];
     frontendUrl: string;
+    creator: {
+        username: string;
+    };
+    deletedAt: string | null;
 };
-
-// const mockData: ApprovalData[] = [
-//     {
-//         id: "3e7f7e4f-7172-4de2-9beb-2c477c343779",
-//         code: "AR-250826145608",
-//         subject: "DIMAS GANTENG",
-//         description: "ada",
-//         attachments: [
-//             "https://nna-app-s3.s3.ap-southeast-3.amazonaws.com/approval-app/uploads/nna.png"
-//         ],
-//         status: "pending",
-//         createdAt: "2025-08-26T00:56:08.658Z",
-//         updatedAt: "2025-08-26T00:56:08.667Z",
-//         createdBy: "b2c97c19-17c7-43d3-a351-527a190fbe6f",
-//         approverIds: [
-//             "f00a21ad-0811-473e-89d2-97b23cd29390"
-//         ],
-//         frontendUrl: "http://10.0.29.47:5173/approval-process/3e7f7e4f-7172-4de2-9beb-2c477c343779?$1?approverId="
-//     }
-// ];
 
 const cardStyle: React.CSSProperties = {
     border: '1px solid #ddd',
@@ -69,6 +55,7 @@ const ApprovalPendingTable: React.FC = () => {
     const [selected, setSelected] = useState<ApprovalData | null>(null);
     const [approvalDataPending, setApprovalDataPending] = useState<ApprovalData[]>([]);
     const userDataString = localStorage.getItem("user_login_data");
+    const [showHistory, setShowHistory] = useState(false);
     let userId: string | undefined = undefined;
     let userRole: string | undefined = undefined;
     if (userDataString) {
@@ -79,48 +66,41 @@ const ApprovalPendingTable: React.FC = () => {
         } catch (e) {
             console.error("Failed to parse user_login_data:", e);
         }
-
     }
-
-    // Pagination state
-    const [page, setPage] = useState(1);
-    const pageSize = 9;
-    const totalPages = Math.ceil(approvalDataPending.length / pageSize);
-
-    // Slice data for current page
-    const pagedData = approvalDataPending.slice((page - 1) * pageSize, page * pageSize);
 
     const fetchApprovalPendingByApprover = async (userId: string): Promise<void> => {
         const token = localStorage.getItem("token");
         try {
             const response = await axiosInstance.get(
-            `${EnPoint}approval-requests/pending-by-approver/${userId}`,
-            {
-                headers: {
-                Authorization: `Bearer ${token}`,
-                },
-            }
+                `${EnPoint}approval-requests/pending-by-approver/${userId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
             );
             if (Array.isArray(response.data.data)) {
-            // Map API response to ApprovalData interface
-            const mappedData: ApprovalData[] = response.data.data.map((item: any) => ({
-                id: item.id ?? "",
-                code: item.code ?? "",
-                subject: item.subject ?? "",
-                description: item.description ?? "",
-                attachments: Array.isArray(item.attachments)
-                ? item.attachments.map((att: any) => att.url ?? att)
-                : [],
-                status: item.status ?? "",
-                createdAt: item.createdAt ?? "",
-                updatedAt: item.updatedAt ?? "",
-                createdBy: item.createdBy ?? "",
-                approverIds: Array.isArray(item.approverIds) ? item.approverIds : [],
-                frontendUrl: item.frontendUrl ?? "",
-            }));
-            setApprovalDataPending(mappedData);
+                const mappedData: ApprovalData[] = response.data.data.map((item: any) => ({
+                    id: item.id ?? "",
+                    code: item.code ?? "",
+                    subject: item.subject ?? "",
+                    description: item.description ?? "",
+                    attachments: Array.isArray(item.attachments)
+                        ? item.attachments.map((att: any) => att.url ?? att)
+                        : [],
+                    status: item.status ?? "",
+                    createdAt: item.createdAt ?? "",
+                    updatedAt: item.updatedAt ?? "",
+                    createdBy: item.createdBy ?? "",
+                    approverIds: Array.isArray(item.approverIds) ? item.approverIds : [],
+                    frontendUrl: item.frontendUrl ?? "",
+                    creator: {
+                        username: item.creator.username ?? "",
+                    },
+                }));
+                setApprovalDataPending(mappedData);
             } else {
-            setApprovalDataPending([]);
+                setApprovalDataPending([]);
             }
         } catch (error) {
             setApprovalDataPending([]);
@@ -129,21 +109,67 @@ const ApprovalPendingTable: React.FC = () => {
     };
 
     useEffect(() => {
-        console.log("User Role:", userRole);
         if (userRole === 'admin') {
             // fetchApprovalAll()
+            if (userId) {
+                fetchApprovalPendingByApprover(userId);
+            }
         } else {
             if (userId) {
                 fetchApprovalPendingByApprover(userId);
             }
         }
-
     }, []);
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'relative' }}>
-            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-                {pagedData.map((item) => (
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 16,
+                position: 'relative',
+                width: '100%',
+                maxWidth: '100vw',
+                boxSizing: 'border-box',
+            }}
+        >
+            {showHistory && (
+                <Modal onClose={() => setShowHistory(false)}>
+                    <HistoryTable />
+                </Modal>
+            )}
+            {/* History Button */}
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
+                <button
+                    style={{
+                        background: '#2563eb',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: 6,
+                        padding: '8px 18px',
+                        fontWeight: 500,
+                        fontSize: 14,
+                        cursor: 'pointer',
+                        boxShadow: '0 1px 4px rgba(37,99,235,0.12)',
+                        zIndex: 10,
+                    }}
+                    onClick={() => {
+                        setShowHistory(true);
+                    }}
+                >
+                    History
+                </button>
+            </div>
+            <div
+                style={{
+                    display: 'flex',
+                    gap: 16,
+                    flexWrap: 'wrap',
+                    justifyContent: 'center',
+                    width: '100%',
+                }}
+            >
+                {approvalDataPending.map((item) => (
                     <div
                         key={item.code}
                         style={{
@@ -155,6 +181,9 @@ const ApprovalPendingTable: React.FC = () => {
                             flexDirection: 'column',
                             minHeight: 180,
                             justifyContent: 'space-between',
+                            flex: '1 1 300px',
+                            maxWidth: '100%',
+                            boxSizing: 'border-box',
                         }}
                     >
                         <div>
@@ -166,7 +195,7 @@ const ApprovalPendingTable: React.FC = () => {
                                 <b>Last Update:</b> {item.updatedAt}
                             </p>
                             <p style={{ margin: '4px 0 0 0', fontSize: 13 }}>
-                                <b>Requestor:</b> {item.createdBy ?? "Unknown"}
+                                <b>Requestor:</b> {item.creator.username ?? "Unknown"}
                             </p>
                         </div>
                         <button
@@ -193,100 +222,100 @@ const ApprovalPendingTable: React.FC = () => {
                 ))}
             </div>
 
-            {/* Pagination controls */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 24, gap: 16 }}>
-                <button
-                    onClick={() => setPage(page - 1)}
-                    disabled={page === 1}
-                    style={{
-                        background: page === 1 ? '#e5e7eb' : '#16a34a',
-                        color: page === 1 ? '#888' : '#fff',
-                        border: 'none',
-                        borderRadius: 6,
-                        padding: '8px 18px',
-                        fontWeight: 500,
-                        fontSize: 14,
-                        cursor: page === 1 ? 'not-allowed' : 'pointer',
-                        boxShadow: '0 1px 4px rgba(22,163,74,0.12)',
-                        transition: 'background 0.2s',
-                    }}
-                >
-                    Prev
-                </button>
-                <span style={{ fontSize: 15, fontWeight: 500 }}>
-                    Page {page} from {totalPages}
-                </span>
-                <button
-                    onClick={() => setPage(page + 1)}
-                    disabled={page === totalPages}
-                    style={{
-                        background: page === totalPages ? '#e5e7eb' : '#16a34a',
-                        color: page === totalPages ? '#888' : '#fff',
-                        border: 'none',
-                        borderRadius: 6,
-                        padding: '8px 18px',
-                        fontWeight: 500,
-                        fontSize: 14,
-                        cursor: page === totalPages ? 'not-allowed' : 'pointer',
-                        boxShadow: '0 1px 4px rgba(22,163,74,0.12)',
-                        transition: 'background 0.2s',
-                    }}
-                >
-                    Next
-                </button>
-            </div>
-
             {selected && (
                 <>
                     <div
                         style={{
                             ...modalOverlayStyle,
-                            backdropFilter: 'blur(6px)',
-                            WebkitBackdropFilter: 'blur(6px)',
+                            backdropFilter: 'blur(4px)',
+                            WebkitBackdropFilter: 'blur(4px)',
                         }}
                         onClick={() => setSelected(null)}
                     >
-                        <div style={modalStyle} onClick={e => e.stopPropagation()}>
-                            <h2>Approval Detail</h2>
-                            <p><b>Code:</b> {selected.code}</p>
-                            <p><b>Subject:</b> {selected.subject}</p>
-                            <p><b>Description:</b> {selected.description}</p>
-                            <p><b>Requestor:</b> {selected.createdBy}</p>
-                            <p><b>Attachments:</b></p>
-                            <ul>
-                                {selected.attachments.map((att, idx) => (
-                                    <li key={att}>
-                                        <a
-                                            href={att}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            style={{
-                                                color: '#2563eb',
-                                                textDecoration: 'underline',
-                                                fontWeight: 500,
-                                                cursor: 'pointer'
-                                            }}
-                                        >
-                                            {att}
-                                        </a>
-                                    </li>
-                                ))}
-                            </ul>
-                            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 24 }}>
+                        <div
+                            style={{
+                                ...modalStyle,
+                                width: '95vw',
+                                maxWidth: 420,
+                                boxSizing: 'border-box',
+                                fontFamily: 'Segoe UI, Arial, sans-serif',
+                                fontSize: 18,
+                                color: '#222',
+                                background: '#f9fafb',
+                                border: '1px solid #e5e7eb',
+                                boxShadow: '0 2px 12px rgba(0,0,0,0.10)',
+                            }}
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <h2 style={{
+                                fontSize: 22,
+                                marginBottom: 18,
+                                fontWeight: 600,
+                                borderBottom: '1px solid #e5e7eb',
+                                paddingBottom: 10,
+                                color: '#1a202c',
+                                letterSpacing: 0.5,
+                            }}>
+                                Approval Detail
+                            </h2>
+                            <div style={{ marginBottom: 12 }}>
+                                <div style={{ marginBottom: 8 }}>
+                                    <span style={{ fontWeight: 500 }}>Code:</span> <span>{selected.code}</span>
+                                </div>
+                                <div style={{ marginBottom: 8 }}>
+                                    <span style={{ fontWeight: 500 }}>Subject:</span> <span>{selected.subject}</span>
+                                </div>
+                                <div style={{ marginBottom: 8 }}>
+                                    <span style={{ fontWeight: 500 }}>Description:</span> <span>{selected.description}</span>
+                                </div>
+                                <div style={{ marginBottom: 8 }}>
+                                    <span style={{ fontWeight: 500 }}>Requestor:</span> <span>{selected.creator.username ?? "-"}</span>
+                                </div>
+                                <div style={{ marginBottom: 8 }}>
+                                    <span style={{ fontWeight: 500 }}>Attachments:</span>
+                                    <ul style={{ wordBreak: 'break-all', paddingLeft: 18, marginTop: 6 }}>
+                                        {selected.attachments.length === 0 ? (
+                                            <li style={{ color: '#888', fontSize: 16 }}>No attachments</li>
+                                        ) : (
+                                            selected.attachments.map((att, idx) => (
+                                                <li key={att} style={{ marginBottom: 4 }}>
+                                                    <a
+                                                        href={att}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        style={{
+                                                            color: '#2563eb',
+                                                            textDecoration: 'underline',
+                                                            fontWeight: 500,
+                                                            fontSize: 17,
+                                                        }}
+                                                    >
+                                                        {att}
+                                                    </a>
+                                                </li>
+                                            ))
+                                        )}
+                                    </ul>
+                                </div>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 28 }}>
                                 <button
                                     onClick={() => setSelected(null)}
                                     style={{
-                                        background: '#dc2626',
+                                        background: '#1a202c', // bg-gray-900
                                         color: '#fff',
                                         border: 'none',
-                                        borderRadius: 6,
-                                        padding: '10px 28px',
-                                        fontWeight: 500,
-                                        fontSize: 15,
+                                        borderRadius: 8,
+                                        padding: '12px 36px',
+                                        fontWeight: 600,
+                                        fontSize: 18,
                                         cursor: 'pointer',
-                                        boxShadow: '0 1px 4px rgba(220,38,38,0.12)',
+                                        boxShadow: '0 1px 6px rgba(37,99,235,0.10)',
+                                        letterSpacing: 0.5,
                                         transition: 'background 0.2s',
                                     }}
+                                    onMouseOver={e => (e.currentTarget.style.background = '#374151')} // hover:bg-gray-700
+                                    onMouseOut={e => (e.currentTarget.style.background = '#1a202c')}
                                 >
                                     Close
                                 </button>
@@ -295,6 +324,17 @@ const ApprovalPendingTable: React.FC = () => {
                     </div>
                 </>
             )}
+            <style>
+                {`
+            @media (max-width: 600px) {
+                .approval-card {
+                width: 100% !important;
+                min-width: 0 !important;
+                padding: 12px !important;
+                }
+            }
+            `}
+            </style>
         </div>
     )
 }
