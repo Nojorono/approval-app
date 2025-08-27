@@ -12,9 +12,7 @@ import {
 import { useStoreApprovalNotification } from "../../../DynamicAPI/stores/Store/MasterStore";
 import NotificationTracks from "./NotificationTracks";
 import PaginationServerSide from "./PaginationServerSide";
-import {
-  fetchApprovalRequests,
-} from "../../../pages/ApprovalRequest/API/approvalRequest";
+import { fetchApprovalRequests } from "../../../pages/ApprovalRequest/API/approvalRequest";
 import ActIndicator from "../../ui/activityIndicator";
 
 interface TableComponentProps<T> {
@@ -55,22 +53,36 @@ const TableComponent = <
   const [totalDataCount, setTotalDataCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
+  // Ambil userId & roleName dari localStorage
+  const userData = (() => {
+    try {
+      return JSON.parse(localStorage.getItem("user_login_data") || "{}");
+    } catch {
+      return {};
+    }
+  })();
+  const userId: string = userData?.user?.id || "";
+  const roleName: string = userData?.user?.role?.name || "";
+
   // Fetch data dari API
-  const fetchData = async (page: number, limit: number) => {
+  const fetchData = async (page: number, limit: number, userId: string) => {
     setLoading(true);
     try {
-      const res = await fetchApprovalRequests(page + 1, limit);
-      const mappedData = res.data.data.map((item: any) => {
-        return {
+      const res = await fetchApprovalRequests(
+        page + 1,
+        limit,
+        roleName === "admin" ? "" : userId
+      );
+      setTableData(
+        res.data.data.map((item: any) => ({
           ...item.approvalRequest,
           notificationTracks: item.notificationTracks || [],
           approverIds: item.approvalRequest.approverIds,
-        };
-      });
-      setTableData(mappedData);
+        }))
+      );
       setPageCount(res.data.pagination?.totalPages ?? 1);
       setTotalDataCount(res.data.pagination?.total ?? 0);
-    } catch (error) {
+    } catch {
       setTableData([]);
       setPageCount(1);
       setTotalDataCount(0);
@@ -79,7 +91,7 @@ const TableComponent = <
   };
 
   useEffect(() => {
-    fetchData(pagination.pageIndex, pagination.pageSize);
+    fetchData(pagination.pageIndex, pagination.pageSize, userId || "");
   }, [pagination.pageIndex, pagination.pageSize]);
 
   const table = useReactTable<T>({
@@ -110,7 +122,7 @@ const TableComponent = <
     setActiveTrackId(trackId);
     try {
       await fetchById(trackId);
-      fetchData(pagination.pageIndex, pagination.pageSize);
+      fetchData(pagination.pageIndex, pagination.pageSize, userId || "");
     } catch (error) {
       console.error("Error fetching by id:", error);
     }

@@ -72,19 +72,25 @@ export interface ApprovalResponse {
 // ✅ Fungsi API untuk ambil data approval request
 export const fetchApprovalRequests = async (
     page: number = 1,
-    limit: number = 10
+    limit?: number,
+    createdBy?: string
 ): Promise<ApprovalResponse> => {
     try {
         const token = localStorage.getItem("token");
+        // Build query params dynamically
+        const params = new URLSearchParams();
+        params.append("page", page.toString());
+        if (limit !== undefined) params.append("limit", limit.toString());
+        if (createdBy) params.append("createdBy", createdBy);
+
         const res = await axios.get<ApprovalResponse>(
-            `${EnPoint}approval-requests/with-relations?page=${page}&limit=${limit}`,
+            `${EnPoint}approval-requests/with-relations?${params.toString()}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             }
         );
-
         return res.data;
     } catch (err: any) {
         throw new Error(err.response?.data?.message || "Failed to fetch approval requests");

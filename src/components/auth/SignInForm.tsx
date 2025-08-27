@@ -68,7 +68,7 @@ export default function SignInForm() {
       const routes: Record<string, string> = {
         admin: "/dashboard",
         AUDITOR: "/dashboard",
-        APPROVER: "/approval-page",
+        APPROVER: "/approval-pending",
         REQUESTOR: "/approval-request",
       };
       if (role && routes[role]) {
