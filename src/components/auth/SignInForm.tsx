@@ -57,15 +57,23 @@ export default function SignInForm() {
       await authLogin({
         ...data,
       });
-      const { accessToken } = useAuthStore.getState();
+      const { accessToken, user } = useAuthStore.getState();
       if (!accessToken) {
         throw new Error("Login failed!");
       }
       fetchMenus();
       showSuccessToast("Login successful!");
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 800);
+
+      const role = (user as any)?.role?.name;
+      const routes: Record<string, string> = {
+        admin: "/dashboard",
+        AUDITOR: "/dashboard",
+        APPROVER: "/approval-page",
+        REQUESTOR: "/approval-request",
+      };
+      if (role && routes[role]) {
+        navigate(routes[role]);
+      }
     } catch (err: any) {
       console.error("Login failed:", err);
       setError(err.message || "Login failed!");
