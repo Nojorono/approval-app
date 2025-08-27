@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import ApprovalModal from './ApprovalModal';
+import ApprovalModal from './HistoryModal';
 import { ApprovalProcessResponse } from '../../DynamicAPI/types/ApprovalProcessTypes';
 import axiosInstance from '../../DynamicAPI/AxiosInstance';
 import { EnPoint } from '../../utils/EndPoint';
-import { useStoreApprovalProcess } from '../../DynamicAPI/stores/Store/MasterStore';
 import { FaEye } from 'react-icons/fa';
+import HistoryModal from './HistoryModal';
 
-const ApprovalTable: React.FC = () => {
+const HistoryTable: React.FC = () => {
     const [search, setSearch] = useState('');
     const [selected, setSelected] = useState<ApprovalProcessResponse | null>(null);
     const userDataString = localStorage.getItem("user_login_data");
@@ -27,7 +27,7 @@ const ApprovalTable: React.FC = () => {
     // Adjust approvalDataByApprover to use response.data.data
     useEffect(() => {
         console.log("User Role:", userRole);
-        if (userRole === 'admin' || userRole === 'AUDITOR') {
+        if (userRole === 'admin') {
             fetchApprovalAll()
         } else {
             if (userId) {
@@ -191,9 +191,9 @@ const ApprovalTable: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <ApprovalModal data={selected} onClose={() => setSelected(null)} />
+            <HistoryModal data={selected} onClose={() => setSelected(null)} />
         </div>
     );
 };
 
-export default ApprovalTable;
+export default HistoryTable;
