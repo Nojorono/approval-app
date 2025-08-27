@@ -107,7 +107,8 @@ const NotificationTracks: React.FC<NotificationTracksProps> = ({
                         </span>
                       </div>
 
-                      {isLoading && activeTrackId === track.id ? (
+                      {track.status === "delivered" ? null : isLoading &&
+                        activeTrackId === track.id ? (
                         <ExtraMiniIndicator />
                       ) : (
                         <Button

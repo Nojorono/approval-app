@@ -17,6 +17,7 @@ import {
   FaCog,
   FaBoxes,
   FaTruckMoving,
+  FaChartPie,
 } from "react-icons/fa";
 
 const iconOptions = [
@@ -27,6 +28,7 @@ const iconOptions = [
   { value: "FaCog ", label: "Settings", icon: <FaCog /> },
   { value: "FaClipboardList", label: "Report", icon: <FaClipboardList /> },
   { value: "FaRoute", label: "Route", icon: <FaRoute /> },
+  { value: "FaChartPie", label: "Dashboard", icon: <FaChartPie /> },
 ];
 
 const DataTable = () => {

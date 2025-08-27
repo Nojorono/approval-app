@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import axios from "axios";
-import { EnPoint } from "../../../utils/EndPoint";
+import { EnPoint } from "../../utils/EndPoint";
 
 type DashboardData = {
   summary: {
@@ -33,7 +33,9 @@ type DashboardData = {
 };
 
 const Dashboard: React.FC = () => {
-  const [period, setPeriod] = useState<"daily" | "weekly" | "monthly">("daily");
+  const [period, setPeriod] = useState<"daily" | "weekly" | "monthly">(
+    "weekly"
+  );
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -133,6 +135,7 @@ const Dashboard: React.FC = () => {
     xaxis: { categories: data.approvalPerformance.categories },
     legend: { position: "top" },
   };
+
   const lineSeries = [
     { name: "Approve", data: data.approvalPerformance.approve },
     { name: "Reject", data: data.approvalPerformance.reject },
@@ -142,7 +145,27 @@ const Dashboard: React.FC = () => {
   const pieOptions: ApexOptions = {
     labels: data.percentageApprovals.labels,
     legend: { position: "bottom" },
-    colors: ["#66cea8ff", "#f87171", "#fbbf24"], // Approved, Rejected, Pending
+    colors: ["#66cea8ff", "#f87171", "#fbbf24"],
+    dataLabels: {
+      enabled: true,
+      formatter: function (val: number, opts?: any) {
+        return `${opts.w.globals.labels[opts.seriesIndex]}: ${val.toFixed(1)}%`;
+      },
+      style: {
+        fontSize: "20px",
+        fontWeight: "bold",
+        colors: ["#000"],
+      },
+      dropShadow: {
+        enabled: false,
+      },
+    },
+    tooltip: {
+      theme: "light",
+      style: {
+        fontSize: "16px",
+      },
+    },
   };
   const pieSeries = data.percentageApprovals.series;
 
@@ -241,7 +264,7 @@ const Dashboard: React.FC = () => {
         <Chart
           options={pieOptions}
           series={pieSeries}
-          type="pie"
+          type="donut"
           height={500}
         />
       </div>
@@ -291,7 +314,7 @@ const Dashboard: React.FC = () => {
         </div>
       </div> */}
 
-      <p className="text-xs text-gray-500 mt-4">
+      <p className="text-md text-gray-500 mt-4">
         Last updated at {new Date().toLocaleString()} | Source: Approval System
       </p>
     </div>

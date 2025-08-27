@@ -1,9 +1,9 @@
-import PieChart from "../../components/charts/pie/PieChart";
+import DashboardChart from "../../components/charts/dashboard";
 
 export default function Dashboard() {
   return (
     <>
-      <PieChart/>
+      <DashboardChart />
     </>
   );
 }
