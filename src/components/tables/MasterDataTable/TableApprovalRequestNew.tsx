@@ -14,7 +14,6 @@ import NotificationTracks from "./NotificationTracks";
 import PaginationServerSide from "./PaginationServerSide";
 import {
   fetchApprovalRequests,
-  ApprovalRecord,
 } from "../../../pages/ApprovalRequest/API/approvalRequest";
 import ActIndicator from "../../ui/activityIndicator";
 

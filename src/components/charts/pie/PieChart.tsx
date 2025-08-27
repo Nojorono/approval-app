@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import axios from "axios";
+import { EnPoint } from "../../../utils/EndPoint";
 
 type DashboardData = {
   summary: {
@@ -42,23 +43,27 @@ const Dashboard: React.FC = () => {
       try {
         setLoading(true);
         const token = localStorage.getItem("token");
-        const res = await axios.get(
-          `http://10.0.29.47:9007/dashboard?period=${period}`,
-          {
-            headers: {
-              Authorization: token ? `Bearer ${token}` : "",
-            },
-          }
-        );
+        const res = await axios.get(`${EnPoint}dashboard?period=${period}`, {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        });
 
         // Adapt API response to DashboardData shape
         const api = res.data?.data;
 
         const approvalPerformance = {
-          categories: api?.approvalRequests?.dailyTrend?.map((d: any) => d.date) || [],
-          approve: api?.approvalProcesses ? [api.approvalProcesses.approved] : [],
-          reject: api?.approvalProcesses ? [api.approvalProcesses.rejected] : [],
-          pending: api?.approvalProcesses ? [api.approvalProcesses.pending] : [],
+          categories:
+            api?.approvalRequests?.dailyTrend?.map((d: any) => d.date) || [],
+          approve: api?.approvalProcesses
+            ? [api.approvalProcesses.approved]
+            : [],
+          reject: api?.approvalProcesses
+            ? [api.approvalProcesses.rejected]
+            : [],
+          pending: api?.approvalProcesses
+            ? [api.approvalProcesses.pending]
+            : [],
         };
 
         const percentageApprovals = {
@@ -74,8 +79,14 @@ const Dashboard: React.FC = () => {
 
         const slaVsAnomalies = {
           categories: approvalPerformance.categories,
-          anomalies: api?.approvalRequests?.dailyTrend?.map((d: any) => d.anomalies || 0) || [],
-          slaCompliance: api?.approvalRequests?.dailyTrend?.map((d: any) => d.slaCompliance || 0) || [],
+          anomalies:
+            api?.approvalRequests?.dailyTrend?.map(
+              (d: any) => d.anomalies || 0
+            ) || [],
+          slaCompliance:
+            api?.approvalRequests?.dailyTrend?.map(
+              (d: any) => d.slaCompliance || 0
+            ) || [],
         };
 
         const approvers = {
@@ -86,11 +97,15 @@ const Dashboard: React.FC = () => {
         setData({
           summary: {
             assignedApproval: api?.approvalProcesses?.total || 0,
-            slaCompliance: api?.approvalProcesses?.approvalRate || 0,
+            slaCompliance: api?.approvalProcesses?.approvalRate
+              ? Math.round(api.approvalProcesses.approvalRate)
+              : 0,
             avgResponseTime: api?.approvalProcesses?.averageResponseTime
-              ? `${api.approvalProcesses.averageResponseTime} min`
+              ? `${Math.round(
+                  Number(api.approvalProcesses.averageResponseTime)
+                )} min`
               : "0 min",
-            highRisk: 0, // Not present in API, set to 0 or mock
+            highRisk: 0, // No data in API, leave 0 or mock if needed
           },
           approvalPerformance,
           percentageApprovals,
@@ -127,6 +142,7 @@ const Dashboard: React.FC = () => {
   const pieOptions: ApexOptions = {
     labels: data.percentageApprovals.labels,
     legend: { position: "bottom" },
+    colors: ["#66cea8ff", "#f87171", "#fbbf24"], // Approved, Rejected, Pending
   };
   const pieSeries = data.percentageApprovals.series;
 
@@ -196,7 +212,7 @@ const Dashboard: React.FC = () => {
 
       {/* Charts */}
       <div className="grid grid-cols-2 gap-6 mb-6">
-        <div className="bg-white shadow rounded-lg p-4">
+        {/* <div className="bg-white shadow rounded-lg p-4">
           <h2 className="text-lg font-semibold mb-2">Approval Performance</h2>
           <Chart
             options={lineOptions}
@@ -204,8 +220,8 @@ const Dashboard: React.FC = () => {
             type="line"
             height={300}
           />
-        </div>
-        <div className="bg-white shadow rounded-lg p-4">
+        </div> */}
+        {/* <div className="bg-white shadow rounded-lg p-4">
           <h2 className="text-lg font-semibold mb-2">
             Percentage of Total Approvals
           </h2>
@@ -213,12 +229,24 @@ const Dashboard: React.FC = () => {
             options={pieOptions}
             series={pieSeries}
             type="pie"
-            height={300}
+            height={500}
           />
-        </div>
+        </div> */}
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="bg-white shadow rounded-lg p-4">
+        <h2 className="text-lg font-semibold mb-2">
+          Percentage of Total Approvals
+        </h2>
+        <Chart
+          options={pieOptions}
+          series={pieSeries}
+          type="pie"
+          height={500}
+        />
+      </div>
+
+      {/* <div className="grid grid-cols-2 gap-6">
         <div className="bg-white shadow rounded-lg p-4">
           <h2 className="text-lg font-semibold mb-2">
             SLA Compliance vs Anomalies (Weekly)
@@ -261,7 +289,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <p className="text-xs text-gray-500 mt-4">
         Last updated at {new Date().toLocaleString()} | Source: Approval System
