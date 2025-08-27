@@ -71,7 +71,7 @@ const TableComponent = <
       const res = await fetchApprovalRequests(
         page + 1,
         limit,
-        roleName === "admin" ? "" : userId
+        roleName === "admin" || roleName === "AUDITOR" ? "" : userId
       );
       setTableData(
         res.data.data.map((item: any) => ({

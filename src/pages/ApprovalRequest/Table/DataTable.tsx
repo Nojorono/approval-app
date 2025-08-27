@@ -10,7 +10,6 @@ import {
 } from "../../../DynamicAPI/stores/Store/MasterStore";
 import ActIndicator from "../../../components/ui/activityIndicator";
 import { showErrorToast } from "../../../components/toast";
-import { sortingFns } from "@tanstack/react-table";
 
 const DataTable = () => {
   const {
