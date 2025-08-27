@@ -31,6 +31,7 @@ export default defineConfig({
         manualChunks: {
           react: ["react", "react-dom"],
           vendor: ["axios", "zustand", "react-router-dom"], // pisahkan vendor biar chunk lebih kecil
+          charts: ["react-apexcharts", "apexcharts"],
         },
       },
     },
