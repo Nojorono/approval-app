@@ -4,7 +4,7 @@ import ApprovalTable from "./ApprovalTable";
 export default function MasterBin() {
   return (
     <div>
-      <PageBreadcrumb breadcrumbs={[{ title: "Approval Page Process" }]} />
+      <PageBreadcrumb breadcrumbs={[{ title: "History Approval Page" }]} />
       <ApprovalTable />
     </div>
   );
