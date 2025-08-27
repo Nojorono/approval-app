@@ -3,6 +3,8 @@ import ApprovalModal from './ApprovalModal';
 import { ApprovalProcessResponse } from '../../DynamicAPI/types/ApprovalProcessTypes';
 import axiosInstance from '../../DynamicAPI/AxiosInstance';
 import { EnPoint } from '../../utils/EndPoint';
+import { useStoreApprovalProcess } from '../../DynamicAPI/stores/Store/MasterStore';
+import { FaEye } from 'react-icons/fa';
 
 const ApprovalTable: React.FC = () => {
     const [search, setSearch] = useState('');
@@ -11,19 +13,28 @@ const ApprovalTable: React.FC = () => {
 
     const [approvalDataByApprover, setApprovalDataByApprover] = useState<ApprovalProcessResponse[]>([]);
     let userId: string | undefined = undefined;
+    let userRole: string | undefined = undefined;
     if (userDataString) {
         try {
             const userData = JSON.parse(userDataString);
             userId = userData?.user?.id;
+            userRole = userData?.user?.role?.name;
         } catch (e) {
             console.error("Failed to parse user_login_data:", e);
         }
+   
     }
     // Adjust approvalDataByApprover to use response.data.data
     useEffect(() => {
-        if (userId) {
-            fetchApprovalProcessByApprover(userId);
+        console.log("User Role:", userRole);
+        if (userRole === 'admin') {
+            fetchApprovalAll()
+        } else {
+            if (userId) {
+                fetchApprovalProcessByApprover(userId);
+            }
         }
+
     }, []);
 
     const fetchApprovalProcessByApprover = async (userId: string): Promise<void> => {
@@ -48,6 +59,27 @@ const ApprovalTable: React.FC = () => {
         }
     };
 
+    const fetchApprovalAll = async (): Promise<void> => {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await axiosInstance.get(
+                `${EnPoint}approval-process`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            if (Array.isArray(response.data.data)) {
+                setApprovalDataByApprover(response.data.data);
+            } else {
+                setApprovalDataByApprover([]);
+            }
+        } catch (error) {
+            setApprovalDataByApprover([]);
+            console.error("Failed to fetch approval process:", error);
+        }
+    };
 
     const filtered = approvalDataByApprover.filter((item) => {
         const { approvalRequest } = item;
@@ -58,12 +90,6 @@ const ApprovalTable: React.FC = () => {
             approvalRequest.creator?.username?.toLowerCase().includes(keyword)
         );
     });
-
-    useEffect(() => {
-        if (userId) {
-            fetchApprovalProcessByApprover(userId);
-        }
-    }, []);
 
 
     // Pagination logic
@@ -96,38 +122,44 @@ const ApprovalTable: React.FC = () => {
                 <table className="min-w-full table-auto border border-gray-200">
                     <thead>
                         <tr className="bg-gray-100 text-left">
-                            <th className="px-4 py-2 border">Code</th>
-                            <th className="px-4 py-2 border">Subject</th>
-                            <th className="px-4 py-2 border">Requestor</th>
-                            <th className="px-4 py-2 border">Status</th>
-                            <th className="px-4 py-2 border">Last Update</th>
-                            <th className="px-4 py-2 border">Action</th>
+                            <th className="px-4 py-2 border-b">Code</th>
+                            <th className="px-4 py-2 border-b">Subject</th>
+                            <th className="px-4 py-2 border-b">Requestor</th>
+                            <th className="px-4 py-2 border-b">Status</th>
+                            <th className="px-4 py-2 border-b">Last Update</th>
+                            <th className="px-4 py-2 border-b">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {paginatedData.map((item) => (
                             <tr key={item.id} className="hover:bg-gray-50">
-                                <td className="px-4 py-2 border">{item.approvalRequest.code}</td>
-                                <td className="px-4 py-2 border">{item.approvalRequest.subject}</td>
-                                <td className="px-4 py-2 border">{item.approvalRequest.creator?.username ?? '-'}</td>
+                                <td className="px-4 py-2 border-b">{item.approvalRequest.code}</td>
+                                <td className="px-4 py-2 border-b">{item.approvalRequest.subject}</td>
+                                <td className="px-4 py-2 border-b">{item.approvalRequest.creator?.username ?? '-'}</td>
                                 <td
-                                    className={`px-4 py-2 border font-semibold ${
-                                        item.status === 'approved'
-                                            ? 'text-green-600'
-                                            : item.status === 'rejected'
-                                            ? 'text-red-600'
-                                            : 'text-orange-500'
-                                    }`}
+                                    className={`px-4 py-2 border-b font-semibold`}
                                 >
-                                    {item.status}
+                                    <span
+                                        className={`px-2 py-1 rounded-full border font-semibold
+                                            ${
+                                                item.status === 'approved'
+                                                    ? 'text-green-600 border-green-600'
+                                                    : item.status === 'rejected'
+                                                        ? 'text-red-600 border-red-600'
+                                                        : 'text-orange-500 border-orange-500'
+                                            }
+                                        `}
+                                    >
+                                        {item.status}
+                                    </span>
                                 </td>
-                                <td className="px-4 py-2 border">{item.approvalRequest.updatedAt}</td>
-                                <td className="px-4 py-2 border">
+                                <td className="px-4 py-2 border-b">{item.approvalRequest.updatedAt}</td>
+                                <td className="px-4 py-2 border-b text-center">
                                     <button
-                                        className="text-blue-600 hover:underline"
+                                        className="text-blue-600 hover:underline inline-flex items-center justify-center"
                                         onClick={() => setSelected(item)}
                                     >
-                                        View
+                                        <FaEye style={{ color: 'green' }} />
                                     </button>
                                 </td>
                             </tr>

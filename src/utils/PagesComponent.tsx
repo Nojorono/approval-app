@@ -15,6 +15,7 @@ import ApprovalProcessDetail from '../pages/ApprovalProcess/ApprovalProcessDetai
 import Dashboard from '../pages/Dashboard'
 import ApprovalProcessResult from "../pages/ApprovalProcess/ApprovalProcessResult.tsx";
 import ApprovalPage from "../pages/ApprovalPage/index.tsx";
+import ApprovalPending from "../pages/ApprovalPending/index.tsx";
 
 export {
   // PAGE MASTER
@@ -31,5 +32,6 @@ export {
   ApprovalProcessDetail,
   ApprovalProcessResult,
   ApprovalPage,
+  ApprovalPending,
   Dashboard
 };
