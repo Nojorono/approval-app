@@ -26,7 +26,6 @@ const ApprovalTable: React.FC = () => {
     }
     // Adjust approvalDataByApprover to use response.data.data
     useEffect(() => {
-        console.log("User Role:", userRole);
         if (userRole === 'admin' || userRole === 'AUDITOR') {
             fetchApprovalAll()
         } else {

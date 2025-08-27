@@ -43,7 +43,7 @@ const PageBreadcrumb: React.FC<PageBreadcrumbProps> = ({ breadcrumbs }) => {
         <ol className="flex items-center gap-1.5">
           <li>
             <Link
-              to="/dashboard"
+              to=""
               className="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400"
             >
               Home

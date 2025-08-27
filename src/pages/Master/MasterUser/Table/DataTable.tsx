@@ -43,9 +43,6 @@ const DataTable = () => {
   // Fungsi untuk format payload update
   const handleUpdate = (data: any) => {
     const { id, ...rest } = data;
-
-    console.log("data", data);
-
     return updateData(id, {
       username: rest.username,
       email: rest.email,

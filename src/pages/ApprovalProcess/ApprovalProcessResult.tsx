@@ -4,11 +4,6 @@ export default function ApprovalStatus(){
     const location = useLocation();
     const data = location.state;
 
-    useEffect(() => {
-        console.log("Data:", data);
-    }, []);
-
-
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
       <div className="bg-white w-full max-w-lg p-6 rounded-lg shadow-lg">

@@ -7,9 +7,6 @@ export function useAutoLogout() {
 
   const employee_id = user?.employee_id;
 
-  //   console.log("Auto Logout Hook - User:", user);
-  //   console.log("Auto Logout Hook - Access Token:", accessToken);
-
   useEffect(() => {
     if (!accessToken) return;
 
@@ -22,11 +19,6 @@ export function useAutoLogout() {
           }
         );
 
-        // if (data.user.last_login !== user?.last_login) {
-        //   alert("Anda login di device lain, sesi Anda akan berakhir.");
-        //   logout();
-        //   window.location.href = "/signin";
-        // }
       } catch (error) {
         console.error("Failed to fetch user profile for auto logout", error);
       }

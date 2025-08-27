@@ -231,9 +231,6 @@ export const useUserStore = create<UserStore>((set) => ({
             const filteredPayload = Object.fromEntries(
                 Object.entries(payload).filter(([_, value]) => value !== null)
             );
-
-            console.log("Filtered Payload store:", filteredPayload);
-
             await updateUser(employeeId, filteredPayload as UpdateUser);
             const users = await fetchAllUser();
             set({ user: users, loading: false });
