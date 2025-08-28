@@ -98,7 +98,7 @@ const DataTable = () => {
     {
       name: "email",
       label: "Email",
-      type: "email",
+      type: "text",
       validation: { required: "Required" },
     },
     {

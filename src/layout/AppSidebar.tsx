@@ -213,22 +213,22 @@ const AppSidebar: React.FC = () => {
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
-        <Link to="" onClick={handleMobileClose}>
+        <div>
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <img
-                className="block dark:hidden"
-                src="https://nna-app-s3.s3.ap-southeast-3.amazonaws.com/kcsi/logo-kcsi"
-                alt="Logo Light"
-                width={100}
-                height={40}
+          className="block dark:hidden"
+          src="https://nna-app-s3.s3.ap-southeast-3.amazonaws.com/kcsi/logo-kcsi"
+          alt="Logo Light"
+          width={100}
+          height={40}
               />
               <img
-                className="hidden dark:block"
-                src="https://nna-app-s3.s3.ap-southeast-3.amazonaws.com/kcsi/logo-kcsi"
-                alt="Logo Dark"
-                width={100}
-                height={40}
+          className="hidden dark:block"
+          src="https://nna-app-s3.s3.ap-southeast-3.amazonaws.com/kcsi/logo-kcsi"
+          alt="Logo Dark"
+          width={100}
+          height={40}
               />
             </>
           ) : (
@@ -239,7 +239,7 @@ const AppSidebar: React.FC = () => {
               height={32}
             />
           )}
-        </Link>
+        </div>
       </div>
 
       {/* Main + Settings */}
