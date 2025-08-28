@@ -10,6 +10,7 @@ import {
 } from "../../../DynamicAPI/stores/Store/MasterStore";
 import ActIndicator from "../../../components/ui/activityIndicator";
 import { showErrorToast } from "../../../components/toast";
+import { usePagePermissions } from "../../../utils/UserPermission/UserPagePermissions";
 
 const DataTable = () => {
   const {
@@ -19,6 +20,8 @@ const DataTable = () => {
     isLoading,
   } = useStoreApprovalRequest();
   const { list: userList, fetchAll: fetchUsers } = useStoreUser();
+  const { canCreate, canManage } = usePagePermissions();
+
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
@@ -235,14 +238,16 @@ const DataTable = () => {
             />
           </div>
           <div className="flex justify-end">
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => setCreateModalOpen(true)}
-              className="w-full sm:w-auto flex items-center justify-center"
-            >
-              <FaPlus className="mr-2" /> Create Request
-            </Button>
+            {canCreate && canManage && (
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => setCreateModalOpen(true)}
+                className="w-full sm:w-auto flex items-center justify-center"
+              >
+                <FaPlus className="mr-2" /> Create Request
+              </Button>
+            )}
           </div>
         </div>
       </div>
