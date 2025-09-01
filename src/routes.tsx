@@ -17,6 +17,7 @@ import {
   ApprovalProcess,
   Dashboard,
   ApprovalPending,
+  UserProfile
 } from "./utils/PagesComponent";
 
 import ApprovalProcessDetail from "./pages/ApprovalProcess/ApprovalProcessDetail";
@@ -75,6 +76,7 @@ export function AppRoutes() {
       "/approval-page": <ApprovalPage />,
       "/dashboard": <Dashboard />,
       "/approval-pending": <ApprovalPending />,
+      "/user-profile": <UserProfile />
     };
     return map[path] || <DefaultPage />;
   };

@@ -205,7 +205,7 @@ const ModalDecryptView: React.FC<{
       </div>
 
       {/* Form 1: Verify PIN */}
-      {isEditPin && (
+      {/* {isEditPin && (
         <div className="mt-4 border-t pt-4">
           <div className="font-semibold mb-2 text-gray-700">Verify PIN</div>
           <form
@@ -263,10 +263,10 @@ const ModalDecryptView: React.FC<{
             </div>
           </form>
         </div>
-      )}
+      )} */}
 
       {/* Form 2: Set New PIN */}
-      {isEditPin && verifyPinSuccess && (
+      {isEditPin && (
         <>
           <div className="mt-4 border-t pt-4">
             <div className="font-semibold mb-2 text-gray-700">Set New PIN</div>
