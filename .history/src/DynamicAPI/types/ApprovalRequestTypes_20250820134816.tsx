@@ -1,30 +1,6 @@
 // ======================================
 // Base Types
 // ======================================
-export interface Role {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  deletedAt?: string | null;
-  name?: string;
-  description?: string;
-  isActive?: boolean;
-}
-
-export interface Creator {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  deletedAt?: string | null;
-  username?: string;
-  email?: string;
-  phone?: string;
-  pin?: string;
-  password?: string;
-  isActive?: boolean;
-  role?: Role;
-}
-
 export interface ApprovalRequest {
   id?: string;
   createdAt?: string;
@@ -37,7 +13,6 @@ export interface ApprovalRequest {
   attachments: string[];
   status: string;
   createdBy?: string | null;
-  creator?: Creator; // not mandatory
 }
 
 export type CreateApprovalRequest = Omit<ApprovalRequest, "id">;

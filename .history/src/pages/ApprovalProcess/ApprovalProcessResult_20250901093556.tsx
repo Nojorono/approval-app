@@ -36,7 +36,7 @@ export default function ApprovalStatus(){
             </div>
             <div>
             <strong className="text-gray-700">Requestor</strong>
-            <p className="text-gray-600">{data?.data.creator ?? 'admin'}</p>
+            <p className="text-gray-600">{data?creator ?? 'admin'}</p>
             </div>
             <div>
             <strong className="text-gray-700">Date & Time</strong>

@@ -43,7 +43,7 @@ export default function ApprovalProcessDetail() {
       const response = await approvalProcessService(submitData);
       if (response?.success) {
         showSuccessToast("Submit successful!");
-        navigate("/Approval-Process/result", { state: { data: { ...data, createdAt: Date.now(), creator: detail?.creator?.username } } });
+        navigate("/Approval-Process/result", { state: { data: { ...data, createdAt: Date.now(), creator: detail.creator.username } } });
         return { success: true };
       } else {
         alert(response?.message || "Gagal submit!");

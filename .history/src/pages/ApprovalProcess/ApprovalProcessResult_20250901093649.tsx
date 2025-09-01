@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 export default function ApprovalStatus(){
     const location = useLocation();
     const data = location.state;
+    console.log('data', data);
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">

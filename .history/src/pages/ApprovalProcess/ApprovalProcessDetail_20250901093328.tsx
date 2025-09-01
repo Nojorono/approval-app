@@ -43,7 +43,7 @@ export default function ApprovalProcessDetail() {
       const response = await approvalProcessService(submitData);
       if (response?.success) {
         showSuccessToast("Submit successful!");
-        navigate("/Approval-Process/result", { state: { data: { ...data, createdAt: Date.now(), creator: detail?.creator?.username } } });
+        navigate("/Approval-Process/result", { state: { data: { ...data, createdAt: Date.now() } } });
         return { success: true };
       } else {
         alert(response?.message || "Gagal submit!");
@@ -78,7 +78,7 @@ export default function ApprovalProcessDetail() {
           </div>
           <div>
             <span style={{ color: '#888', fontSize: 13 }}>Requestor</span>
-            <div style={{ fontWeight: 500, fontSize: 15 }}>{detail?.creator?.username || '-'}</div>
+            <div style={{ fontWeight: 500, fontSize: 15 }}>{detail?.creator.u || '-'}</div>
           </div>
           <div>
             <span style={{ color: '#888', fontSize: 13 }}>Subject</span>
